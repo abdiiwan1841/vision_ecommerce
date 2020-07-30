@@ -84,7 +84,7 @@ class ProductController extends Controller
         $original_location = public_path('uploads/products/original/'.$image_name);
         //resize image for category and upload temp 
         Image::make($image)->fit(70,70)->save($tiny_location);
-        Image::make($image)->fit(540,660)->save($thumb_location);
+        Image::make($image)->fit(270,330)->save($thumb_location);
         Image::make($image)->save($original_location);
         $product->image =  $image_name;
      }
@@ -101,6 +101,9 @@ class ProductController extends Controller
             $gallery_image_data[] = $gallery_image_name;  
         }
         $product->gallery_image = json_encode($gallery_image_data);
+     }
+     if($request->has('onoffswitch')){
+         $product->in_stock = $request->onoffswitch;
      }
      $product->product_name = $request['product_name'];
      $product->price = $request['price'];
@@ -203,7 +206,7 @@ class ProductController extends Controller
             $original_location = public_path('uploads/products/original/'.$image_name);
             //resize image for category and upload temp 
             Image::make($image)->fit(70,70)->save($tiny_location);
-            Image::make($image)->fit(540,660)->save($thumb_location);
+            Image::make($image)->fit(270,330)->save($thumb_location);
             Image::make($image)->save($original_location);
             $product->image =  $image_name;
          }
@@ -241,6 +244,12 @@ class ProductController extends Controller
         }elseif($request->price < $product->price){
             $product->discount_price = $request->price;
             $product->current_price = $request->price;
+        }
+
+        if($request->has('onoffswitch')){
+            $product->in_stock = $request->onoffswitch;
+        }else{
+            $product->in_stock = 0;
         }
 
         $product->description = $request['description'];

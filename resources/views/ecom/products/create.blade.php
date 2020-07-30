@@ -3,7 +3,7 @@
 @section('title','Add New Product')
 
 @section('modal')
-<!--Insert Modal -->
+<!--Category Modal -->
 @component('component.common.modal')
 
     @slot('modal_id')
@@ -402,6 +402,17 @@
           </div>
 
 
+          <div class="form-group">
+            <div class="onoffswitch">
+              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" tabindex="0" value="1" checked>
+              <label class="onoffswitch-label" for="myonoffswitch">
+                  <span class="onoffswitch-inner"></span>
+                  <span class="onoffswitch-switch"></span>
+              </label>
+          </div>
+      
+          </div>
+
           <div class="form-group mt-5" style="border: 1px solid #ccc;padding: 10px;">
 
           <h5 class="mt-3 mb-3">Product Image Gallery</h5>
@@ -412,6 +423,8 @@
               <button class="btn btn-success" id="AddImage" type="button"><i class="fas fa-plus"></i></button>
             </div>
           </div>
+
+          
           <div class="clone hide">
             <div class="hdtuto control-group lst input-group" style="margin-top:10px">
               <input type="file" name="gallery_image[]" class="myfrm form-control">

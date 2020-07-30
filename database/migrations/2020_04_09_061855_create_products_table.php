@@ -27,6 +27,7 @@ class CreateProductsTable extends Migration
             $table->integer('size_id');
             $table->string('type');
             $table->string('gallery_image')->nullable();
+            $table->boolean('in_stock')->default(0);
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('subcategory_id')->references('id')->on('subcategories')->onDelete('cascade');

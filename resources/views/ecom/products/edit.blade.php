@@ -2,8 +2,63 @@
 @extends('layouts.adminlayout')
 @section('title','Add New Product')
 
+
+
 @section('modal')
-<!--Insert Modal -->
+<!--Category Modal -->
+@component('component.common.modal')
+
+    @slot('modal_id')
+      categoryDataModal
+    @endslot
+    @slot('modal_button_class')
+    add_modal_submit
+    @endslot
+    @slot('modal_title')
+      Add Category
+    @endslot
+
+    @slot('modal_form') 
+       <form action="{{route('categories.store')}}" method="POST" id="addForm" enctype="multipart/form-data">
+        @csrf
+    @endslot
+
+    
+
+    @slot('modal_body')
+      <div class="form-group">
+        <label for="category_name">Category Name</label>
+      <input type="text" class="form-control @error('product_name') is-invalid @enderror" name="category_name" id="category_name" placeholder="Enter Category Name" value="{{old('category_name')}}">
+        @error('category_name')
+       <small class="form-error">{{ $message }}</small>
+       @enderror
+      </div>
+
+      <div class="form-group">
+        <label for="image">Category Image</label>
+        <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="image">
+        @error('image')
+        <small class="form-error">{{ $message }}</small>
+        @enderror
+
+      </div>
+
+      <div class="form-group">
+        <img  style="padding: 10px;display:none" class="img-thumbnail rounded" src="" id="pd_image2" alt="">
+      </div>
+
+
+
+
+      
+      
+    @endslot
+@endcomponent
+<!--End Category Modal -->
+
+
+
+<!--Size Modal -->
 @component('component.common.modal')
 
     @slot('modal_id')
@@ -50,7 +105,7 @@
     @endslot
 
     @slot('modal_form') 
-       <form action="{{route('subcategories.store')}}" method="POST" id="addSubcat">
+       <form action="{{route('subcategories.store')}}" method="POST" enctype="multipart/form-data" id="addSubcat">
         @csrf
     @endslot
 
@@ -63,6 +118,15 @@
         @error('name')
        <small class="form-error">{{ $message }}</small>
        @enderror
+      </div>
+
+      <div class="form-group">
+        <label for="image">Product Type Image</label>
+        <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="image" required>
+        @error('image')
+        <small class="form-error">{{ $message }}</small>
+        @enderror
+
       </div>
       
     @endslot
@@ -213,17 +277,26 @@
             @enderror --}}
           </div>
   
-          <div class="form-group">
-            <label for="category">Category</label>
-            <select data-placeholder="Select a Category" name="category" id="category" class="form-control @error('category') is-invalid @enderror" required>
-              <option></option>
-              @foreach ($categories as $category)
-            <option value="{{$category->id}}" @if (old('category',$product->category_id) == $category->id) selected  @endif>{{$category->category_name}}</option>
-              @endforeach
-            </select>
-            @error('category')
-            <small class="form-error">{{ $message }}</small>
-            @enderror
+          <div class="row">
+            <div class="col-lg-10">
+              <div class="form-group">
+                <label for="category">Category</label>
+                <select data-placeholder="Select a Category" name="category" id="category" class="form-control @error('category') is-invalid @enderror" onchange="saveValue(this)" required>
+                  <option></option>
+                  @foreach ($categories as $category)
+                <option value="{{$category->id}}" @if (old('category') == $category->id) selected  @endif>{{$category->category_name}}</option>
+                  @endforeach
+                </select>
+                @error('category')
+                <small class="form-error">{{ $message }}</small>
+                @enderror
+              </div>
+            </div>
+     
+              <div class="col-lg-2" style="margin-top: 28px;">
+                <button onclick="addCategory()" type="button" class="btn btn-secondary"><i class="fa fa-plus"></i></button>
+              </div>
+   
           </div>
   
           <div class="row">
@@ -344,6 +417,17 @@
           <img style="padding: 10px;e" class="img-thumbnail rounded" src="{{asset('public/uploads/products/thumb/'.$product->image)}}" id="pd_image" alt="">
           </div>
 
+          <div class="form-group">
+            <div class="onoffswitch">
+              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" tabindex="0" value="1" @if($product->in_stock == 1) checked @endif>
+              <label class="onoffswitch-label" for="myonoffswitch">
+                  <span class="onoffswitch-inner"></span>
+                  <span class="onoffswitch-switch"></span>
+              </label>
+          </div>
+      
+          </div>
+
 
 
           
@@ -409,6 +493,10 @@
 <script>
 function addSize(){
   $('#DataModal').modal('show');
+}
+
+function addCategory(){
+  $("#categoryDataModal").modal('show');
 }
 
 function addTag(){

@@ -57,7 +57,7 @@ class SubcategoryController extends Controller
             $frontend_location = public_path('uploads/product_type/frontend/'.$image_name);
             $original_location = public_path('uploads/product_type/original/'.$image_name);
             //resize image for category and upload temp 
-            Image::make($image)->fit(570,320)->save($frontend_location);
+            Image::make($image)->fit(285,160)->save($frontend_location);
             Image::make($image)->save($original_location);
             $subcategory->image =  $image_name;
          }
@@ -134,7 +134,7 @@ class SubcategoryController extends Controller
             $frontend_location = public_path('uploads/product_type/frontend/'.$image_name);
             $original_location = public_path('uploads/product_type/original/'.$image_name);
             //resize image for category and upload temp 
-            Image::make($image)->fit(570,320)->save($frontend_location);
+            Image::make($image)->fit(285,160)->save($frontend_location);
             Image::make($image)->save($original_location);
             $subcategory->image =  $image_name;
          }
