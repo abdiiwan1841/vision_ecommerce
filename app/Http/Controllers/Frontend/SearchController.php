@@ -10,7 +10,7 @@ class SearchController extends Controller
 {
     public function index(Request $request){
         $qry = $request->s;
-        $products = Product::where('product_name', 'LIKE', "%$qry%")->get();
+        $products = Product::where('type','ecom')->where('product_name', 'LIKE', "%$qry%")->get();
         return view('frontend.search.index',compact('products'));
     }
     

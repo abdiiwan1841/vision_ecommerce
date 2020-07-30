@@ -1,4 +1,4 @@
-@if(Session::has('ShoppingCart'))
+
 @extends('layouts.frontendlayout')
 @section('title','Checkout')
 @section('content')
@@ -261,55 +261,27 @@
 
             </div>
             <div class="col-lg-5">           
-              <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Image</th>
-                            <th class="p-name">Name</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody class="show-cart">
-                      @php
-                        $sum =0;    
-                      @endphp
-                      @foreach (Session::get('ShoppingCart') as $item)
-                      @php
-                        $total = $item['price'] * $item['count'];
-                        $sum += $total; 
-                      @endphp
-                    <tr>
-                      <td class="cart-pic first-row"><img src="{{$item['image']}}" alt=""></td>
-                      <td class="cart-title first-row"><h5>{{$item['o_name']}}<br> <b>({{$item['price']}}x{{$item['count']}})</b></h5></td>
-                      <td>{{$total}}</td></tr>
-                      @endforeach
-                    </tbody>
-                </table>
-            </div>
-          <div id="cart-footer" style="">
-            <div class="proceed-checkout"> 
-              @php
-                  $discount_amount = $sum*($charges->discount/100);
-                  $TaxableAmount = $sum-$discount_amount;
-                  $shipping_cahrges  = $charges->shipping;
-                  $vat_amount = $TaxableAmount*($charges->vat/100);
-                  $tax_amount = $TaxableAmount*($charges->tax/100);
-                  $vat_tax_amount =  $vat_amount+$tax_amount;
-                  $grand_total = ($TaxableAmount+$vat_amount+$tax_amount+$shipping_cahrges);
-              @endphp
+                <div class="cart-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th class="p-name">Product Name</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="show-cart">
+                          
+                        </tbody>
+                    </table>
+                </div>
+                <div id="cart-footer">
+                   
+                </div>
 
-              <ul>
-                <li class="subtotal">SUBTOTAL <span>{{$sum}}</span></li>
-                <li class="subtotal">DISCOUNT ({{$charges->discount}}%) <span> - {{$discount_amount}} </span></li>
-                <li class="subtotal">TAXABLE AMOUNT<span>{{round($TaxableAmount)}}</span></li><li class="subtotal">SHIPPING: <span>+ {{$charges->shipping}} Tk</span></li>
-                @if($vat_tax_amount > 0)
-            <li class="subtotal">VAT & TAX({{$charges->vat+$charges->tax}}%) <span> + {{$vat_tax_amount}}</span></li>
-            @endif
-            <li class="cart-total">Total<span>Tk.{{round($grand_total)}}</span></li>
-           
-          </ul>
-        </div>
       </div>
               
               
@@ -417,13 +389,76 @@ $('#area').select2({
         }
         });
 
+
+
+
+
+var ShopPageLink = '{{route('shoppage.index')}}';
+var checkoutPageLink = '{{route('checkoutpage.index')}}';
+var vatPercentage = '{{$charges->vat}}';
+var taxPercentage = '{{$charges->tax}}';
+var discountPercentage = '{{$charges->discount}}';
+var shippingCharge = '{{$charges->shipping}}';
+
+
+  function displayCart() {
+       
+          var cartArray = shoppingCart.listCart();
+          if(cartArray.length > 0){
+          var output = "";
+          for(var i in cartArray) {
+            output += "<tr>"
+              +"<td class='cart-pic first-row'><img src='"+cartArray[i].image +"' alt=''></td>"
+              +"<td class='cart-title first-row'><h5>"+cartArray[i].o_name +"</h5></td>"
+              + "<td class='p-price first-row'>"+cartArray[i].price+"</td>"
+              + "<td class='qua-col first-row'><div class='quantity'><button id='minus-"+ cartArray[i].name +"' class='minus-item input-group-addon btn btn-dark' data-name=" + cartArray[i].name + ">-</button>"+"<input type='number' class='item-count cart_qty_input' data-name='" + cartArray[i].name + "' value='" + cartArray[i].count + "' readonly><button id='plus-"+ cartArray[i].name +"' class='plus-item btn btn-dark input-group-addon' data-name=" + cartArray[i].name + ">+</button></div></td>"
+              + "<td class='total-price first-row'>"+Math.round(cartArray[i].total)+"</td>"
+              + "<td class='si-close first-row'><button class='delete-item btn' data-name=" + cartArray[i].name + "><i class='ti-close'></i></button></td>"
+              +  "</tr>";
+          }
+          $('.show-cart').html(output);
+          $('.cart-price').html(Math.round(shoppingCart.totalCart()) + 'Tk');
+          $('.total-count').html(Math.round(shoppingCart.totalCount()));
+          if(cart.length >0){
+          $('#cart-footer').show();
+
+            var subTotal = shoppingCart.totalCart();
+            var discountAmount = (shoppingCart.totalCart())*(discountPercentage/100);
+            var netAmount = subTotal-discountAmount;
+            var vatAmount = netAmount*(vatPercentage/100);
+            var taxAmount = netAmount*(taxPercentage/100);
+            var vat_and_taxAmount = vatAmount+taxAmount;
+
+            var grandTotal = ( parseFloat(netAmount) + parseFloat(vat_and_taxAmount) + parseFloat(shippingCharge) );
+
+
+            if(vat_and_taxAmount > 0){
+            $('#cart-footer').html('<div class="row"><div class="col-lg-12"><div class="proceed-checkout"> <ul><li class="subtotal">SUBTOTAL <span>'+Math.round(subTotal)+'</span></li><li class="subtotal">DISCOUNT ('+discountPercentage+'%) <span> - '+Math.round(discountAmount)+'</span></li><li class="subtotal">TAXABLE AMOUNT<span> '+Math.round(netAmount)+'</span></li><li class="subtotal">SHIPPING: <span>+ '+shippingCharge+' Tk</span></li><li class="subtotal">VAT & TAX ('+parseFloat(vatPercentage)+parseFloat(taxPercentage)+'%) <span> + '+Math.round(vat_and_taxAmount)+'</span></li><li class="cart-total">Total<span>Tk.'+Math.round(grandTotal)+'</span></li></ul><a href="javascript:void(0);" class="proceed-btn">CONFIRM & CHECK OUT</a></div></div></div>');
+            }else{
+              $('#cart-footer').html('<div class="row"><div class="col-lg-12"><div class="proceed-checkout"> <ul><li class="subtotal">SUBTOTAL <span>'+Math.round(subTotal)+'</span></li><li class="subtotal">DISCOUNT ('+discountPercentage+'%) <span> - '+Math.round(discountAmount)+'</span></li><li class="subtotal">NET AMOUNT<span> '+Math.round(netAmount)+'</span></li><li class="subtotal">SHIPPING: <span>+ '+shippingCharge+' Tk</span></li><li class="cart-total">Total<span>Tk.'+Math.round(grandTotal)+'</span></li></ul></div></div></div>');
+            }
+
+  
+         
+          }else{
+            $('#cart-footer').hide();
+      
+          }
+
+        }else{
+            $('.cart-table').text('');
+            $('.cart-table').html('<h3 class="text-center">No Product Found On the Cart</h3>');
+            $('#cart-footer').hide();
+        }
+      
+        }
+        
+
+
+
         
 </script>
 
-@endpush
+<script src="{{asset('public/assets/frontend/js/cart.js')}}"></script>
 
-@else
-@php
-    return false;
-@endphp
-@endif
+@endpush

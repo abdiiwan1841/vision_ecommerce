@@ -62,8 +62,8 @@
                         @if(Auth::check())
                         <a  class="login-panel" href="javascript:void(0);"> <i class="fa fa-user"></i>{{Auth::user()->name}} &nbsp; <i class="fa fa-caret-down"></i></a>
                         <ul>
-                        
                             <li><a href="{{route('profile.show')}}">My Profile</a></li>
+                            <li><a href="{{route('orders.show')}}">My Order</a></li>
                             <li><form id="logout-form" action="{{ route('logout') }}" method="POST">
                                 @csrf
                                 <a href="{{ route('logout') }}" 
@@ -177,21 +177,6 @@
                             </ul>
                         </li>
                     <li class="{{Request::is('contact') ? 'active' : '' }}"><a href="{{route('contactpage.index')}}"> <i class="fa fa-envelope"></i> Contact</a></li>
-
-                    @if(Auth::check())
-
-                    <li class="{{Request::is('myaccount*') ? 'active' : '' }}"><a href="javascript:void(0)"> <i class="fa fa-user"></i> My Account</a>
-                    
-                    <ul class="dropdown">
-                        
-                        <li><a href="{{route('orders.show')}}">My Order</a></li>
-                        <li><a href="{{route('profile.show')}}">My Profile</a></li>
-                        
-                    </ul>
-                </li>
-           
-                @endif
-
 
 
                     </ul>

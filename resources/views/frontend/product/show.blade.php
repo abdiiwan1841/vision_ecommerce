@@ -325,7 +325,7 @@ zoom: {
         for(var i in cartArray) {
           output += "<tr>"
             +"<td class='si-pic'><img src='"+cartArray[i].image +"' alt=''></td>"
-            + "<td class='si-text'><div class='product-selected'><p>"+cartArray[i].price+"x " + cartArray[i].count + "="+Math.round(cartArray[i].total)+" Tk</p><h6>"+cartArray[i].o_name +"</h6>" 
+            + "<td class='si-text'><div class='product-selected'><p>"+cartArray[i].price+" x " + cartArray[i].count + "="+Math.round(cartArray[i].total)+"</p><h6>"+cartArray[i].o_name +"</h6>" 
             +"</div></td>"
             + "<td class='si-close'><button class='delete-item btn' data-name=" + cartArray[i].name + "><i class='ti-close'></i></button></td>"
             +  "</tr>";

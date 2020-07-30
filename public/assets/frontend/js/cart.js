@@ -60,7 +60,7 @@ var shoppingCart = (function() {
     var obj = {};
     
     // Add to cart
-    obj.addItemToCart = function(o_name,name, price, count, id,image,instock) {
+    obj.IncrementCart = function(name) {
       for(var item in cart) {
         if(cart[item].name === name) {
           cart[item].count ++;
@@ -68,13 +68,13 @@ var shoppingCart = (function() {
           return;
         }
       }
-      var item = new Item(o_name,name, price, count, id,image,stock,instock);
+      var item = new Item(name);
       cart.push(item);
       saveCart();
     }
+    
 
-
-    obj.IncrementCart = function(o_name,name, price, count, id,image,instock) {
+    obj.addItemToCart = function(o_name,name, price, count, id,image,instock) {
       for(var item in cart) {
         if(cart[item].name === name) {
           Toast.fire({
@@ -225,7 +225,7 @@ var shoppingCart = (function() {
     var price = Number($(this).data('price'));
     var id = Number($(this).data('id'));
     var image = $(this).data('image');
-    shoppingCart.IncrementCart(o_name,name, price, 1,id,image,instock);
+    shoppingCart.addItemToCart(o_name,name, price, 1,id,image,instock);
     displayCart();
   });
   
@@ -258,7 +258,7 @@ var shoppingCart = (function() {
   // +1
   $('.show-cart').on("click", ".plus-item", function(event) {
     var name = $(this).data('name')
-    shoppingCart.addItemToCart(name);
+    shoppingCart.IncrementCart(name);
     displayCart();
   })
   
