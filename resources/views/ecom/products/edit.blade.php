@@ -418,6 +418,7 @@
           </div>
 
           <div class="form-group">
+             <strong>In Stock</strong> <br>
             <div class="onoffswitch">
               <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" tabindex="0" value="1" @if($product->in_stock == 1) checked @endif>
               <label class="onoffswitch-label" for="myonoffswitch">

@@ -177,6 +177,40 @@ del{
 .brand-list{
     margin: 10px 15px;
 }
+
+/* Page Section Css */
+.hero-slide::before, .hero::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.1));
+	display: block;
+}
 .no-pad-top{
     padding-top: 0px !important;
+}
+.hero-slide, .hero {
+	position: relative;
+}
+.bg-cover {
+	background-size: cover !important;
+	background-position: center center !important;
+}
+.page-breadcrumb ol.breadcrumb{
+    background-color: transparent ;
+    font-size: 20px;
+}
+h1.page-title{
+    font-weight: bold;
+}
+.breadcrumb-item.active{
+    color: #eb4d4b;
+}
+
+.index-forward {
+	position: relative;
+	z-index: 99;
 }

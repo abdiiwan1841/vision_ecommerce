@@ -19,14 +19,24 @@
     </div>
 </div>
 <!-- Breadcrumb Section Begin -->
-
+@if(Session::has('err'))
+    {{Session::get('err')}}
+@endif
 <!-- Product Shop Section Begin -->
  <!-- Shopping Cart Section Begin -->
  <section class="shopping-cart spad">
     <div class="container">
         <div class="row">
             <div class="col-lg-7">
-                
+                @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
                 
             @if(Auth::check())
             <form action="{{route('checkoutpage.oldcustomerorder',Auth::user()->id)}}" method="POST">
@@ -37,7 +47,7 @@
                 <div class="row">
                     <div class="col-lg-6">
 
-  
+                        <input type="hidden" id="cartdata" name="cartdata">
                                     
                         <div class="form-group @error('division') has-error @enderror">
                             <label for="division">Division<span>*</span></label>
@@ -135,6 +145,7 @@
                     <h4>Biiling Details</h4>
                 <div class="row">
                     <div class="col-lg-6">
+                        <input type="hidden" id="cartdata" name="cartdata">
                         <div class="form-group">
                             <label for="name">Name<span>*</span></label>
                         <input type="text" id="name" placeholder="Enter Your Name" class="form-control @error('name') is-invalid @enderror" name="name" value="{{old('name')}}">
@@ -307,6 +318,9 @@
 
 
 <script>
+    var HomePageLink = '{{route('homepage.index')}}';
+    $("#cartdata").val(JSON.stringify(localStorage.shoppingCart));
+
     $('#division').select2({
     width: '100%',
     theme: "bootstrap",
@@ -392,6 +406,7 @@ $('#area').select2({
 
 
 
+    
 
 var ShopPageLink = '{{route('shoppage.index')}}';
 var checkoutPageLink = '{{route('checkoutpage.index')}}';
@@ -446,10 +461,23 @@ var shippingCharge = '{{$charges->shipping}}';
           }
 
         }else{
-            $('.cart-table').text('');
-            $('.cart-table').html('<h3 class="text-center">No Product Found On the Cart</h3>');
-            $('#cart-footer').hide();
+            $('section.shopping-cart').html('<div style="border: 1px solid #ddd;border-radius: 5px;padding: 20px"><h3 class="text-center">Currently there is no product on the cart <span id="time"></span></h3><br><h3 class="text-center">You will redicted to homepage in<span id="time"></span></h3><br><h1 class="num" style="font-size: 50px;text-align:center;font-weight: bold;margin: 0px;"></h1></div>');
+
+
+
+    var num = 4;
+    setInterval(function () {
+        if(num > 0){
+          num--;
         }
+        $(".num").text(num+' seconds');
+        if(num==1){
+            window.location.href = HomePageLink; 
+            return;
+        }
+     }, 1000)
+     
+     }
       
         }
         
@@ -459,6 +487,6 @@ var shippingCharge = '{{$charges->shipping}}';
         
 </script>
 
-<script src="{{asset('public/assets/frontend/js/cart.js')}}"></script>
+<script src="{{asset('public/assets/frontend/js/checkoutpage-cart.js')}}"></script>
 
 @endpush

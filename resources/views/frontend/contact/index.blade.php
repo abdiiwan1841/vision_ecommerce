@@ -133,12 +133,6 @@
 @endsection
 
 @push('js')
-
-
-
-
-
-
 <script>
 
 var cartLink = '{{route('cartpage.index')}}';

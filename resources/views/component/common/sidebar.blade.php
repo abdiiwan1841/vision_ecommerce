@@ -23,7 +23,6 @@
             <a href="{{ route('admin.inventorydashboard') }}"><i class="fas fa-chart-line"></i> Inventory  Dashboard</a>
         </li>
 
-    
         <li class="">
             <a href="#blog" data-toggle="collapse" aria-expanded="{{Request::is('admin/posts*') ? 'true' : '' }}" class="dropdown-toggle"> <i class="fas fa-rss"></i> Blog</a>
             <ul class="collapse list-unstyled {{Request::is('admin/posts*') ? 'active collapse show' : '' }}" id="blog">
@@ -91,7 +90,10 @@
                 </li>
 
                 <li class="{{Request::is('admin/ecom/charge') ? 'active' : '' }}">
-                    <a href="{{ route('charge.index') }}"><i class="fas fa-credit-card"></i> Generel Charges </a>
+                    <a href="{{ route('charge.index') }}"><i class="fas fa-credit-card"></i>All Charges </a>
+                </li>
+                <li class="{{Request::is('admin/ecom/generaloption*') ? 'active' : '' }}">
+                    <a href="{{route('generaloption.index')}}"> <i class="fas fa-filter"></i>General Options</a>
                 </li>
                
 

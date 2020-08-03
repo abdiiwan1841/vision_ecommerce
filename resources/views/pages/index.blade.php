@@ -8,7 +8,7 @@
     <div class="card-header">
       <div class="row">
         <div class="col-lg-6">
-          <h5 class="card-title">Inventory Customer </h5>
+          <h5 class="card-title">Frontend Pages</h5>
         </div>
         <div class="col-lg-6 text-right">
           <a  href="{{route('pages.create')}}" class="btn btn-info btn-sm">+ Add New Page</a>
@@ -26,17 +26,25 @@
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Phone</th>
-            <th scope="col">Area</th>
-            <th scope="col">Address</th>
+            <th scope="col">Title</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
-    
-
+          @foreach ($pages as $key => $item)
+          <tr>
+            <td>{{$key+1}}</td>
+            <td>{{$item->page_title}}</td>
+          <td><a class="btn btn-sm btn-primary" href="{{route('pages.edit',$item->id)}}"><i class="fas fa-edit"></i></a> | 
+          <form style="display: inline-block" action="{{route('pages.destroy',$item->id)}}" method="POST">
+              @csrf
+              @method('DELETE')
+              <button onclick="return confirm('Are you sure you want to delete this page?')" type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+            </form>
+            
+          </tr>
+          @endforeach
+         
 
          
           

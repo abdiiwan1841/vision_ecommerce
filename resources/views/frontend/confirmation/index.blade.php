@@ -40,6 +40,13 @@
   </div>
 @endsection
 
+@push('js')
+<script>
+    localStorage.clear();
+</script>
+
+@endpush
+
 @else
 @php
     return false;

@@ -18,6 +18,7 @@ Route::get('contact','Frontend\ContactpageController@index')->name('contactpage.
 Route::post('contact','Frontend\ContactpageController@contactus')->name('contactpage.submit');
 
 Route::get('shop','Frontend\ShoppageController@index')->name('shoppage.index');
+Route::get('pages/{slug}','Frontend\PageController@index')->name('frontendpage.index');
 
 
 
@@ -206,6 +207,9 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::get('comments','CommentsController@index')->name('comments.index');
     Route::post('approvecomment/{id}','CommentsController@approve')->name('comments.approve');
     Route::post('destroycomment/{id}','CommentsController@destroy')->name('comments.destroy');
+    Route::get('ecom/generaloption','GeneralOptionController@index')->name('generaloption.index');
+    Route::get('ecom/generaloption/{id}/edit','GeneralOptionController@edit')->name('generaloption.edit');
+    Route::put('ecom/generaloption/{id}','GeneralOptionController@update')->name('generaloption.update');
 
 
 });

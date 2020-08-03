@@ -34,6 +34,7 @@
 </head>
 
 <body>
+    @if($g_opt_value['pageloader'] == 1) 
     <!-- Page Preloder -->
     <div id="preloder">
         <div class="loader">
@@ -41,6 +42,7 @@
             <div class="double-bounce2"></div>
         </div>
     </div>
+    @endif
 
     <!-- Header Section Begin -->
     <header class="header-section">
@@ -168,8 +170,18 @@
                 <nav class="nav-menu mobile-menu">
                     <ul>
                         <li  class="{{Request::is('/') ? 'active' : '' }}"><a href="{{route('homepage.index')}}"> <i class="fa fa-home"></i> Home</a></li>
+
+                        <li  class="{{Request::is('/pages*') ? 'active' : '' }}"><a href=""> <i class="fa fa-file"></i> Pages</a>
+                    
+                        <ul class="dropdown">
+                            @foreach ($page_list as $page)
+                            <li><a href="{{route('frontendpage.index',$page->slug)}}">{{$page->page_title}}</a></li>
+                            @endforeach
+                        </ul>
+                        </li>
+
                         <li class="{{Request::is('shop*') ? 'active' : '' }}"><a  href="{{route('shoppage.index')}}"> <i class="fa fa-shopping-bag"></i> Shop</a></li>
-                        <li class="{{Request::is('collection*') ? 'active' : '' }}" ><a href="#">Collection</a>
+                        <li class="{{Request::is('collection*') ? 'active' : '' }}" ><a href="#"> <i class="fa fa-sitemap"></i> Collection</a>
                             <ul class="dropdown">
                                 @foreach ($product_categories as $cat)
                                 <li><a href="{{route('collection.view',$cat->id)}}">{{$cat->category_name}}</a></li>
@@ -277,6 +289,10 @@
                                 </li>
                             @endforeach
                             @endif
+
+                            @foreach ($page_list as $page)
+                            <li><a href="{{route('frontendpage.index',$page->slug)}}">{{$page->page_title}}</a></li>
+                            @endforeach
                         </ul>
                     </div>
                 </div>

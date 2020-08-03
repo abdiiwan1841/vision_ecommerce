@@ -36,6 +36,7 @@ class CheckoutPageController extends Controller
             'name' =>  'required|string|max:255',
             'email' => 'required|email|unique:users',
             'phone' => 'required',
+            'cartdata' => 'required',
             'division' => 'required',
             'district' => 'required',
             'area' => 'required',
@@ -45,6 +46,8 @@ class CheckoutPageController extends Controller
             'payment_method' => 'required',
         ]);
 
+        $cartdata = json_decode($request->cartdata);
+        $products = json_decode($cartdata);
         
         $today = Carbon::now()->toDateString(); 
         $delivery_info = Deliveryinfo::first();
@@ -52,13 +55,15 @@ class CheckoutPageController extends Controller
         $next_shipping_date = date('Y-m-d', strtotime($today .' +'.$delivery_delay.' day'));
 
         $charges = Charge::first();
-         //Amount calculation
-         $products = Session::get('ShoppingCart');
 
-         $amount = [];
-         foreach($products as  $item){
-             $amount[] = ($item['count'])*($item['price']);
-         }
+
+        $amount = [];
+        foreach($products as  $item){
+            $amount[] = ($item->count)*($item->price);
+        }
+
+
+
          $netamount = array_sum($amount);
          $disc_amount = $netamount*($charges->discount/100);
          $subtotal = $netamount-$disc_amount;
@@ -110,16 +115,14 @@ class CheckoutPageController extends Controller
         }
         $order->save();
         $cart = [];
-        foreach(Session::get('ShoppingCart') as $shopping_cart){
-            $cart[] = ['order_id' =>$order->id, 'product_id' => $shopping_cart['id'],'user_id'=> $user->id,'qty' => $shopping_cart['count'],'price' => $shopping_cart['price'],'ordered_at' => now()];        
+        foreach($products as $shopping_cart){
+            $cart[] = ['order_id' =>$order->id, 'product_id' => $shopping_cart->id,'user_id'=> $user->id,'qty' => $shopping_cart->count,'price' => $shopping_cart->price,'ordered_at' => now()];        
         }
 
         $order->product()->attach($cart);
 
-        Session::forget('ShoppingCart');
         Session::flash('OrderCompleted',true);
 
-       
 
 
         if (Auth::attempt($credentials,'on')) {
@@ -137,6 +140,7 @@ class CheckoutPageController extends Controller
 
     public function oldcustomerorder(Request $request, $id){
         $this->validate($request,[
+            'cartdata' => 'required',
             'phone' => 'required',
             'division' => 'required',
             'district' => 'required',
@@ -144,6 +148,20 @@ class CheckoutPageController extends Controller
             'address' => 'required|max:500',
             'payment_method' => 'required',
         ]);
+
+        if(strlen($request->cartdata) < 5){
+             Session::flash('err','There Is No Product On The Cart');
+             return redirect()->back();
+
+        }
+
+
+
+        $cartdata = json_decode($request->cartdata);
+        $products = json_decode($cartdata);
+        
+
+
 
 
          $today = Carbon::now()->toDateString(); 
@@ -154,11 +172,11 @@ class CheckoutPageController extends Controller
         $charges = Charge::first();
 
          //Amount calculation
-         $products = Session::get('ShoppingCart');
+        
 
          $amount = [];
          foreach($products as  $item){
-             $amount[] = ($item['count'])*($item['price']);
+             $amount[] = ($item->count)*($item->price);
          }
          $netamount = array_sum($amount);
          $disc_amount = $netamount*($charges->discount/100);
@@ -206,12 +224,11 @@ class CheckoutPageController extends Controller
 
 
         $cart = [];
-        foreach(Session::get('ShoppingCart') as $shopping_cart){
-            $cart[] = ['order_id' =>$order->id, 'product_id' => $shopping_cart['id'],'user_id'=>  Auth::user()->id,'qty' => $shopping_cart['count'],'price' => $shopping_cart['price'],'ordered_at' => now()];        
+        foreach($products as $shopping_cart){
+            $cart[] = ['order_id' =>$order->id, 'product_id' => $shopping_cart->id,'user_id'=>  Auth::user()->id,'qty' => $shopping_cart->count,'price' => $shopping_cart->price,'ordered_at' => now()];        
         }
 
         $order->product()->attach($cart);
-        Session::forget('ShoppingCart');
         Session::flash('OrderCompleted',true);
         return redirect(route('order.confirmation',$order->id));
 

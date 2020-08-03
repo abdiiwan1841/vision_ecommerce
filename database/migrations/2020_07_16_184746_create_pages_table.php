@@ -17,7 +17,8 @@ class CreatePagesTable extends Migration
             $table->id();
             $table->string('banner_image');
             $table->string('page_title');
-            $table->string('page_description');
+            $table->string('slug');
+            $table->text('page_description');
             $table->timestamps();
         });
     }
