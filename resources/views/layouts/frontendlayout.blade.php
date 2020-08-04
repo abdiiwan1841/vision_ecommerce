@@ -204,7 +204,7 @@
     <section class="latest-blog">
         <div class="container">
 
-
+    @if($g_opt_value['before_footer_infobox'] == 1) 
     <div class="benefit-items">
         <div class="row">
             <div class="col-lg-4">
@@ -242,6 +242,8 @@
             </div>
         </div>
     </div>
+
+    @endif
 </div>
 </section>
     <!-- Footer Section Begin -->

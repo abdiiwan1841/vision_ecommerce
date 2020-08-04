@@ -6,7 +6,7 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
 @endphp
 
 
-  
+@if($g_opt_value['slider'] == 1) 
     <!-- Hero Section Begin -->
     <section class="hero-section">
         <div class="hero-items owl-carousel">
@@ -34,6 +34,7 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
         </div>
     </section>
     <!-- Hero Section End -->
+    @endif
 
 
     @if($deal != null)
@@ -90,8 +91,8 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
       <div class="row">
         <div class="col-lg-6">
 
-        
-        <!-- Banner Section Begin -->
+          @if($g_opt_value['product_types'] == 1) 
+        <!-- Product Types Section Begin -->
         <div class="banner-section spad">
           <div class="container-fluid">
             <div class="section-title ">
@@ -106,7 +107,7 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
                       <div class="single-banner">
                       <img class="img_leaf_shape" src="{{asset('public/uploads/product_type/frontend/'.$subcat->image)}}" alt="{{$subcat->subcategory_name}}">
                           <div class="inner-text">
-                          <h5>{{$subcat->subcategory_name}} <span class="badge badge-danger">{{count(DB::table('products')->where('type','ecom')->where('subcategory_id',$subcat->id)->select('id')->get())}}</span></h5>
+                          <h5>{{$subcat->subcategory_name}}  @if($g_opt_value['product_types_counter'] == 1)  <span class="badge badge-danger">{{count(DB::table('products')->where('type','ecom')->where('subcategory_id',$subcat->id)->select('id')->get())}}</span> @endif </h5>
                           </div>
                       </div>
                     </a>
@@ -116,9 +117,9 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
               </div>
           </div>
       </div>
-
-
-
+      @endif
+      
+      @if($g_opt_value['brands'] == 1) 
       
               <!-- Brand  Section Begin -->
               <div class="banner-section no-pad-top">
@@ -134,7 +135,7 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
                             <div class="single-banner brand">
                            
                                 <div class="inner-text">
-                                <h5>{{$brand->brand_name}} <span class="badge badge-warning">{{count(DB::table('products')->where('type','ecom')->where('brand_id',$brand->id)->select('id')->get())}}</span></h5>
+                                <h5>{{$brand->brand_name}} @if($g_opt_value['brands_counter'] == 1) <span class="badge badge-warning">{{count(DB::table('products')->where('type','ecom')->where('brand_id',$brand->id)->select('id')->get())}}</span> @endif </h5>
                                 </div>
                             </div>
                           </a>
@@ -145,12 +146,14 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
                 </div>
             </div>
             <!-- Brand Section End -->
+            @endif
 
 
     </div>
 
     
     <div class="col-lg-6">
+      @if($g_opt_value['new_pd'] == 1) 
       <div class="product-list banner-section spad">
         <div class="container-fluid">
           <div class="section-title">
@@ -213,9 +216,9 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
           </div>
   
         </div>
+        @endif
 
-
-
+        @if($g_opt_value['hot_pd'] == 1) 
         <div class="product-list banner-section no-pad-top">
           <div class="container-fluid">
             <div class="section-title">
@@ -274,6 +277,8 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
             </div>
     
           </div>
+
+          @endif
   
 
 
@@ -353,8 +358,8 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
 
 
   
-
-      <!-- Banner Section Begin -->
+    @if($g_opt_value['pd_collection'] == 1) 
+      <!-- Product Collection Begin -->
       <div class="banner-section spad">
         <div class="container-fluid">
           <div class="section-title">
@@ -368,7 +373,7 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
                     <div class="single-banner">
                     <img src="{{asset('public/uploads/category/frontend/'.$cat->image)}}" alt="">
                         <div class="inner-text">
-                            <h4>{{$cat->category_name}}</h4>
+                            <h4>{{$cat->category_name}} @if($g_opt_value['collection_counter'] == 1) <span class="badge badge-danger">{{count(DB::table('products')->where('type','ecom')->where('category_id',$cat->id)->select('id')->get())}}</span> @endif </h4>
                         </div>
                     </div>
                   </a>
@@ -378,7 +383,8 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
             </div>
         </div>
     </div>
-    <!-- Banner Section End -->
+    <!--  Section End -->
+    @endif
 
 
   
