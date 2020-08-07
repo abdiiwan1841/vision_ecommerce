@@ -20,9 +20,9 @@ use Intervention\Image\Facades\Image;
 
 class adminController extends Controller
 {
-    public function __construct(){
-        $this->middleware('auth:admin');
-    }
+    // public function __construct(){
+    //     $this->middleware('auth:admin');
+    // }
 
     public function dashboard(){
         $today = now()->toDateString();

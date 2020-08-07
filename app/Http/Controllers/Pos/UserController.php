@@ -9,6 +9,7 @@ use App\Division;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Product;
 use Illuminate\Support\Facades\Hash;
 
 
@@ -33,6 +34,7 @@ class UserController extends Controller
      */
     public function create()
     {
+       
         $divisions = Division::all();
         return view('pos.user.create',compact('divisions'));
     }
@@ -96,9 +98,10 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+        $products = Product::all();
         $customer = User::findOrFail($id);
         $divisions = Division::all();
-        return view('pos.user.edit',compact('divisions','customer'));
+        return view('pos.user.edit',compact('divisions','customer','products'));
     }
 
     /**

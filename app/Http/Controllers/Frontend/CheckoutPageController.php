@@ -41,8 +41,8 @@ class CheckoutPageController extends Controller
             'district' => 'required',
             'area' => 'required',
             'address' => 'required|max:500',
-            'password' => 'required|confirmed|min:8',
-            'password_confirmation' => 'required|min:8',
+            'password' => 'required|confirmed|min:8|max:14',
+            'password_confirmation' => 'required|min:8|max:14',
             'payment_method' => 'required',
         ]);
 

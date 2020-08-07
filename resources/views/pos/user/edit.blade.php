@@ -16,6 +16,7 @@
             </div>
         </div>
     <div class="card-body">
+        <div class="show-cart"></div>
     <form action="{{route('customers.update',$customer->id)}}" method="POST">
         @csrf
         @method('PUT')
@@ -116,7 +117,59 @@
             
 
         </div>
+
+
         <div class="col-lg-8">
+            <hr>
+            <h5>Specify Some Product Price For  "{{$customer->name}}" </h5>
+            <br>
+            <div class="row">
+                
+                <div class="col-lg-7">
+                    <div class="form-group">
+                      <label for="product">Product</label>
+                      <select data-placeholder="-select product-" class="js-example-responsive" name="product" id="product" class="form-control">
+                      <option></option>
+                       
+                        @foreach ($products as $product)
+                      <option value="{{$product->id}}">{{$product->product_name}}</option>    
+                        @endforeach
+      
+                      </select>
+                      <div class="product_err err_form"></div>
+                     
+                    </div>
+                    <div class="form-group">
+                      <span class="text-center" id="selected-product-info"></span>
+                    </div>
+      
+                  </div>
+      
+      
+      
+              
+                      <div class="col-lg-3">
+                        
+                        <div class="form-group">
+                          <label for="price">Price</label>
+                          <input type="text" class="form-control" name="price" id="price" placeholder="Enter Price">
+                          <div class="price_err"></div>
+                        </div>
+                        
+                       
+                      </div>
+      
+        
+                      <div class="col-lg-2">
+                        <div style="margin-top: 31px">
+                          <button type="button"  class="btn btn-warning  add-to-cart">ADD <i class="fa fa-plus"></i></button>
+                        </div>
+                        
+                      </div>
+
+                      
+               
+            </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-success">Update</button>
             </div>
@@ -139,7 +192,30 @@
 
 @push('js')
 <script>
+
+
+function displayCart() {
+    var cartArray = shoppingCart.listCart();
+  var j =1;
+  for(var i in cartArray) {
+    output += "<tr>"
+      + "<td>" + j++ + "</td>"
+      + "<td>" + cartArray[i].o_name + "</td>"
+      + "<td>" + cartArray[i].price + " Tk</td>"
+      + "<td><button class='delete-item btn btn-sm badge-danger' data-name=" + cartArray[i].name + ">X</button></td>"
+      +  "</tr>";
+  }
+  $('.show-cart').html(output);
+  
+
+}
+
 $('#division').select2({
+    width: '100%',
+    theme: "bootstrap",
+    placeholder: "Select a Division",
+});
+$('#product').select2({
     width: '100%',
     theme: "bootstrap",
     placeholder: "Select a Division",
@@ -258,6 +334,270 @@ var district_id = $("#district").val();
           $("#area").html('<option value="">No Area Found</option>');
         }
         });
+
+
+
+    // Toaster
+  //Toater Alert 
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    onOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  })
+
+
+ // ************************************************
+  // Shopping Cart API
+  // ************************************************
+
+
+
+
+var shoppingCart = (function() {
+    // =============================
+    // Private methods and propeties
+    // =============================
+    cart = [];
+    
+    // Constructor
+    function Item(o_name,name, price, id) {
+      this.o_name    = o_name;
+      this.name = name;
+      this.price = price;
+      this.id = id;
+      
+    }
+    
+    // Save cart
+    function saveCart() {
+      localStorage.setItem('shoppingCart', JSON.stringify(cart));
+    }
+
+  function loadCart() {
+    cart = JSON.parse(localStorage.getItem('shoppingCart'));
+  }
+  if (localStorage.getItem("shoppingCart") != null) {
+    loadCart();
+  }
+    
+
+
+    
+  
+    // =============================
+    // Public methods and propeties
+    // =============================
+    var obj = {};
+    
+    // Add to cart
+    obj.IncrementCart = function(name) {
+      for(var item in cart) {
+        if(cart[item].name === name) {
+          cart[item].count ++;
+          saveCart();
+          return;
+        }
+      }
+      var item = new Item(name);
+      cart.push(item);
+      saveCart();
+    }
+    
+
+    obj.addItemToCart = function(o_name,name, price,id) {
+      for(var item in cart) {
+        if(cart[item].name === name) {
+          Toast.fire({
+            icon: 'error',
+            title: '"'+o_name+'" Already Added To cart'
+          });
+
+          return;
+        }
+      }
+
+
+
+        $('#pd-'+id).html('<i class="icon_check"></i>').css('background','#44bd32');
+          var item = new Item(o_name,name, price,id);
+          cart.push(item);
+          saveCart();
+          Toast.fire({
+            icon: 'success',
+            title: 'Successfully Added To cart'
+          });
+      
+
+
+
+
+
+
+
+    
+    }
+  
+  
+  
+  
+    
+    // Set count from item
+    obj.setCountForItem = function(name, count) {
+      for(var i in cart) {
+        if (cart[i].name === name) {
+          cart[i].count = count;
+          break;
+        }
+      }
+    };
+    // Remove item from cart
+    obj.removeItemFromCart = function(name) {
+        for(var item in cart) {
+          if(cart[item].name === name) {
+            cart[item].count --;
+            if(cart[item].count === 0) {
+              cart.splice(item, 1);
+            }
+            break;
+          }
+      }
+      saveCart();
+    }
+  
+    // Remove all items from cart
+    obj.removeItemFromCartAll = function(name) {
+      for(var item in cart) {
+        if(cart[item].name === name) {
+          Toast.fire({
+            icon: 'success',
+            title: '<strong style="color: red">'+cart[item].name+'</strong> &nbsp; Removed Successfully'
+          });
+          $('#pd-'+cart[item].id).html('<i class="icon_cart_alt"></i>');
+          $('#pd-'+cart[item].id).css('background','#12CBC4');
+          cart.splice(item, 1);
+          
+          break;
+        }
+      }
+      saveCart();
+    }
+  
+    // Clear cart
+    obj.clearCart = function() {
+      cart = [];
+      saveCart();
+    }
+  
+    // Count cart 
+    obj.totalCount = function() {
+      var totalCount = 0;
+      for(var item in cart) {
+          totalCount ++;
+        //totalCount += cart[item].count;
+      }
+      return totalCount;
+    }
+  
+    // Total cart
+    obj.totalCart = function() {
+      var totalCart = 0;
+      for(var item in cart) {
+        totalCart += cart[item].price * cart[item].count;
+      }
+      return Number(totalCart.toFixed(2));
+    }
+  
+    // List cart
+    obj.listCart = function() {
+      var cartCopy = [];
+      for(i in cart) {
+        item = cart[i];
+        itemCopy = {};
+        for(p in item) {
+          itemCopy[p] = item[p];
+  
+        }
+        itemCopy.total = Number(item.price * item.count).toFixed(2);
+        cartCopy.push(itemCopy)
+      }
+      return cartCopy;
+    }
+  
+
+    return obj;
+  })();
+
+
+
+
+
+
+
+  
+  // *****************************************
+  // Triggers / Events
+  // ***************************************** 
+  // Add item
+  $('.add-to-cart').click(function(event) {
+    event.preventDefault();
+   $('.cart-hover').show().delay(5000).fadeOut();
+   var id = $("#product option:selected").val();
+   var o_name = $("#product option:selected").text();
+   var nameSlulg =  o_name.replace(/\s/g, '');
+   var price = $("#price").val();
+
+    shoppingCart.addItemToCart(o_name,name, price,id);
+    displayCart();
+  });
+  
+  // Clear items
+  $('.clear-cart').click(function() {
+    shoppingCart.clearCart();
+    displayCart();
+  });
+  
+  
+
+
+
+  
+  // Delete item button
+  
+  $('.show-cart').on("click", ".delete-item", function(event) {
+    var name = $(this).data('name')
+    shoppingCart.removeItemFromCartAll(name);
+    displayCart();
+  })
+  
+  
+  // -1
+  $('.show-cart').on("click", ".minus-item", function(event) {
+    var name = $(this).data('name')
+    shoppingCart.removeItemFromCart(name);
+    displayCart();
+  })
+  // +1
+  $('.show-cart').on("click", ".plus-item", function(event) {
+    var name = $(this).data('name')
+    shoppingCart.IncrementCart(name);
+    displayCart();
+  })
+  
+  // Item count input
+  $('.show-cart').on("change", ".item-count", function(event) {
+     var name = $(this).data('name');
+     var count = Number($(this).val());
+    shoppingCart.setCountForItem(name, count);
+    displayCart();
+  });
+  
+  displayCart();
 
 
 </script>

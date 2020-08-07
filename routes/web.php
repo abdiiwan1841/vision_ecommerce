@@ -65,7 +65,21 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('admin/login', 'Auth\AdminLoginController@adminLogin')->name('admin.login');
-Route::post('admin/login', 'Auth\AdminLoginController@adminLoginSubmit')->name('admin.login');
+Route::post('admin/login', 'Auth\AdminLoginController@adminLoginSubmit')->name('admin.loginsubmit');
+
+
+Route::get('employee/login', 'Auth\EmployeeLoginController@EmployeeLogin')->name('employee.login');
+Route::post('employee/login', 'Auth\EmployeeLoginController@EmployeeLoginSubmit')->name('employee.loginsubmit');
+
+
+Route::group(['prefix'=> 'employee','middleware' => ['auth:employee']], function(){
+//Employee Logout
+Route::get('logout', 'Auth\EmployeeLoginController@employeeLogout')->name('employee.logout');
+Route::get('dashboard', 'Employee\EmployeeController@dashboard')->name('employee.dashboard');
+});
+
+
+
 
 Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::get('company','CompanyController@index')->name('company.index');
@@ -139,8 +153,8 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
 
 
     Route::resource('ecom/deals', 'Ecom\DealController');
-    Route::resource('district', 'DistrictController');
-    Route::resource('area', 'AreaController');
+    Route::resource('ecom/district', 'DistrictController');
+    Route::resource('ecom/area', 'AreaController');
 
 
 
@@ -211,5 +225,6 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::get('ecom/generaloption/{id}/edit','GeneralOptionController@edit')->name('generaloption.edit');
     Route::put('ecom/generaloption/{id}','GeneralOptionController@update')->name('generaloption.update');
 
-
+    Route::resource('emp_type','EmployeeTypeController');
+    Route::resource('employee','EmployeeController');
 });

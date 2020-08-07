@@ -2,12 +2,21 @@
     <a href="{{ route('admin.dashboard') }}">
     <div class="sidebar-header">
         <div class="row">
+            {{-- @if(Auth::guard('admin')->check())  --}}
             <div class="col-lg-3">
                 <img  width="50px" src="{{asset('public/uploads/user/thumb/'.Auth::user()->image)}}" alt="">
             </div>
             <div class="col-lg-9">
             <h5>{{Auth::user()->name}}</h5>
             </div>
+            {{-- @elseif(Auth::guard('employee')->check()) 
+            <div class="col-lg-3">
+
+            </div>
+            <div class="col-lg-9">
+                {{Auth::user()->name}}
+            </div>
+            @endif --}}
         </div>
         
         
@@ -51,6 +60,12 @@
                 <li class="{{Request::is('admin/ecom/advertisement*') ? 'active' : '' }}">
                     <a href="{{route('advertisement.index')}}"> <i class="fas fa-ad"></i> Advertisement</a>
                 </li>
+
+               
+        
+                <li class="{{Request::is('admin/ecom/area*') ? 'active' : '' }}">
+                    <a href="{{ route('area.index') }}"> <i class="fas fa-map-marker-alt"></i> Area</a>
+                </li>
                 <li class="{{Request::is('admin/ecom/brands') ? 'active' : '' }}">
                     <a href="{{route('brands.index')}}"> <i class="fas fa-band-aid"></i>Brands</a>
                 </li>
@@ -72,6 +87,10 @@
 
                 <li class="{{Request::is('admin/ecom/deals*') ? 'active' : '' }}">
                     <a href="{{route('deals.index')}}"> <i class="fas fa-bullhorn"></i> Deals</a>
+                </li>
+
+                <li class="{{Request::is('admin/ecom/district*') ? 'active' : '' }}">
+                    <a href="{{ route('district.index') }}"> <i class="fas fa-location-arrow"></i> District </a>
                 </li>
 
                 <li class="{{Request::is('admin/ecom/menus*') ? 'active' : '' }}">
@@ -210,18 +229,17 @@
                 <a href="{{ route('stock.index') }}"> <i class="fa fa-cubes"></i> Stock</a>
             </li>
     
-           
-    
-              <li class="{{Request::is('admin/district*') ? 'active' : '' }}">
-                <a href="{{ route('district.index') }}"> <i class="fas fa-location-arrow"></i> District </a>
-            </li>
-    
-            <li class="{{Request::is('admin/area*') ? 'active' : '' }}">
-                <a href="{{ route('area.index') }}"> <i class="fas fa-map-marker-alt"></i> Area</a>
-            </li>
 
             <li class="{{Request::is('admin/damages*') ? 'active' : '' }}">
                 <a href="{{ route('damages.index') }}"><i class="fas fa-trash-alt"></i>  Damage</a>
+            </li>
+
+            <li class="{{Request::is('admin/emp_type*') ? 'active' : '' }}">
+                <a href="{{ route('emp_type.index') }}"><i class="fas fa-user-alt"></i>  Employee Type</a>
+            </li>
+            
+            <li class="{{Request::is('admin/employee*') ? 'active' : '' }}">
+                <a href="{{ route('employee.index') }}"><i class="fas fa-user-alt"></i>  Employee</a>
             </li>
     
 

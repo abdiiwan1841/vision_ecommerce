@@ -19,7 +19,7 @@ class AdminLoginController extends Controller
         
     }
     public function adminLoginSubmit(adminLoginRequest $request){
-
+    
         $credentials = ['adminname' => $request->adminname, 'password' => $request->password];
         $remember = $request->remember;
         if (Auth::guard('admin')->attempt($credentials,$remember)) {

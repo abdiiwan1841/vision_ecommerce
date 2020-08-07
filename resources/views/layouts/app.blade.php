@@ -7,7 +7,8 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'ecommerce') }}</title>
+    <title>{{ config('app.name',$CompanyInfo->company_name  ) }}</title>
+   
 
 
 
@@ -28,7 +29,7 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+                    {{  $CompanyInfo->company_name }}
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -44,17 +45,13 @@
                     <ul class="navbar-nav ml-auto main-menu">
                         <!-- Authentication Links -->
                         @guest
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __(' Login') }}</a>
-                            </li>
+                       
                             <li class="nav-item">
                             <a class="nav-link" href="{{route('admin.login') }}">Admin Login</a>
+                            
                         </li>
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
+                        <li class="nav-item"><a class="nav-link" href="{{route('employee.login') }}">Employee Login</a></li>
+                            
                         @else
         
                             <li class="nav-item">
