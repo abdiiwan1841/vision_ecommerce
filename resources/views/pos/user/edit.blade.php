@@ -16,7 +16,7 @@
             </div>
         </div>
     <div class="card-body">
-        <div class="show-cart"></div>
+        
     <form action="{{route('customers.update',$customer->id)}}" method="POST">
         @csrf
         @method('PUT')
@@ -120,6 +120,25 @@
 
 
         <div class="col-lg-8">
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+              <thead class="table-dark">
+                <tr>
+                  <td>Sl.</td>
+                  <td>Name</td>
+                  <td>Price</td>
+                  <td>Action</td>
+                </tr>
+              </thead>
+           
+              <tbody class="show-cart">
+      
+              </tbody>
+              
+            </table>
+          </div>
+
+
             <hr>
             <h5>Specify Some Product Price For  "{{$customer->name}}" </h5>
             <br>
@@ -195,17 +214,18 @@
 
 
 function displayCart() {
-    var cartArray = shoppingCart.listCart();
+  pd_output = '';
+  var cartArray = shoppingCart.listCart();
   var j =1;
   for(var i in cartArray) {
-    output += "<tr>"
+    pd_output += "<tr>"
       + "<td>" + j++ + "</td>"
       + "<td>" + cartArray[i].o_name + "</td>"
       + "<td>" + cartArray[i].price + " Tk</td>"
       + "<td><button class='delete-item btn btn-sm badge-danger' data-name=" + cartArray[i].name + ">X</button></td>"
       +  "</tr>";
   }
-  $('.show-cart').html(output);
+  $('.show-cart').html(pd_output);
   
 
 }
@@ -543,6 +563,7 @@ var shoppingCart = (function() {
   // *****************************************
   // Triggers / Events
   // ***************************************** 
+  
   // Add item
   $('.add-to-cart').click(function(event) {
     event.preventDefault();
@@ -576,26 +597,7 @@ var shoppingCart = (function() {
   })
   
   
-  // -1
-  $('.show-cart').on("click", ".minus-item", function(event) {
-    var name = $(this).data('name')
-    shoppingCart.removeItemFromCart(name);
-    displayCart();
-  })
-  // +1
-  $('.show-cart').on("click", ".plus-item", function(event) {
-    var name = $(this).data('name')
-    shoppingCart.IncrementCart(name);
-    displayCart();
-  })
-  
-  // Item count input
-  $('.show-cart').on("change", ".item-count", function(event) {
-     var name = $(this).data('name');
-     var count = Number($(this).val());
-    shoppingCart.setCountForItem(name, count);
-    displayCart();
-  });
+
   
   displayCart();
 
