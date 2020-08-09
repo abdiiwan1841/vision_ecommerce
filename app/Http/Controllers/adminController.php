@@ -24,6 +24,34 @@ class adminController extends Controller
     //     $this->middleware('auth:admin');
     // }
 
+
+    public function index(){
+        $admins = Admin::all();
+        return view('admin.admininfo.index',compact('admins'));
+    }
+
+    public function create(){
+        return view('admin.admininfo.create');
+    }
+
+    public function store(Request $request){
+        $this->validate($request,[
+            'name' => 'required|max:30',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'password' => 'required|confirmed|min:8|max:14',
+        ]);
+
+        $admin = new Admin;
+        $admin->name = $request->name;
+        $admin->adminname = Str::slug($request->name);
+        $admin->email = $request->email;
+        $admin->phone = $request->phone;
+        $admin->password = Hash::make($request->password);
+        $admin->save();
+        Toastr::success('Admin Created Successfully','success');
+        return redirect(route('admininfo.index'));
+    }
     public function dashboard(){
         $today = now()->toDateString();
         $todays_order = Order::whereBetween('ordered_at', [$today." 00:00:00", $today." 23:59:59"])->orderBy('ordered_at', 'desc')->get();

@@ -32,20 +32,7 @@
             <a href="{{ route('admin.inventorydashboard') }}"><i class="fas fa-chart-line"></i> Inventory  Dashboard</a>
         </li>
 
-        <li class="">
-            <a href="#blog" data-toggle="collapse" aria-expanded="{{Request::is('admin/posts*') ? 'true' : '' }}" class="dropdown-toggle"> <i class="fas fa-rss"></i> Blog</a>
-            <ul class="collapse list-unstyled {{Request::is('admin/posts*') ? 'active collapse show' : '' }}" id="blog">
 
-        <li class="{{Request::is('admin/posts*') ? 'active' : '' }}">
-            <a href="{{route('posts.index')}}"> <i class="fas fa-clipboard"></i> Posts</a>
-        </li>
-        <li class="{{Request::is('admin/posts/groups*') ? 'active' : '' }}">
-            <a href="{{route('groups.index')}}"> <i class="fas fa-object-group"></i> Post Category</a>
-        </li>
-        </ul>
-
-
-        <li>
         
 
 
@@ -241,6 +228,10 @@
             <li class="{{Request::is('admin/employee*') ? 'active' : '' }}">
                 <a href="{{ route('employee.index') }}"><i class="fas fa-user-alt"></i>  Employee</a>
             </li>
+
+            <li class="{{Request::is('admin/admininfo*') ? 'active' : '' }}">
+                <a href="{{ route('admininfo.index') }}"><i class="fas fa-user-alt"></i>  Admin</a>
+            </li>
     
 
         <li class="{{Request::is('admin/report*') ? 'active' : '' }}">
@@ -271,6 +262,9 @@
 
                   <li class="{{Request::is('admin/report/ecom/divisiowisenreport*') ? 'active' : '' }}">
                     <a href="{{ route('report.ecomdivisionreport') }}"><i class="fa fa-layer-group"></i> Ecommerce Divisionwise Report</a>
+                </li>
+                <li class="{{Request::is('admin/report/cashreport*') ? 'active' : '' }}">
+                    <a href="{{ route('report.poscashreport') }}"><i class="fa fa-layer-group"></i> Cash Report</a>
                 </li>
 
 

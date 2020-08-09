@@ -683,6 +683,50 @@ class ReportController extends Controller
 
     }
 
+    public function cashreport(){
+        return view('general_report.cashreport');
+    }
+
+    public function showcashreport(Request $request){
+        $this->validate($request,[
+            'start' => 'required|date',
+            'end' => 'required|date',
+        ]);
+       
+
+        $ecomcashes = Order::where('payment_status',1)->whereBetween('paymented_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('paymented_at', 'ASC')->get();
+
+        $poscashes = Cash::whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
+
+    
+
+        $ecomcashinfo = [];
+        foreach($ecomcashes as $cash){
+            $ecomcashinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$cash->paymented_at)->format('d-m-Y'),'user_id' => $cash->user_id, 'id' => $cash->id, 'amount' => $cash->amount,'reference' => $cash->references,'source' => 'ecommerce'];
+        }
+
+        $poscashinfo = [];
+        foreach($poscashes as $cash){
+            $poscashinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$cash->received_at)->format('d-m-Y'),'user_id' => $cash->user_id, 'id' => $cash->id, 'amount' => $cash->amount,'reference' => $cash->reference,'source' =>'inventory'];
+        }
+
+
+        $merge_data =  array_merge($ecomcashinfo,$poscashinfo);
+        
+        $datewise_sorted_data = [];
+        foreach($merge_data as $merge){
+            $datewise_sorted_data[] = ['date' => $merge['date'],'user_id' => $merge['user_id'],'id' => $merge['id'], 'amount' => $merge['amount'],'reference' => $merge['reference'],'source' => $merge['source']  ];
+        }
+        usort($datewise_sorted_data,  array($this, "date_sort"));
+
+
+
+
+
+        return view('general_report.showcashreport',compact('datewise_sorted_data','request'));
+
+    }
+
 
 
 }

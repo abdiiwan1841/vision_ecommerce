@@ -1,34 +1,18 @@
 @extends('layouts.adminlayout')
-@section('title','Inventory Statement')
-
+@section('title','Inventory User Statements')
 @section('content')
 
   <div class="row">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                Customer  Statement
+                 Cash Report
             </div>
             <div class="card-body">
-            <form action="{{route('report.showuserstatement')}}" method="POST">
+            <form action="{{route('report.showcashreport')}}" method="POST">
               @csrf
                 <div class="row">
-                  <div class="col-lg-4">
-                      <div class="form-group">
-                        <span>Customer : </span>
-                      </div>
-                      <div class="form-group">
-                        <select data-placeholder="Select a User" name="user" id="user" class="form-control @error('user') is-invalid @enderror">
-                          <option></option>
-                          @foreach ($users as $user)
-                            <option value="{{$user->id}}" @if (old('user') == $user->id) selected  @endif>{{$user->name}}</option>
-                          @endforeach
-                        </select>
-                        @error('user')
-                        <small class="form-error">{{ $message }}</small>
-                        @enderror
-                      </div>
-                  </div>
+
                   <div class="col-lg-3">
                     <div class="form-group">
                       <span>Start Date : </span>
@@ -78,12 +62,7 @@
 @endpush
 
 @push('js')
-<script>
-  $('#user').select2({
-width: '100%',
-  theme: "bootstrap"
-});
-</script>
+
 <script src="{{asset('public/assets/js/flatpicker.min.js')}}"></script>
 <script>
   $("#start").flatpickr({dateFormat: 'Y-m-d'});

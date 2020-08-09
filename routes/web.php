@@ -97,9 +97,7 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::resource('ecom/sizes', 'Ecom\SizeController');
     Route::resource('ecom/categories', 'CategoryController');
     Route::resource('ecom/paymentmethod', 'PaymentmethodController');
-    
-    Route::resource('groups', 'GroupController');
-    Route::resource('posts', 'PostController');
+
     Route::resource('payment', 'PaymentController');
     Route::resource('ecom/tags', 'TagsController');
     Route::resource('ecom/brands', 'BrandController');
@@ -202,6 +200,14 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::post('report/pos/posdeatailstatement', 'ReportController@showPosDeatilStatement')->name('report.showposdetailstatement');
     Route::post('report/pos/posdeatailstatement/pdf', 'ReportController@pdfPosDeatilStatement')->name('report.pdfposdetailstatement');
 
+
+
+    Route::get('report/cashreport', 'ReportController@cashreport')->name('report.poscashreport');
+    Route::post('report/cashreport', 'ReportController@showcashreport')->name('report.showcashreport');
+    Route::post('report/cashreport/pdf', 'ReportController@pdfcashreport')->name('report.pdfcashreport');
+
+
+
     Route::get('allprice','PriceController@index')->name('price.index');
     Route::put('allprice/{id}','PriceController@update')->name('price.update');
 
@@ -227,4 +233,6 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
 
     Route::resource('emp_type','EmployeeTypeController');
     Route::resource('employee','EmployeeController');
+
+    Route::resource('admininfo','adminController');
 });
