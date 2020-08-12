@@ -94,12 +94,13 @@
                       
                     <td>{!!FashiSalesStatus($item->sales_status)!!}</td>
                     @if($item->deleted_at == NULL) 
-                      <td ><a class="btn btn-info btn-sm" href="{{route('sale.show',$item->id)}}"><i class="fa fa-eye"></i></a> | <a class="btn btn-primary btn-sm" href="{{route('sale.edit',$item->id)}}"><i class="fa fa-edit"></i></a> |
+                      <td ><a class="btn btn-info btn-sm" href="{{route('sale.show',$item->id)}}"><i class="fa fa-eye"></i></a> | <a class="btn btn-primary btn-sm" href="{{route('sale.edit',$item->id)}}"><i class="fa fa-edit"></i></a> {{-- |
                         <form id="delete-from-{{$item['id']}}" style="display: inline-block" action="{{route('sale.destroy',$item->id)}}" method="POST">
                           @csrf
                           @method('DELETE')
                           <button type="button" onclick="deleteItem({{$item['id']}})" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a></button>
                         </form>
+                        --}}
                       </td>
                     @else
                       <td>No Action</td>

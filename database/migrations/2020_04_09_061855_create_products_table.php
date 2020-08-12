@@ -20,6 +20,7 @@ class CreateProductsTable extends Migration
             $table->float('price', 14, 2);
             $table->float('discount_price', 14, 2)->nullable();
             $table->float('current_price', 14, 2)->nullable();
+            $table->float('tp', 14, 2)->default(0);
             $table->foreignId('category_id');
             $table->foreignId('subcategory_id');
             $table->foreignId('brand_id');

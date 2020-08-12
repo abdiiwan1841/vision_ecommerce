@@ -10,12 +10,14 @@ use App\Order;
 use App\Prevdue;
 use App\Division;
 use Carbon\Carbon;
+use App\GeneralOption;
 use App\Returnproduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
+
 
 
     public function date_sort($a, $b) {
@@ -249,6 +251,8 @@ class ReportController extends Controller
             'start' => 'required|date',
             'end' => 'required|date',
         ]);
+        $general_opt = GeneralOption::first();
+        $general_opt_value = json_decode($general_opt->options, true);
 
         $current_user = User::findOrFail($request->user);
         $users = User::where('user_type','pos')->get();
@@ -306,7 +310,7 @@ class ReportController extends Controller
 
         $balance = ($previous_sales+$previous_prevdue) - ($previous_returns + $previous_cashes);
 
-        $pdf = PDF::loadView('pos.report.pdfuserstatement',compact('datewise_sorted_data','request','users','balance','current_user'));
+        $pdf = PDF::loadView('pos.report.pdfuserstatement',compact('datewise_sorted_data','request','users','balance','current_user','general_opt_value'));
         return $pdf->download('invoice.pdf');
 
 
@@ -400,6 +404,8 @@ class ReportController extends Controller
             'start' => 'required|date',
             'end' => 'required|date',
         ]);
+        $general_opt = GeneralOption::first();
+        $general_opt_value = json_decode($general_opt->options, true);
 
         $current_user = User::findOrFail($request->user);
         $users = User::where('user_type','pos')->get();
@@ -460,7 +466,7 @@ class ReportController extends Controller
 
 
 
-        $pdf = PDF::loadView('pos.report.pdfdetailstatements',compact('datewise_sorted_data','request','users','balance','current_user'));
+        $pdf = PDF::loadView('pos.report.pdfdetailstatements',compact('datewise_sorted_data','request','users','balance','current_user','general_opt_value'));
         return $pdf->download('invoice.pdf');
 
 
@@ -533,6 +539,8 @@ class ReportController extends Controller
             'start' => 'required|date',
             'end' => 'required|date',
         ]);
+    $general_opt = GeneralOption::first();
+    $general_opt_value = json_decode($general_opt->options, true);
 
     $divisions =  Division::all();
     $d_info = Division::findOrFail($request->division);
@@ -576,7 +584,7 @@ class ReportController extends Controller
 
     }
 
-    $pdf = PDF::loadView('pos.report.pdfshowdivisionresult',compact('division_report','request','divisions','d_info'));
+    $pdf = PDF::loadView('pos.report.pdfshowdivisionresult',compact('division_report','request','divisions','d_info','general_opt_value'));
     return $pdf->download('invoice.pdf');
 
     }
@@ -725,6 +733,48 @@ class ReportController extends Controller
 
         return view('general_report.showcashreport',compact('datewise_sorted_data','request'));
 
+    }
+
+    public function pdfcashreport(Request $request){
+        $this->validate($request,[
+            'start' => 'required|date',
+            'end' => 'required|date',
+        ]);
+        $general_opt = GeneralOption::first();
+        $general_opt_value = json_decode($general_opt->options, true);
+
+       
+
+        $ecomcashes = Order::where('payment_status',1)->whereBetween('paymented_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('paymented_at', 'ASC')->get();
+
+        $poscashes = Cash::whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
+
+    
+
+        $ecomcashinfo = [];
+        foreach($ecomcashes as $cash){
+            $ecomcashinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$cash->paymented_at)->format('d-m-Y'),'user_id' => $cash->user_id, 'id' => $cash->id, 'amount' => $cash->amount,'reference' => $cash->references,'source' => 'ecommerce'];
+        }
+
+        $poscashinfo = [];
+        foreach($poscashes as $cash){
+            $poscashinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$cash->received_at)->format('d-m-Y'),'user_id' => $cash->user_id, 'id' => $cash->id, 'amount' => $cash->amount,'reference' => $cash->reference,'source' =>'inventory'];
+        }
+
+
+        $merge_data =  array_merge($ecomcashinfo,$poscashinfo);
+        
+        $datewise_sorted_data = [];
+        foreach($merge_data as $merge){
+            $datewise_sorted_data[] = ['date' => $merge['date'],'user_id' => $merge['user_id'],'id' => $merge['id'], 'amount' => $merge['amount'],'reference' => $merge['reference'],'source' => $merge['source']  ];
+        }
+        usort($datewise_sorted_data,  array($this, "date_sort"));
+
+
+
+
+        $pdf = PDF::loadView('general_report.pdfcashreport',compact('datewise_sorted_data','request','general_opt_value'));
+        return $pdf->download('invoice.pdf');
     }
 
 

@@ -2,21 +2,13 @@
     <a href="{{ route('admin.dashboard') }}">
     <div class="sidebar-header">
         <div class="row">
-            {{-- @if(Auth::guard('admin')->check())  --}}
             <div class="col-lg-3">
                 <img  width="50px" src="{{asset('public/uploads/user/thumb/'.Auth::user()->image)}}" alt="">
             </div>
             <div class="col-lg-9">
             <h5>{{Auth::user()->name}}</h5>
             </div>
-            {{-- @elseif(Auth::guard('employee')->check()) 
-            <div class="col-lg-3">
 
-            </div>
-            <div class="col-lg-9">
-                {{Auth::user()->name}}
-            </div>
-            @endif --}}
         </div>
         
         
@@ -32,6 +24,9 @@
             <a href="{{ route('admin.inventorydashboard') }}"><i class="fas fa-chart-line"></i> Inventory  Dashboard</a>
         </li>
 
+        <li class="{{Request::is('admin/generaloption*') ? 'active' : '' }}">
+            <a href="{{route('generaloption.index')}}"> <i class="fas fa-filter"></i>General Options</a>
+        </li>
 
         
 
@@ -98,9 +93,7 @@
                 <li class="{{Request::is('admin/ecom/charge') ? 'active' : '' }}">
                     <a href="{{ route('charge.index') }}"><i class="fas fa-credit-card"></i>All Charges </a>
                 </li>
-                <li class="{{Request::is('admin/ecom/generaloption*') ? 'active' : '' }}">
-                    <a href="{{route('generaloption.index')}}"> <i class="fas fa-filter"></i>General Options</a>
-                </li>
+               
                
 
                 <li class="{{Request::is('admin/ecom/products*') ? 'active' : '' }}">
@@ -196,7 +189,11 @@
             <a href="{{ route('company.index') }}"><i class="fas fa-building"></i> Company Information</a>
         </li>
         <li class="{{Request::is('admin/allprice*') ? 'active' : '' }}">
-            <a href="{{ route('price.index') }}"><i class="fas fa-money-bill-alt"></i> Update Price</a>
+            <a href="{{ route('price.index') }}"><i class="fas fa-dollar-sign"></i> Update General Price</a>
+        </li>
+
+        <li class="{{Request::is('admin/tp*') ? 'active' : '' }}">
+            <a href="{{ route('tp.index') }}"><i class="fas fa-money-bill-alt"></i> Update Trade Price</a>
         </li>
     
         <li class="{{Request::is('admin/purchase*') ? 'active' : '' }}">

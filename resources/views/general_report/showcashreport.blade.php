@@ -51,6 +51,15 @@
 
               <div class="row">
                 <div class="col-lg-12">
+                  @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
                   <div class="statement_table table-responsive">
                     <h4 style="text-align: center;text-transform: uppercase;padding: 30px 0;font-family:Sans-serif">Cash Report</h4>
                     <h5 class="text-center mb-5">From {{date("d-M-Y", strtotime($request->start) )}} To {{date("d-M-Y", strtotime($request->end) )}}</h5>
@@ -60,8 +69,8 @@
                 <table class="table table-bordered table-striped">
        
                   <tr style="background: #ddd">
-                    <td style="width: 200px" class="align-middle">Date</td>
-                    <td style="width: 150px" class="align-middle">User</td>
+                    <td class="align-middle">Date</td>
+                    <td  class="align-middle">User</td>
                     <td class="align-middle">Amount</td>
                     <td class="align-middle">Ref</td>
                     <td class="align-middle">Source</td>
@@ -73,18 +82,23 @@
                  
                   @endphp
                   <tr>
-                    <td class="align-middle"  style="width: 200px">{{$item['date']}}</td>
-                    <td  class="align-middle"style="width: 150px">{{ $username->name}}</td>
-                    <td  class="align-middle"style="width: 150px">{{$item['amount']}}</td>
-                    <td  class="align-middle"style="width: 150px">{{$item['reference']}}</td>
-                    <td  class="align-middle"style="width: 150px">{{$item['source']}}</td>
+                    <td class="align-middle" >{{$item['date']}}</td>
+                    <td  class="align-middle">{{ $username->name}}</td>
+                    <td  class="align-middle">{{$item['amount']}}</td>
+                    <td  class="align-middle">{{$item['reference']}}</td>
+                    <td  class="align-middle">{{$item['source']}}</td>
                   </tr>
                   @endforeach
 
 
                 </table>
 
-
+                <form action="{{route('report.pdfcashreport')}}" method="POST">
+                  @csrf
+                  <input type="hidden" name="start" value="{{$request->start}}">
+                  <input type="hidden" name="end" value="{{$request->end}}">
+                  <button type="submit" class="btn  btn-lg"><img style="width: 40px;margin-right: 10px" src="{{asset('public/assets/images/pdf2.png')}}"> Download</button>
+                  </form>
 
                 </div>
 

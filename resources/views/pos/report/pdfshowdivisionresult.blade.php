@@ -24,7 +24,11 @@
 <body style="background: #fff;font-size: 12px;">
               <div style="width: 50%;margin: 0 auto">
                 <h5 style="text-align: center;font-family: Tahoma,sans-serif">Division Wise Due Report</h5>
-                      <h6 class="text-center">{{$CompanyInfo->company_name}}</h6>
+                @if($general_opt_value['inv_diff_invoice_heading'] == 1)
+                <p style="font-weight: bold;text-align: center">{{$general_opt_value['inv_invoice_heading']}}</p>
+                @else
+                <p style="font-weight: bold;text-align: center">{{$CompanyInfo->company_name}}</p>
+                @endif
                       <p style="text-align: center;font-size: 11px">{{$CompanyInfo->address}} <br> <b>Email :</b>  {{$CompanyInfo->email}} <br> <b>Phone:</b>  {{$CompanyInfo->phone}}</p>
               </div>
 

@@ -7,6 +7,7 @@ use App\User;
 use App\Charge;
 use App\Product;
 use Carbon\Carbon;
+use App\GeneralOption;
 use App\Returnproduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -185,12 +186,12 @@ class ReturnproductController extends Controller
     }
 
     public function invoice(Request $request,$id){
+        $general_opt = GeneralOption::first();
+        $general_opt_value = json_decode($general_opt->options, true);
         $returnDetails = Returnproduct::with('product','user')->findOrFail($id);
         $current_user = User::findOrFail($returnDetails->user_id);
 
-        // return view('pos.sale.invoice',compact('sale','current_user'));
-
-        $pdf = PDF::loadView('pos.return.invoice',compact('returnDetails','current_user'));
+        $pdf = PDF::loadView('pos.return.invoice',compact('returnDetails','current_user','general_opt_value'));
         return $pdf->download('invoice.pdf');
     }
 }

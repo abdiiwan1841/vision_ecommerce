@@ -211,6 +211,9 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::get('allprice','PriceController@index')->name('price.index');
     Route::put('allprice/{id}','PriceController@update')->name('price.update');
 
+    Route::get('tp','PriceController@tpindex')->name('tp.index');
+    Route::put('tp/{id}','PriceController@tpupdate')->name('tp.update');
+
     Route::get('ecom/advertisement','AdvertisementController@index')->name('advertisement.index');
     Route::get('ecom/advertisement/{id}/edit','AdvertisementController@edit')->name('advertisement.edit');
     Route::put('ecom/advertisement/{id}','AdvertisementController@update')->name('advertisement.update');
@@ -227,9 +230,9 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::get('comments','CommentsController@index')->name('comments.index');
     Route::post('approvecomment/{id}','CommentsController@approve')->name('comments.approve');
     Route::post('destroycomment/{id}','CommentsController@destroy')->name('comments.destroy');
-    Route::get('ecom/generaloption','GeneralOptionController@index')->name('generaloption.index');
-    Route::get('ecom/generaloption/{id}/edit','GeneralOptionController@edit')->name('generaloption.edit');
-    Route::put('ecom/generaloption/{id}','GeneralOptionController@update')->name('generaloption.update');
+    Route::get('generaloption','GeneralOptionController@index')->name('generaloption.index');
+    Route::get('generaloption/{id}/edit','GeneralOptionController@edit')->name('generaloption.edit');
+    Route::put('generaloption/{id}','GeneralOptionController@update')->name('generaloption.update');
 
     Route::resource('emp_type','EmployeeTypeController');
     Route::resource('employee','EmployeeController');

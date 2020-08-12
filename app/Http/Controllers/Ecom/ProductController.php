@@ -186,6 +186,7 @@ class ProductController extends Controller
             //get unique name for image
             $image_name = $slug."-".$current_date.".".$image->getClientOriginalExtension();
 
+            if($product->image != 'product.jpg'){
             //Delete Old Image
             $old_tiny_location = public_path('uploads/products/tiny/'.$product->image);
             $old_thumb_location = public_path('uploads/products/thumb/'.$product->image);
@@ -198,6 +199,7 @@ class ProductController extends Controller
             }
             if (File::exists($old_original_image_location)) {
                 File::delete($old_original_image_location);
+            }
             }
 
             //new location for new image 

@@ -517,7 +517,6 @@ $('.add-to-cart').click(function(event) {
       var current_stock = data[1];
     if(err.length<1){
     posreturnCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image);
-    $(".is-valid").removeClass('is-valid');
     
     //Cart session has data
     if(sessionStorage.posreturnCart.length > 2){
@@ -535,7 +534,6 @@ $('.add-to-cart').click(function(event) {
     $("#return_date").prop("readonly", false);
     $("#return_date").prop("disabled", true);
     $("#product").val("").trigger("change");;
-    $("#product + span").removeClass("is-valid");
     $(".product_err").text('');
     $("#price").val("");
     $("#qty").val("");
@@ -560,26 +558,25 @@ $( "#user" ).change(function() {
 });
 $( "#product" ).change(function() {
     var product_id = $("#product option:selected").val();
+
     if(product_id.length > 0){
+
         $.get(baseuel+"/api/productinfo/"+product_id, function(data, status){
           if(status === 'success'){
-              $("#selected-product-info").html('<table class="table table-sm table-hover table-dark"><tr><td> <b>'+data[0].product_name+'</b></td></tr><tr><td><img class="img-responsive img-thumbnail" src="'+baseuel+'/public/uploads/products/tiny/'+data[0].image+'" /></td></tr><tr><td> Price: '+data[0].current_price+'</td></tr><tr><td>Current Stock : '+data[1]+'</td></tr></table>');
+              $("#selected-product-info").html('<table class="table table-sm table-hover table-dark"><tr><td> <b>'+data[0].product_name+'</b></td></tr><tr><td><img class="img-responsive img-thumbnail" src="'+baseuel+'/public/uploads/products/tiny/'+data[0].image+'" /></td></tr><tr><td>Trade Price: '+data[0].tp+'</td></tr><tr><tr><td>General Price: '+data[0].current_price+'</td></tr><tr><td>Current Stock : '+data[1]+'</td></tr></table>');
 
             
             $("#selected-product-info").show();
-
-            if(data[0].discount_price == null){
-              $("#price").val(data[0].price).removeClass('is-invalid').addClass('is-valid');
-            }else{
-              $("#price").val(data[0].discount_price).removeClass('is-invalid').addClass('is-valid');
-            }
+            $("#price").val(data[0].tp).removeClass('is-invalid');
+            $("#qty").val('').removeClass('is-invalid');
             
-            $(".price_err").removeClass('invalid-feedback').addClass('valid-feedback').text('Looks Good');
-            $("#qty").val(1).removeClass('is-invalid').addClass('is-valid');
-            $(".qty_err").removeClass('invalid-feedback').addClass('valid-feedback').text('Looks Good');
+
+            
           }
        
       });
+
+     
       
     }
    
@@ -587,22 +584,22 @@ $( "#product" ).change(function() {
 });
 
 
+
 $("#qty").change(function(){
   var qnty = $("#qty").val();
   if(qnty.length === 0){
-    $("#qty").removeClass('is-valid').addClass('is-invalid');
-    $(".qty_err").removeClass('valid-feedback').addClass('invalid-feedback');;
+    $(".qty_err").addClass('invalid-feedback');
     $(".qty_err").text('Qty Field is Required');
     $(".add-to-cart").prop('disabled', true);
   }else if(isNumber(qnty) == false){
-    $("#qty").removeClass('is-valid').addClass('is-invalid');
-    $(".qty_err").removeClass('valid-feedback').addClass('invalid-feedback');
+    $("#qty").addClass('is-invalid');
+    $(".qty_err").addClass('invalid-feedback');
     $(".qty_err").text('Filed Must Be Numeric');
     $(".add-to-cart").prop('disabled', true);
   }else{
-    $("#qty").removeClass('is-invalid').addClass('is-valid');
-    $(".qty_err").removeClass('invalid-feedback').addClass('valid-feedback');
-    $(".qty_err").text('Looks Good');
+    $("#qty").removeClass('is-invalid');
+    $(".qty_err").removeClass('invalid-feedback');
+    $(".qty_err").text('');
     $(".add-to-cart").prop('disabled', false);
 }
 });
@@ -610,19 +607,19 @@ $("#qty").change(function(){
 $("#price").change(function(){
   var price = $("#price").val();
   if(price.length === 0){
-    $("#price").removeClass('is-valid').addClass('is-invalid');
-    $(".price_err").removeClass('valid-feedback').addClass('invalid-feedback');;
+    $("#price").addClass('is-invalid');
+    $(".price_err").addClass('invalid-feedback');;
     $(".price_err").text('Qty Field is Required');
     $(".add-to-cart").prop('disabled', true);
   }else if(isNumber(price) == false){
-    $("#price").removeClass('is-valid').addClass('is-invalid');
-    $(".price_err").removeClass('valid-feedback').addClass('invalid-feedback');
+    $("#price").addClass('is-invalid');
+    $(".price_err").addClass('invalid-feedback');
     $(".price_err").text('Filed Must Be Numeric');
     $(".add-to-cart").prop('disabled', true);
   }else{
-    $("#price").removeClass('is-invalid').addClass('is-valid');
-    $(".price_err").removeClass('invalid-feedback').addClass('valid-feedback');
-    $(".price_err").text('Looks Good');
+    $("#price").removeClass('is-invalid');
+    $(".price_err").removeClass('invalid-feedback');
+    $(".price_err").text('');
     $(".add-to-cart").prop('disabled', false);
 }
 });
@@ -632,23 +629,17 @@ $("#price").change(function(){
 $("#return_date").change(function(){
   var od = $("#return_date").val();
   if(od.length === 0){
-    $("#return_date").removeClass('is-valid').addClass('is-invalid');
-    $(".date_err").removeClass('valid-feedback').addClass('invalid-feedback');;
+    $("#return_date").addClass('is-invalid');
+    $(".date_err").addClass('invalid-feedback');;
     $(".date_err").text('Qty Field is Required');
   }else{
-    $("#return_date").removeClass('is-invalid').addClass('is-valid');
-    $(".date_err").removeClass('invalid-feedback').addClass('valid-feedback');
-    $(".date_err").text('Looks Good');
+    $("#return_date").removeClass('is-invalid');
+    $(".date_err").removeClass('invalid-feedback');
+    $(".date_err").text('');
 }
 });
 
-$("#user").change(function(){
-  var user = $("#user").val();
-  if(user.length > 0){
-    $("#user + span").removeClass('is-invalid').addClass('is-valid');
-    $(".user_err").removeClass('err_form').addClass('success_form').text('Looks Good');
-}
-});
+
 
 
 

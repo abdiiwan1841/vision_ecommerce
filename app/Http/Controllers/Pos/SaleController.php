@@ -8,6 +8,7 @@ use App\User;
 use App\Charge;
 use App\Product;
 use Carbon\Carbon;
+use App\GeneralOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -167,12 +168,14 @@ class SaleController extends Controller
     }
 
     public function invoice(Request $request,$id){
+        $general_opt = GeneralOption::first();
+        $general_opt_value = json_decode($general_opt->options, true);
         $sale = Sale::findOrFail($id);
         $current_user = User::findOrFail($sale->user_id);
 
         // return view('pos.sale.invoice',compact('sale','current_user'));
 
-        $pdf = PDF::loadView('pos.sale.invoice',compact('sale','current_user'));
+        $pdf = PDF::loadView('pos.sale.invoice',compact('sale','current_user','general_opt_value'));
         return $pdf->download('invoice.pdf');
     }
 }
