@@ -15,6 +15,6 @@ class Sale extends Model
         return $this->belongsTo('App\User');
     }
     public function product(){
-        return $this->belongsToMany('App\Product')->withPivot('price','qty','user_id','sales_at')->withTimestamps();
+        return $this->belongsToMany('App\Product')->withPivot('price','qty','free','user_id','sales_at')->withTimestamps();
     }
 }

@@ -76,11 +76,9 @@ class SaleController extends Controller
         $sales->provided_by = Auth::user()->name;
         $sales->save();
 
-        
-        
         $product_info = [];
         foreach($products as $product){
-         $product_info[] = ['sale_id' =>$sales->id, 'product_id' => $product->id,'qty' => $product->count,'price' => $product->price, 'user_id' => $request->user_id,'sales_at' => $request->sales_date." ".Carbon::now()->toTimeString()];   
+         $product_info[] = ['sale_id' =>$sales->id, 'product_id' => $product->id,'qty' => $product->count,'free' => $product->free,'price' => $product->price, 'user_id' => $request->user_id,'sales_at' => $request->sales_date." ".Carbon::now()->toTimeString()];   
         }
 
         $sales->product()->attach($product_info);
@@ -144,7 +142,7 @@ class SaleController extends Controller
         
         $product_info = [];
         foreach($products as $product){
-         $product_info[] = ['sale_id' =>$sale->id, 'product_id' => $product->id,'qty' => $product->count,'price' => $product->price, 'user_id' => $request->user_id,'sales_at' => $request->sales_date." ".Carbon::now()->toTimeString()];   
+         $product_info[] = ['sale_id' =>$sale->id, 'product_id' => $product->id,'qty' => $product->count,'free' => $product->free,'price' => $product->price, 'user_id' => $request->user_id,'sales_at' => $request->sales_date." ".Carbon::now()->toTimeString()];   
         }
 
 

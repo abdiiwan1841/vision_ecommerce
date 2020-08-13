@@ -20,6 +20,7 @@ class CreateProductSaleTable extends Migration
             $table->foreignId('user_id');
             $table->integer('qty');
             $table->string('price');
+            $table->integer('free')->default(0);
             $table->dateTime('sales_at');
             $table->timestamps();
             $table->foreign('sale_id')->references('id')->on('sales')->onDelete('cascade');

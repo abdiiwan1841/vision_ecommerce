@@ -92,24 +92,32 @@
 
 
         
-                <div class="col-lg-2 col-md-2">
+            <div class="col-lg-2">
                   
-                  <div class="form-group">
-                    <label for="price">Price</label>
-                    <input type="number" class="form-control" name="price" id="price">
-                    <div class="price_err"></div>
-                  </div>
-                  
-                 
-                </div>
+              <div class="form-group">
+                <label for="price">Price</label>
+                <input type="number" class="form-control" name="price" id="price" placeholder="Enter Price" >
+                <div class="price_err"></div>
+              </div>
+              
+             
+            </div>
 
-                <div class="col-lg-2 col-md-2">
-                  <div class="form-group">
-                    <label for="qty">Quantity</label>
-                    <input type="number" class="form-control" name="qty" id="qty">
-                    <div class="qty_err"></div>
-                  </div>
-                </div>
+            <div class="col-lg-2">
+              <div class="form-group">
+                <label for="qty">Quantity</label>
+                <input type="number" class="form-control" name="qty" id="qty" placeholder="Enter Qty">
+                <div class="qty_err"></div>
+              </div>
+            </div>
+            
+            <div class="col-lg-2">
+              <div class="form-group">
+                <label for="qty">Free (optional)</label>
+                <input type="number" class="form-control" name="free" id="free" placeholder="Enter Free" value="0">
+                <div class="free_err"></div>
+              </div>
+            </div>
                 <div class="col-lg-2">
                   <div style="margin-top: 31px">
                     <button type="button"  class="btn btn-warning  add-to-cart">ADD <i class="fa fa-plus"></i></button>
@@ -147,6 +155,7 @@
             <td>Image</td>
             <td>Price</td>
             <td>Qty</td>
+            <td>Free</td>
             <td>Total</td>
             <td>Action</td>
           </tr>
@@ -327,13 +336,14 @@ var salesCart = (function() {
   cart = [];
   
   // Constructor
-  function Item(name, price, count, id,o_name,image) {
+  function Item(name, price, count, id,o_name,image,free) {
     this.name = name;
     this.price = price;
     this.count = count;
     this.id    = id;
     this.o_name    = o_name;
     this.image    = image;
+    this.free = free;
     
   }
   
@@ -357,7 +367,7 @@ var salesCart = (function() {
   var obj = {};
   
   // Add to cart
-  obj.addItemToCart = function(name, price, count, id,o_name,image) {
+  obj.addItemToCart = function(name, price, count, id,o_name,image,free) {
     for(var item in cart) {
       if(cart[item].name === name) {
        Toast.fire({
@@ -367,12 +377,12 @@ var salesCart = (function() {
         return;
       }
     }
-    var item = new Item(name, price, count, id,o_name,image);
+    var item = new Item(name, price, count, id,o_name,image,free);
     cart.push(item);
     saveCart();
   }
 
-  obj.IncrementCart = function(name, price, count, id,image) {
+  obj.IncrementCart = function(name, price, count, id,image,free) {
     for(var item in cart) {
       if(cart[item].name === name) {
         cart[item].count ++;
@@ -380,7 +390,7 @@ var salesCart = (function() {
         return;
       }
     }
-    var item = new Item(name, price, count, id,image);
+    var item = new Item(name, price, count, id,image,free);
     cart.push(item);
     saveCart();
   }
@@ -491,12 +501,30 @@ $('.add-to-cart').click(function(event) {
   var o_name = $("#product option:selected").text();
   var nameSlulg =  o_name.replace(/\s/g, '');
   var price = $("#price").val();
+  var free = $("#free").val();
   
   
   
 
 
   var err = [];
+
+  if(free.length === 0){
+    $("#free").addClass('is-invalid');
+    $(".free_err").addClass('invalid-feedback').text('free Field is Required');
+    err.push('free');
+  }else if(free < 0){
+    $("#free").addClass('is-invalid');
+    $(".free_err").addClass('invalid-feedback').text('Negative Number Not Allowed');
+    err.push('free');
+  }else if(isNumber(free) == false){
+    $("#free").addClass('is-invalid');
+    $(".free_err").addClass('invalid-feedback').text('Field Must Be Numeric');
+    err.push('free');
+  }else{
+    $("#free").removeClass('is-invalid');
+  }
+
   if(qnty.length === 0){
     $("#qty").addClass('is-invalid');
     $(".qty_err").addClass('invalid-feedback').text('Qty Field is Required');
@@ -562,7 +590,7 @@ $('.add-to-cart').click(function(event) {
           icon: 'error',
           title: 'Warning! This Product Is Out Of Stock',
         });
-        salesCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size);
+        salesCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size,free);
 
  
       }else if(current_stock < qnty){
@@ -570,11 +598,11 @@ $('.add-to-cart').click(function(event) {
           icon: 'error',
           title: 'Warning! This Product Is Out Of Stock',
         });
-        salesCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size);
+        salesCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size,free);
     
     
       }else{
-    salesCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size);
+    salesCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size,free);
     }
        
     //Cart session has data
@@ -784,6 +812,7 @@ function displayCart() {
       + "<td><img style='width: 50px;' src='"+baseuel+"/public/uploads/products/tiny/"+cartArray[i].image+"' class='img-thumbnail' /></td>"
       + "<td>" + cartArray[i].price + " Tk.</td>"
       + "<td>"+ cartArray[i].count +"</td>"
+      + "<td>"+ cartArray[i].free +"</td>"
       + "<td>" + Math.round(cartArray[i].total) + " Tk</td>" 
       + "<td><button class='delete-item btn btn-sm badge-danger' data-name=" + cartArray[i].name + ">X</button></td>"
       +  "</tr>";

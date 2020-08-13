@@ -13,8 +13,17 @@ class StockController extends Controller
     public function index(){
         $products = Product::all();
         $stockinfo= array();
+        
         foreach($products as $product){
-            $stockinfo[$product->product_name] = [$product->id,DB::table('product_purchase')->where('product_id', '=', $product->id)->sum('qty'), DB::table('order_product')->where('product_id', '=', $product->id)->sum('qty'), DB::table('product_returnproduct')->where('product_id', '=', $product->id)->sum('qty'), DB::table('product_sale')->where('product_id', '=', $product->id)->sum('qty'),DB::table('damage_product')->where('product_id', '=', $product->id)->sum('qty')];
+            $sale =  DB::table('product_sale')->where('product_id', '=', $product->id)->sum('qty');
+            $free =  DB::table('product_sale')->where('product_id', '=', $product->id)->sum('free');
+            $purchase = DB::table('product_purchase')->where('product_id', '=', $product->id)->sum('qty');
+            $order = DB::table('order_product')->where('product_id', '=', $product->id)->sum('qty');
+            $return = DB::table('product_returnproduct')->where('product_id', '=', $product->id)->sum('qty');
+            $damage = DB::table('damage_product')->where('product_id', '=', $product->id)->sum('qty');
+          
+            $stockinfo[$product->product_name] = ['id' => $product->id,'sale' =>  $sale,'free' => $free, 'purchase'=> $purchase, 'order' => $order,'return' =>  $return,'damage'=> $damage  ];
+            
         }
         return view('admin.stock.index',compact('stockinfo'));
     }
@@ -68,12 +77,15 @@ class StockController extends Controller
         ]);
 
         function stock($id){
+            $sell =  DB::table('product_sale')->where('product_id', '=', $id)->sum('qty');
+            $free =  DB::table('product_sale')->where('product_id', '=', $id)->sum('free');
             $purchase = DB::table('product_purchase')->where('product_id', '=', $id)->sum('qty');
             $order = DB::table('order_product')->where('product_id', '=', $id)->sum('qty');
-            $sell = DB::table('product_sale')->where('product_id', '=', $id)->sum('qty');
             $return = DB::table('product_returnproduct')->where('product_id', '=', $id)->sum('qty');
             $damage = DB::table('damage_product')->where('product_id', '=', $id)->sum('qty');
-            $stock = ($purchase+$return) -  ($sell+$order+$damage);
+    
+            
+            $stock = ($purchase+$return) -  ($order+$sell+$damage+$free);
             return $stock;
         }
         
@@ -90,6 +102,8 @@ class StockController extends Controller
 
             $sell_qty = DB::table('product_sale')->where('product_id' ,'=', $pd->id)->whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('qty');
 
+            $free_qty = DB::table('product_sale')->where('product_id' ,'=', $pd->id)->whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('free');
+
             $damage_qty = DB::table('damage_product')->where('product_id' ,'=', $pd->id)->whereBetween('damaged_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('qty');
 
             $current_date_range_qty = ($return_qty+$purchase_qty)-($order_qty+$sell_qty+$damage_qty);
@@ -98,7 +112,7 @@ class StockController extends Controller
  
 
 
-            $stock[] = ['product_id' => $pd->id, 'product_name' => $pd->product_name,'prev_qty'=> $prev_qty, 'sell_qty' => $sell_qty, 'return_qty' => $return_qty,'purchase_qty' => $purchase_qty,'order_qty' => $order_qty, 'damage_qty' => $damage_qty, 'current_stock' => $all_qty];
+            $stock[] = ['product_id' => $pd->id, 'product_name' => $pd->product_name,'prev_qty'=> $prev_qty, 'sell_qty' => $sell_qty, 'free_qty'=> $free_qty,'return_qty' => $return_qty,'purchase_qty' => $purchase_qty,'order_qty' => $order_qty, 'damage_qty' => $damage_qty, 'current_stock' => $all_qty];
         }
 
         

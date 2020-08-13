@@ -37,11 +37,12 @@ class ApiInformationController extends Controller
     public function productinfo($id){
 
         $sell =  DB::table('product_sale')->where('product_id', '=', $id)->sum('qty');
+        $free =  DB::table('product_sale')->where('product_id', '=', $id)->sum('free');
         $purchase = DB::table('product_purchase')->where('product_id', '=', $id)->sum('qty');
         $order = DB::table('order_product')->where('product_id', '=', $id)->sum('qty');
         $return = DB::table('product_returnproduct')->where('product_id', '=', $id)->sum('qty');
         $damage = DB::table('damage_product')->where('product_id', '=', $id)->sum('qty');
-        $stock = ($purchase+$return) -  ($order+$sell+$damage);
+        $stock = ($purchase+$return) -  ($order+$sell+$free+$damage);
       
         return [Product::with('size')->findOrFail($id),$stock];
     }
@@ -68,7 +69,7 @@ class ApiInformationController extends Controller
         
         foreach($sale->product as $pd){
             $name = preg_replace('/\s+/', '', $pd->product_name);
-            $pdarray[] = [ "name" => $name, "price" => $pd->pivot->price,"count" => $pd->pivot->qty, "id" => $pd->pivot->product_id, "o_name" => $pd->product_name,"image" => $pd->image ];
+            $pdarray[] = [ "name" => $name, "price" => $pd->pivot->price,"count" => $pd->pivot->qty,"free"=> $pd->pivot->free, "id" => $pd->pivot->product_id, "o_name" => $pd->product_name,"image" => $pd->image ];
         }
 
         $pdJSON = ["salesCart" =>  $pdarray,"sales_date" => Carbon::createFromFormat('Y-m-d H:i:s', $sale->sales_at)->format('Y-m-d'),"user_id" => $sale->user_id, "sale_id" => $sale->id];

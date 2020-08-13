@@ -108,8 +108,8 @@
       
                       <tr>
                         <td>{{$i++}}</td>
-                        <td>{{$sales_info->product_name}}</td>
-                        <td>{{$sales_info->size->name}}</td>
+                        <td>{{$sales_info->product_name}} @if($sales_info->pivot->free > 0) + {{$sales_info->pivot->free}} Pc Free @endif</td>
+                        <td>{{$sales_info->size->name}} </td>
                         <td>{{$sales_info->pivot->qty}}</td>
                         <td>{{$sales_info->pivot->price}}</td>
                         <td>{{($sales_info->pivot->price)*($sales_info->pivot->qty)}}</td>

@@ -27,16 +27,22 @@
                       $i=1;
                   @endphp
                   @foreach ($stockinfo as $product_name => $info)
+                  @php
+                  $stock = ($info['purchase']+$info['return']) -  ($info['order']+$info['sale']+$info['free']+$info['damage']);    
+                  @endphp
                       <tr>
                         <td>{{$i++}}</td>
-                        <td># {{$info[0]}}</td>
+                        <td># {{$info['id']}}</td>
                         <td>{{$product_name}}</td>
-                        <td><b>{{($info[1]+$info[3])-($info[2]+$info[4]+$info[5])}}</b></td>
+                        <td><b>{{$stock}}</b></td>
                       <td>
-                        <a href="{{route('stock.orderhistory',$info[0])}}" class="btn btn-link btn-sm"><i class="fa fa-history"></i> Order <span class="badge badge-success">{{$info[2]}}</span></a> | 
-                        <a href="{{route('stock.purchasehistory',$info[0])}}" class="btn btn-link btn-sm"> <i class="fa fa-history"></i> Purchase <span class="badge badge-warning">{{$info[1]}}</span>  </a> | 
-                        <a href="{{route('stock.returnhistory',$info[0])}}" class="btn btn-link btn-sm"><i class="fa fa-history"></i> Return <span class="badge badge-dark">{{$info[3]}}</span></a> |  
-                        <a href="{{route('stock.saleshistory',$info[0])}}" class="btn btn-link btn-sm"><i class="fa fa-history"></i> Sale <span class="badge badge-info">{{$info[4]}}</span></a> | <a href="" class="btn btn-link btn-sm"><i class="fa fa-history"></i> Damage <span class="badge badge-danger">{{$info[5]}}</span></a> </td>
+                        <a href="{{route('stock.orderhistory',$info['id'])}}" class="btn btn-link btn-sm"><i class="fa fa-history"></i> Order <span class="badge badge-success">{{$info['order']}}</span></a> | 
+
+
+                        <a href="{{route('stock.purchasehistory',$info['id'])}}" class="btn btn-link btn-sm"> <i class="fa fa-history"></i> Purchase <span class="badge badge-warning">{{$info['purchase']}}</span>  </a>
+                        
+                        | <a href="{{route('stock.returnhistory',$info['id'])}}" class="btn btn-link btn-sm"><i class="fa fa-history"></i> Return <span class="badge badge-dark">{{$info['return']}}</span></a> |  
+                        <a href="{{route('stock.saleshistory',$info['id'])}}" class="btn btn-link btn-sm"><i class="fa fa-history"></i> Sale <span class="badge badge-info">{{$info['sale']}}</span></a> | <a href="" class="btn btn-link btn-sm"><i class="fa fa-history"></i> Damage <span class="badge badge-danger">{{$info['damage']}}</span></a> | <a href="" class="btn btn-link btn-sm"><i class="fa fa-history"></i> Free <span class="badge badge-danger">{{$info['free']}}</span></a> </td>
                       </tr>
                   @endforeach
                   

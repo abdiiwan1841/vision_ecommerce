@@ -15,13 +15,14 @@ class Product extends Model
 
     public function stock($id){
         $sell =  DB::table('product_sale')->where('product_id', '=', $id)->sum('qty');
+        $free =  DB::table('product_sale')->where('product_id', '=', $id)->sum('free');
         $purchase = DB::table('product_purchase')->where('product_id', '=', $id)->sum('qty');
         $order = DB::table('order_product')->where('product_id', '=', $id)->sum('qty');
         $return = DB::table('product_returnproduct')->where('product_id', '=', $id)->sum('qty');
         $damage = DB::table('damage_product')->where('product_id', '=', $id)->sum('qty');
 
         
-        $stock = ($purchase+$return) -  ($order+$sell+$damage);
+        $stock = ($purchase+$return) -  ($order+$sell+$damage+$free);
         return $stock;
     }
 

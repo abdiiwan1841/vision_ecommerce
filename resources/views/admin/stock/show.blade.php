@@ -70,6 +70,7 @@
                     <th scope="col">Ecom Qty</th>
                     <th scope="col">Sale Qty</th>
                     <th scope="col">Damage Qty</th>
+                    <th scope="col">Free Qty</th>
                     <th scope="col">Current Stock</th>
                   </tr>
                 </thead>
@@ -87,6 +88,7 @@
                     <td>{{$item['order_qty']}}</td>
                     <td>{{$item['sell_qty']}}</td>
                     <td>{{$item['damage_qty']}}</td>
+                    <td>{{$item['free_qty']}}</td>
                     <td>{{$item['current_stock']}}</td>
                   </tr>
                   @endforeach

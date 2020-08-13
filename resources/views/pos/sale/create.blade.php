@@ -96,18 +96,26 @@
                   
                   <div class="form-group">
                     <label for="price">Price</label>
-                    <input type="number" class="form-control" name="price" id="price">
+                    <input type="number" class="form-control" name="price" id="price" placeholder="Enter Price" >
                     <div class="price_err"></div>
                   </div>
                   
                  
                 </div>
 
-                <div class="col-lg-2 col-md-2">
+                <div class="col-lg-2">
                   <div class="form-group">
                     <label for="qty">Quantity</label>
-                    <input type="number" class="form-control" name="qty" id="qty">
+                    <input type="number" class="form-control" name="qty" id="qty" placeholder="Enter Qty">
                     <div class="qty_err"></div>
+                  </div>
+                </div>
+                
+                <div class="col-lg-2">
+                  <div class="form-group">
+                    <label for="qty">Free (optional)</label>
+                    <input type="number" class="form-control" name="free" id="free" placeholder="Enter Free" value="0">
+                    <div class="free_err"></div>
                   </div>
                 </div>
                 <div class="col-lg-2">
@@ -148,6 +156,7 @@
             <td>Price</td>
             <td>Size</td>
             <td>Qty</td>
+            <td>Free</td>
             <td>Total</td>
             <td>Action</td>
           </tr>
@@ -306,7 +315,7 @@ var salesCart = (function() {
   cart = [];
   
   // Constructor
-  function Item(name, price, count, id,o_name,image,product_size) {
+  function Item(name, price, count, id,o_name,image,product_size,free) {
     this.name = name;
     this.price = price;
     this.count = count;
@@ -314,6 +323,7 @@ var salesCart = (function() {
     this.o_name    = o_name;
     this.image    = image;
     this.product_size = product_size;
+    this.free = free;
     
   }
   
@@ -337,7 +347,7 @@ var salesCart = (function() {
   var obj = {};
   
   // Add to cart
-  obj.addItemToCart = function(name, price, count, id,o_name,image,product_size) {
+  obj.addItemToCart = function(name, price, count, id,o_name,image,product_size,free) {
     for(var item in cart) {
       if(cart[item].name === name) {
        Toast.fire({
@@ -347,12 +357,12 @@ var salesCart = (function() {
         return;
       }
     }
-    var item = new Item(name, price, count, id,o_name,image,product_size);
+    var item = new Item(name, price, count, id,o_name,image,product_size,free);
     cart.push(item);
     saveCart();
   }
 
-  obj.IncrementCart = function(name, price, count, id,image,product_size) {
+  obj.IncrementCart = function(name, price, count, id,image,product_size,free) {
     for(var item in cart) {
       if(cart[item].name === name) {
         cart[item].count ++;
@@ -360,7 +370,7 @@ var salesCart = (function() {
         return;
       }
     }
-    var item = new Item(name, price, count, id,image,product_size);
+    var item = new Item(name, price, count, id,image,product_size,free);
     cart.push(item);
     saveCart();
   }
@@ -468,6 +478,7 @@ $('.add-to-cart').click(function(event) {
   var sales_date = $("#sales_date").val();
   var user_id = $("#user option:selected").val();
   var qnty = $("#qty").val();
+  var free = $("#free").val();
   var o_name = $("#product option:selected").text();
   var nameSlulg =  o_name.replace(/\s/g, '');
   var price = $("#price").val();
@@ -477,6 +488,23 @@ $('.add-to-cart').click(function(event) {
 
 
   var err = [];
+
+  if(free.length === 0){
+    $("#free").addClass('is-invalid');
+    $(".free_err").addClass('invalid-feedback').text('free Field is Required');
+    err.push('free');
+  }else if(free < 0){
+    $("#free").addClass('is-invalid');
+    $(".free_err").addClass('invalid-feedback').text('Negative Number Not Allowed');
+    err.push('free');
+  }else if(isNumber(free) == false){
+    $("#free").addClass('is-invalid');
+    $(".free_err").addClass('invalid-feedback').text('Field Must Be Numeric');
+    err.push('free');
+  }else{
+    $("#free").removeClass('is-invalid');
+  }
+
   if(qnty.length === 0){
     $("#qty").addClass('is-invalid');
     $(".qty_err").addClass('invalid-feedback').text('Qty Field is Required');
@@ -519,7 +547,7 @@ $('.add-to-cart').click(function(event) {
     $(".user_err").text('User Field is Required');
     err.push('user_id');
   }else{
-    $("#user + span").removeClass("err_form");
+    $("#user + span").removeClass("is-invalid");
     $(".user_err").text('');
   }
   if(id.length === 0){
@@ -542,19 +570,19 @@ $('.add-to-cart').click(function(event) {
           icon: 'error',
           title: 'Warning! This Product Is Out Of Stock',
         });
-        salesCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size);
+        salesCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size,free);
        
       }else if(current_stock < qnty){
         Toast.fire({
           icon: 'error',
           title: 'Warning! This Product Is Out Of Stock',
         });
-        salesCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size);
+        salesCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size,free);
 
     
    
       }else{
-    salesCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size);
+    salesCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size,free);
     
     }
 
@@ -577,6 +605,7 @@ $('.add-to-cart').click(function(event) {
     $(".product_err").text('');
     $("#price").val("");
     $("#qty").val("");
+    $("#free").val(0);
     $("#selected-product-info").hide();
   }
 
@@ -587,6 +616,8 @@ $('.add-to-cart').click(function(event) {
 
 
 $( "#user" ).change(function() {
+  $("#user + span").removeClass("is-invalid");
+  $(".user_err").text('');
     var user_id = $("#user option:selected").val();
     $.get("{{url('/')}}/api/userinfo/"+user_id, function(data, status){
       if(status === 'success'){
@@ -594,10 +625,13 @@ $( "#user" ).change(function() {
         
       }
     });
+    
 });
 
 
-$( "#product" ).change(function() {
+$( "#product").change(function() {
+  $("#product + span").removeClass("is-invalid");
+  $(".product_err").text('');
     var product_id = $("#product option:selected").val();
 
     if(product_id.length > 0){
@@ -626,6 +660,7 @@ $( "#product" ).change(function() {
 $("#qty").change(function(){
   var qnty = $("#qty").val();
   if(qnty.length === 0){
+    $("#qty").addClass('is-invalid');
     $(".qty_err").addClass('invalid-feedback');
     $(".qty_err").text('Qty Field is Required');
     $(".add-to-cart").prop('disabled', true);
@@ -642,12 +677,30 @@ $("#qty").change(function(){
 }
 });
 
+$("#free").on("input",function(){
+
+  let free = $("#free").val();
+  if(free.length === 0){
+    $("#free").addClass('is-invalid');
+    $(".free_err").addClass('invalid-feedback').text('free Field is Required');
+    $(".add-to-cart").prop('disabled', true);
+  }else if(isNumber(free) == false){
+    $("#free").addClass('is-invalid');
+    $(".free_err").addClass('invalid-feedback').text('Filed Must Be Numeric');
+    $(".add-to-cart").prop('disabled', true);
+  }else{
+    $("#free").removeClass('is-invalid');
+    $(".free_err").removeClass('invalid-feedback').text('');
+    $(".add-to-cart").prop('disabled', false);
+}
+});
+
 $("#price").change(function(){
   var price = $("#price").val();
   if(price.length === 0){
     $("#price").addClass('is-invalid');
     $(".price_err").addClass('invalid-feedback');;
-    $(".price_err").text('Qty Field is Required');
+    $(".price_err").text('Price Field is Required');
     $(".add-to-cart").prop('disabled', true);
   }else if(isNumber(price) == false){
     $("#price").addClass('is-invalid');
@@ -758,6 +811,7 @@ function displayCart() {
       + "<td>" + cartArray[i].price + " Tk</td>"
       + "<td>" + cartArray[i].product_size + "</td>"
       + "<td>"+ cartArray[i].count +"</td>"
+      + "<td>"+ cartArray[i].free +"</td>"
       + "<td>" + Math.round(cartArray[i].total) + " Tk</td>" 
       + "<td><button class='delete-item btn btn-sm badge-danger' data-name=" + cartArray[i].name + ">X</button></td>"
       +  "</tr>";
