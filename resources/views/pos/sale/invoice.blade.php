@@ -36,17 +36,19 @@
 <body style="background: #fff;font-size: 12px;font-family: Tahoma, sans-serif">
         <h6 style="text-align: center;margin-bottom: 25px;font-weight: bold">SALES INVOICE</h6>
       <div style="overflow: auto">
-      <div style="width: 59%;display: inline-block;">
+      <div style="width: 39%;display: inline-block;">
       <p style="font-size: 11px; margin-bottom: 25px;">Print Date: {{date("d-M-Y g:i a", strtotime(now()))}}</p>
       <table class="table table-xs table-borderless">
           <tr>
           <td><b>Customer Name : </b></td>
           <td>{{$current_user->name}}</td>
           </tr>
+          @if($current_user->inventory_email)
           <tr>
           <td><b>Email : </b></td>
           <td>{{$current_user->inventory_email}}</td>
           </tr>
+          @endif
           <tr>
           <td><b>Phone : </b></td>
           <td>{{$current_user->phone}}</td>
@@ -57,6 +59,19 @@
           </tr>
       </table>
       
+      </div>
+      <div style="width: 20%;display: inline-block;margin-top: 15px">
+        @php
+            $url = "https://api.qrserver.com/v1/create-qr-code/?data=".$CompanyInfo->company_name." Customer: ".$current_user->name." Phone: ".$current_user->phone." Amount: ".$sale->amount."&size=130x130";
+        @endphp
+        @if($url)
+        <img src="{{$url}}" alt="">
+        @endif
+
+   
+
+       
+        
       </div>
       <div style="width: 40%;display: inline-block;">
         @if($general_opt_value['inv_diff_invoice_heading'] == 1)
@@ -135,19 +150,28 @@
   
   </div>
   <div style="margin-top: 50px;">
-  <div style="width: 33.33%;display: inline-block;text-align:center">
+  <div style="width: 33.33%;display: inline-block;text-align:center; @if($general_opt_value['auto_signature_inv'] == 1) margin-top: 23px @endif">
   <p>{{$sale->provided_by}}</p>
     <hr>
     <p style="text-align:center">Service Provided By </p>
 
 </div>
-<div style="width: 33.33%;display: inline-block;text-align:center">
+<div style="width: 33.33%;display: inline-block;text-align:center; @if($general_opt_value['auto_signature_inv'] == 1) margin-top: 23px @endif">
   <p></p>
   <hr>
   <p style="text-align:center">Received By </p>
 </div>
-<div style="width: 33.33%;display: inline-block;">
+<div style="width: 33.33%;display: inline-block;text-align:center">
+  @if($general_opt_value['auto_signature_inv'] == 1)
+  @if($signature)
+<img style="height: 50px" src="{{asset('public/uploads/admin/signature/'.$signature->signature)}}" alt="">
+  @else
+  <br><br><br>
+  @endif
+  <p>{{$signature->name}}</p>
+  @else
   <br><br>
+  @endif
 <hr>
 <p style="text-align:center">Authorized By </p>
 </div>

@@ -193,6 +193,17 @@
             <td><input type="text" class="form-control" id="inv_invoice_heading" name="inv_invoice_heading"  value="{{$g_opt_value['inv_invoice_heading']}}"></td>
               </tr>
 
+              <tr>
+                <td>Auto Signature On Inventory Invoices</td>
+                <td>  <div class="onoffswitch">
+                  <input type="checkbox" name="auto_signature_inv" class="onoffswitch-checkbox" id="auto_signature_inv" value="1" @if($g_opt_value['auto_signature_inv'] == 1) checked @endif>
+                  <label class="onoffswitch-label" for="auto_signature_inv">
+                      <span class="onoffswitch-inner"></span>
+                      <span class="onoffswitch-switch"></span>
+                  </label>
+              </div></td>
+              </tr>
+
 
               
             </table>

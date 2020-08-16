@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Session;
-use App\User;
 use App\Cash;
+use App\Role;
 use App\Sale;
+use App\User;
 use App\Admin;
 use App\Order;
 use Carbon\Carbon;
@@ -26,20 +27,23 @@ class adminController extends Controller
 
 
     public function index(){
-        $admins = Admin::all();
+        
+        $admins = Admin::with('role')->get();
         return view('admin.admininfo.index',compact('admins'));
     }
 
     public function create(){
-        return view('admin.admininfo.create');
+        $roles = Role::all();
+        return view('admin.admininfo.create',compact('roles'));
     }
 
     public function store(Request $request){
         $this->validate($request,[
-            'name' => 'required|max:30',
-            'email' => 'required|email',
-            'phone' => 'required',
+            'name' => 'required|max:30|unique:admins',
+            'email' => 'required|email|unique:admins',
+            'phone' => 'required|unique:admins',
             'password' => 'required|confirmed|min:8|max:14',
+            'role' => 'required',
         ]);
 
         $admin = new Admin;
@@ -48,10 +52,70 @@ class adminController extends Controller
         $admin->email = $request->email;
         $admin->phone = $request->phone;
         $admin->password = Hash::make($request->password);
+        $admin->role_id = $request->role;
         $admin->save();
         Toastr::success('Admin Created Successfully','success');
         return redirect(route('admininfo.index'));
     }
+    public function edit($id){
+        $roles = Role::all();
+        $admin = Admin::findOrFail($id);
+        return view('admin.admininfo.edit',compact('admin','roles'));
+    }
+
+
+    public function update(Request $request,$id){
+        $this->validate($request,[
+            'name' => 'required|max:30|unique:admins,name,'.$id,
+            'email' => 'required|email|unique:admins,email,'.$id,
+            'phone' => 'required|unique:admins,phone,'.$id,
+            'role' => 'required',
+            'signature' => 'image',
+        ]);
+    
+        $admin = Admin::findOrFail($id);
+
+        if($request->hasFile('signature')){
+            //get form image
+            $image = $request->file('signature');
+            $slug = Str::slug($request['name']);
+            $current_date = Carbon::now()->toDateString();
+            //get unique name for image
+            $image_name = $slug."-".$current_date.".".$image->getClientOriginalExtension();
+
+            //Delete Old Image
+            $old_signature_location = public_path('uploads/admin/signature/'.$admin->image);
+            $old_original_image_location = public_path('uploads/admin/original/'.$admin->image);
+
+            
+            if (File::exists($old_signature_location)) {
+                File::delete($old_signature_location);
+            }
+            if (File::exists($old_original_image_location)) {
+                File::delete($old_original_image_location);
+            }
+   
+            //location for new image 
+            $signature_location = public_path('uploads/admin/signature/'.$image_name);
+            $original_location = public_path('uploads/admin/original/'.$image_name);
+            //resize image for category and upload temp 
+            Image::make($image)->resize(339,null,function ($constraint) {$constraint->aspectRatio();})->save($signature_location);
+            Image::make($image)->save($original_location);
+            $admin->signature =  $image_name;
+         }
+         
+        $admin->name = $request->name;
+        //$admin->adminname = Str::slug($request->name);
+        $admin->email = $request->email;
+        $admin->phone = $request->phone;
+        $admin->role_id = $request->role;
+        $admin->save();
+        Toastr::success('Admin Updated Successfully','success');
+        return redirect(route('admininfo.index'));
+    }
+
+
+
     public function dashboard(){
         $today = now()->toDateString();
         $todays_order = Order::whereBetween('ordered_at', [$today." 00:00:00", $today." 23:59:59"])->orderBy('ordered_at', 'desc')->get();
@@ -75,8 +139,9 @@ class adminController extends Controller
         $todays_pos_returns = Returnproduct::where('type','pos')->whereBetween('returned_at', [$today." 00:00:00", $today." 23:59:59"])->orderBy('returned_at', 'desc')->get();
 
         $todays_pos_cash = Cash::whereBetween('received_at', [$today." 00:00:00", $today." 23:59:59"])->orderBy('received_at', 'desc')->get();
+        $pending_sales = Sale::where('sales_status',0)->get();
 
-        return view('admin.inventorydashboard',compact('todays_pos_sales','todays_pos_cash','todays_pos_returns'));
+        return view('admin.inventorydashboard',compact('todays_pos_sales','todays_pos_cash','todays_pos_returns','pending_sales'));
     }
 
     public function changepassword(){

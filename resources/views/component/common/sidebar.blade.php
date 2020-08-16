@@ -199,6 +199,10 @@
         <li class="{{Request::is('admin/purchase*') ? 'active' : '' }}">
         <a href="{{ route('purchase.index') }}"> <i class="fas fa-store"></i> Purchase</a>
         </li>
+
+        <li class="{{Request::is('admin/p_order*') ? 'active' : '' }}">
+            <a href="{{ route('p_order.index') }}"> <i class="fas fa-shopping-bag"></i> Purchase Order</a>
+            </li>
         
             <li class="{{Request::is('admin/payment') ? 'active' : '' }}">
                 <a href="{{ route('payment.index') }}"><i class="fas fa-dollar-sign"></i> Payment</a>
@@ -225,10 +229,13 @@
             <li class="{{Request::is('admin/employee*') ? 'active' : '' }}">
                 <a href="{{ route('employee.index') }}"><i class="fas fa-user-alt"></i>  Employee</a>
             </li>
+            @if(Auth::user()->role->id == 1 )
 
             <li class="{{Request::is('admin/admininfo*') ? 'active' : '' }}">
                 <a href="{{ route('admininfo.index') }}"><i class="fas fa-user-alt"></i>  Admin</a>
             </li>
+
+            @endif
     
 
         <li class="{{Request::is('admin/report*') ? 'active' : '' }}">

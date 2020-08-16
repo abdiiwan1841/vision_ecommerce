@@ -22,6 +22,7 @@ class CreateSalesTable extends Migration
             $table->float('amount',14,2)->nullable();
             $table->integer('sales_status');
             $table->string('provided_by')->nullable();
+            $table->integer('approved_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

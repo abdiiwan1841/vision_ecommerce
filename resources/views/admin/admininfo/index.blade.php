@@ -24,7 +24,9 @@
                         <td>Name</td>
                         <td>Email</td>
                         <td>Phone</td>
+                        <td>Role</td>
                         <td>Created At</td>
+                        <td>Action</td>
                     </tr>
                     @foreach($admins as $key =>  $admin)
                     <tr>
@@ -33,7 +35,9 @@
                         <td>{{$admin->name}}</td>
                         <td>{{$admin->email}}</td>
                         <td>{{$admin->phone}}</td>
+                        <td>{{$admin->role->name}}</td>
                         <td>{{$admin->created_at->format('d-M-Y g:i a')}}</td>
+                    <td><a class="btn btn-sm btn-primary" href="{{route('admininfo.edit',$admin->id)}}"><i class="fas fa-edit"></i></a></td>
                     </tr>
                     @endforeach
                 </table>

@@ -121,6 +121,7 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::resource('pos/productsizes', 'Pos\SizeController');
 
     Route::resource('pos/sale', 'Pos\SaleController');
+    Route::post('pos/sale/approve/{id}', 'Pos\SaleController@approve')->name('sale.approve');
     Route::get('inventory/dashboard/viewsales/{id}', 'Pos\SaleController@show')->name('viewsales.show');
     Route::get('inventory/dashboard/viewreturns/{id}', 'Pos\ReturnproductController@show')->name('viewreturns.show');
 
@@ -139,6 +140,8 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::post('purchase/result','PurchaseController@result')->name('purchase.result');
     Route::get('purchase/result','PurchaseController@index');
 
+
+    Route::resource('p_order', 'PurchaseorderController');
 
 
     Route::resource('ecom/pages', 'PageController');
@@ -237,5 +240,9 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::resource('emp_type','EmployeeTypeController');
     Route::resource('employee','EmployeeController');
 
+    
+});
+
+Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','superadmin']], function(){
     Route::resource('admininfo','adminController');
 });

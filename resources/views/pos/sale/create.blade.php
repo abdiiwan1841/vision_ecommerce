@@ -90,7 +90,13 @@
             </div>
 
 
-
+            <div class="col-lg-2">
+              <div class="form-group">
+                <label for="qty">Quantity</label>
+                <input type="number" class="form-control" name="qty" id="qty" placeholder="Enter Qty">
+                <div class="qty_err"></div>
+              </div>
+            </div>
         
                 <div class="col-lg-2 col-md-2">
                   
@@ -103,13 +109,7 @@
                  
                 </div>
 
-                <div class="col-lg-2">
-                  <div class="form-group">
-                    <label for="qty">Quantity</label>
-                    <input type="number" class="form-control" name="qty" id="qty" placeholder="Enter Qty">
-                    <div class="qty_err"></div>
-                  </div>
-                </div>
+               
                 
                 <div class="col-lg-2">
                   <div class="form-group">
@@ -520,6 +520,8 @@ $('.add-to-cart').click(function(event) {
   }else{
     $("#qty").removeClass('is-invalid');
   }
+
+  
   if(sales_date.length === 0){
     $("#sales_date").addClass('is-invalid');
     $(".date_err").addClass('invalid-feedback').text('Sales Date Field is Required');

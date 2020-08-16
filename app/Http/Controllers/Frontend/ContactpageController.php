@@ -26,6 +26,8 @@ class ContactpageController extends Controller
 
         $company = Company::first();
         $companymail = $company->email;
+        $tomail = $request->email;
+        $username = $request->name;
         ContactUS::create($request->all());
 
         Mail::send('email.contactmail',
@@ -36,9 +38,9 @@ class ContactpageController extends Controller
                 'address' => $request->address,
                 'user_message' => $request->message,
             ), 
-        function($message)  use($companymail){
+        function($message)  use($companymail,$tomail,$username){
             $message->from($companymail);
-            $message->to($companymail, 'Admin')->subject('Thanks For Contacting Us');
+            $message->to($tomail, $username)->subject('Thanks For Contacting Us');
         });
 
         Session::flash('success','Form Submitted Successfully');

@@ -20,9 +20,12 @@ class AdminLoginController extends Controller
     }
     public function adminLoginSubmit(adminLoginRequest $request){
     
-        $credentials = ['adminname' => $request->adminname, 'password' => $request->password];
+        $credentials1 = ['adminname' => $request->adminname, 'password' => $request->password];
+        $credentials2 = ['phone' => $request->adminname, 'password' => $request->password];
         $remember = $request->remember;
-        if (Auth::guard('admin')->attempt($credentials,$remember)) {
+        if (Auth::guard('admin')->attempt($credentials1,$remember)) {
+            return redirect(route('admin.dashboard'));
+        }elseif(Auth::guard('admin')->attempt($credentials2,$remember)){
             return redirect(route('admin.dashboard'));
         }else{
             Session()->flash('error', 'Invalid User/Password Conbination');

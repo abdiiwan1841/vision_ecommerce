@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Pos;
 use PDF;
 use App\Sale;
 use App\User;
+use App\Admin;
 use App\Charge;
 use App\Product;
 use Carbon\Carbon;
@@ -72,7 +73,7 @@ class SaleController extends Controller
         $sales->carrying_and_loading = $request->carrying_and_loading;
         $sales->sales_at = $request->sales_date." ".Carbon::now()->toTimeString();
         $sales->amount = $amount_total;
-        $sales->sales_status = 1;
+        $sales->sales_status = 0;
         $sales->provided_by = Auth::user()->name;
         $sales->save();
 
@@ -170,10 +171,24 @@ class SaleController extends Controller
         $general_opt_value = json_decode($general_opt->options, true);
         $sale = Sale::findOrFail($id);
         $current_user = User::findOrFail($sale->user_id);
+        $signature = Admin::where('id',$sale->approved_by)->select('name','signature')->first();
 
-        // return view('pos.sale.invoice',compact('sale','current_user'));
 
-        $pdf = PDF::loadView('pos.sale.invoice',compact('sale','current_user','general_opt_value'));
+        $pdf = PDF::loadView('pos.sale.invoice',compact('sale','current_user','general_opt_value','signature'));
         return $pdf->download('invoice.pdf');
+    }
+
+    public function approve(Request $request,$id){
+        if(Auth::user()->role->id == 2){
+            Toastr::error('You Are Not Authorized', 'error');
+            return redirect()->back();
+        }else{
+        $sale = Sale::findOrFail($id);
+        $sale->sales_status = 1;
+        $sale->approved_by = Auth::user()->id;
+        $sale->save();
+        Toastr::success('Sales Approved Successfully', 'success');
+        return redirect()->back();
+        }
     }
 }

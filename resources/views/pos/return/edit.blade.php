@@ -90,7 +90,13 @@
             </div>
 
 
-
+            <div class="col-lg-2 col-md-2">
+              <div class="form-group">
+                <label for="qty">Quantity</label>
+                <input type="number" class="form-control" name="qty" id="qty">
+                <div class="qty_err"></div>
+              </div>
+            </div>
         
                 <div class="col-lg-2 col-md-2">
                   
@@ -103,13 +109,7 @@
                  
                 </div>
 
-                <div class="col-lg-2 col-md-2">
-                  <div class="form-group">
-                    <label for="qty">Quantity</label>
-                    <input type="number" class="form-control" name="qty" id="qty">
-                    <div class="qty_err"></div>
-                  </div>
-                </div>
+               
                 <div class="col-lg-2">
                   <div style="margin-top: 31px">
                     <button type="button"  class="btn btn-dark  add-to-cart">ADD <i class="fa fa-plus"></i></button>

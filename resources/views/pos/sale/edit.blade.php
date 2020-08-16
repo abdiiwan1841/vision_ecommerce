@@ -89,7 +89,13 @@
 
             </div>
 
-
+            <div class="col-lg-2">
+              <div class="form-group">
+                <label for="qty">Quantity</label>
+                <input type="number" class="form-control" name="qty" id="qty" placeholder="Enter Qty">
+                <div class="qty_err"></div>
+              </div>
+            </div>
 
         
             <div class="col-lg-2">
@@ -103,13 +109,7 @@
              
             </div>
 
-            <div class="col-lg-2">
-              <div class="form-group">
-                <label for="qty">Quantity</label>
-                <input type="number" class="form-control" name="qty" id="qty" placeholder="Enter Qty">
-                <div class="qty_err"></div>
-              </div>
-            </div>
+            
             
             <div class="col-lg-2">
               <div class="form-group">
@@ -336,13 +336,14 @@ var salesCart = (function() {
   cart = [];
   
   // Constructor
-  function Item(name, price, count, id,o_name,image,free) {
+  function Item(name, price, count, id,o_name,image,product_size,free) {
     this.name = name;
     this.price = price;
     this.count = count;
     this.id    = id;
     this.o_name    = o_name;
     this.image    = image;
+    this.product_size = product_size;
     this.free = free;
     
   }
@@ -367,7 +368,7 @@ var salesCart = (function() {
   var obj = {};
   
   // Add to cart
-  obj.addItemToCart = function(name, price, count, id,o_name,image,free) {
+  obj.addItemToCart = function(name, price, count, id,o_name,image,product_size,free) {
     for(var item in cart) {
       if(cart[item].name === name) {
        Toast.fire({
@@ -377,12 +378,12 @@ var salesCart = (function() {
         return;
       }
     }
-    var item = new Item(name, price, count, id,o_name,image,free);
+    var item = new Item(name, price, count, id,o_name,image,product_size,free);
     cart.push(item);
     saveCart();
   }
 
-  obj.IncrementCart = function(name, price, count, id,image,free) {
+  obj.IncrementCart = function(name, price, count, id,image,product_size,free) {
     for(var item in cart) {
       if(cart[item].name === name) {
         cart[item].count ++;
@@ -390,7 +391,7 @@ var salesCart = (function() {
         return;
       }
     }
-    var item = new Item(name, price, count, id,image,free);
+    var item = new Item(name, price, count, id,image,product_size,free);
     cart.push(item);
     saveCart();
   }
@@ -624,6 +625,7 @@ $('.add-to-cart').click(function(event) {
     $(".product_err").text('');
     $("#price").val("");
     $("#qty").val("");
+    $("#free").val(0);
     $("#selected-product-info").hide();
   }
 

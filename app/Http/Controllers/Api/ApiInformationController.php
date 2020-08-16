@@ -69,7 +69,7 @@ class ApiInformationController extends Controller
         
         foreach($sale->product as $pd){
             $name = preg_replace('/\s+/', '', $pd->product_name);
-            $pdarray[] = [ "name" => $name, "price" => $pd->pivot->price,"count" => $pd->pivot->qty,"free"=> $pd->pivot->free, "id" => $pd->pivot->product_id, "o_name" => $pd->product_name,"image" => $pd->image ];
+            $pdarray[] = [ "name" => $name, "price" => $pd->pivot->price,"count" => $pd->pivot->qty,"id" => $pd->pivot->product_id, "o_name" => $pd->product_name,"image" => $pd->image,"free"=> $pd->pivot->free];
         }
 
         $pdJSON = ["salesCart" =>  $pdarray,"sales_date" => Carbon::createFromFormat('Y-m-d H:i:s', $sale->sales_at)->format('Y-m-d'),"user_id" => $sale->user_id, "sale_id" => $sale->id];

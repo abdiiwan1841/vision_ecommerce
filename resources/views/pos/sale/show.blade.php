@@ -16,15 +16,32 @@
             <div class="invoice p-3 mb-3">
               <!-- title row -->
               <div class="row">
-
+                <div class="col-lg-8">
                 @if(Route::current()->getName() == 'viewsales.show')
 
                 <a href="{{route('admin.inventorydashboard')}}" class="btn btn-info btn-sm mb-5"><i class="fa fa-angle-left"></i> back</a> 
                 @else
                 <a href="{{route('sale.index')}}" class="btn btn-info btn-sm mb-5"><i class="fa fa-angle-left"></i> back</a> 
                 @endif
+              </div>
+              <div class="col-lg-4">
+               
+                @if($sale->sales_status == 0)
+                @if(Auth::user()->role->id == 1)
+                <form action="{{route('sale.approve',$sale->id)}}" method="POST" >
+                  @csrf
+                  <button onclick="return confirm('Are You Sure You Want To Approve Order')" type="submit" class="btn btn-warning btn-sm  float-right" style="margin-right: 5px;">
+                    <i class="fas fa-check"></i> APPROVE THIS ORDER
+                  </button>
+                </form>
+                @endif
+                @else
+              <button style="float: right" disabled type="button" class="btn btn-success"><i class="fas fa-check"></i>  Approved</button>
+                @endif
+              </div>
 
                 <div class="col-12">
+                  
                   <h4>
                     <i class="fas fa-money-bill-alt"></i> Sales Details
                   <small class="float-right">Date:  {{$sale->sales_at->format('d-M-Y g:i a')}}</small>
@@ -165,16 +182,24 @@
               <!-- this row will not appear when printing -->
               <div class="row no-print">
                 <div class="col-12">
+
+                  @if($sale->sales_status == 1)
                   <form action="{{route('sale.invoice',$sale->id)}}" method="POST" >
                     @csrf
                     <button type="submit" class="btn btn-primary float-right" style="margin-right: 5px;">
                       <i class="fas fa-download"></i> Generate PDF
                     </button>
                     </form>
+                    @else
+                    <span class="badge badge-danger float-right">This Order Is Waiting For Approval</span>
+                 
+                  @endif
                  
                   
                 </div>
               </div>
+
+
             </div>
             <!-- /.invoice -->
           </div><!-- /.col -->

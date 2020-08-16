@@ -22,10 +22,10 @@
       @endif
       <form action="" method="post">
         @csrf
-        <label for="username">Username</label>
+        <label for="username">Username/Phone</label>
         <div class="input-group mb-3">
          
-          <input type="text" class="form-control" placeholder="username" id="username" name="adminname" value="@if(old('adminname') == null){{'admin'}}@else{{old('adminname')}}
+          <input type="text" class="form-control" placeholder="Enter Username or Phone" id="username" name="adminname" value="@if(old('adminname') == null){{'admin'}}@else{{old('adminname')}}
 @endif"
             > 
           <div class="input-group-append">

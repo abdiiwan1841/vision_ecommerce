@@ -6,6 +6,7 @@
 	$sales_summation = 0;	
 	$cash_summation = 0;	
 	$return_summation = 0;	
+	$pending_sales_summation = 0;	
 @endphp
 
 <div class="row">
@@ -119,14 +120,14 @@
 <div class="row">
 
 
-	<div class="col-lg-12 mt-5">
+	<div class="col-lg-9 mt-5">
 
 		<div class="card">
 			<div class="card-header bg-light-red">
 				<span class="card-title text-white"> <strong>Inventory Section</strong></span>
 			</div>
 			<div class="card-body">
-				<p>Today's Sale</p>
+				<h5>Today's Sale</h5>
 				@if(count($todays_pos_sales) > 0)
 				  
 				<table class="table table-sm table-bordered" style="font-size: 14px;">
@@ -170,13 +171,15 @@
 				</div>
 				
 			  @else
-			<div class="row">
+				<div class="row">
 				<span class="alert alert-success">No Sales Found Today</span>
 			</div>
+		
 			  @endif
 			  <hr>
 
-			  <p>Todays Cash</p>
+
+			  <h5>Todays Cash</h5>
 			  @if(count($todays_pos_cash) > 0)
 			  
 			<table class="table table-sm table-bordered" style="font-size: 14px;">
@@ -224,10 +227,11 @@
 			<span class="alert alert-success">No Cash Found Today</span>
 		  </div>
 		  
+		  
 		  @endif
 
 		  <hr>
-		  <p>Todays Returns</p>
+		  <h5>Todays Returns</h5>
 
 		  @if(count($todays_pos_returns) > 0)
 		  
@@ -270,9 +274,11 @@
 			</div>
 		</div>
 	  @else
-	  <div class="row">
-		<span class="alert alert-success">No Returns Found Today</span>
-	  </div>
+		<div class="row">
+			<span class="alert alert-success">No Returns Found Today</span>
+		</div>
+		
+
 	  
 	  @endif
 
@@ -282,7 +288,51 @@
 
 
 
+</div>
+<div class="col-lg-3 mt-5">
+	<div class="card">
+		<div class="card-header">
+			<strong>Sales Invoice Pending For Approval</strong>
+		</div>
+	<div class="card-body">
 
+	@if(count($pending_sales) > 0)
+	  
+	<table class="table table-sm table-bordered" style="font-size: 14px;">
+	  <thead class="thead-light">
+		<tr>
+		  <th class="align-middle">Sl</th>
+		  <th class="align-middle">Pending Order List</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		
+		@foreach ($pending_sales as $key => $pending_sales_item)
+		@php
+			$sales_amount = round($pending_sales_item->amount);
+		@endphp
+		<tr style="background: #f6e58d">
+		<td  class="align-middle"><strong>{{$key+1}}</strong></td>
+		<td  class="align-middle"><a style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_sales_item->provided_by}}  @if($pending_sales_item->created_at == $pending_sales_item->updated_at)     at {{$pending_sales_item->created_at->format('d-M-Y g:i a')}} @else Updated at {{$pending_sales_item->updated_at->format('d-M-Y g:i a')}} @endif   - Click Here For Details"  class="btn btn-link" href="{{route('viewsales.show',$pending_sales_item->id)}}"> <small>{{$pending_sales_item->sales_at->format('d-M-Y g:i a')}} </small> <br> <strong>{{$pending_sales_item->user->name}} - {{$sales_amount}} </strong>  </a></td>
+		
+		</tr>
+		@endforeach
+		  
+		
+	  </tbody>
+	  
+	</table>
+
+	
+  @else
+<div class="row">
+	<span class="alert alert-success">No Pending Sales Found</span>
+</div>
+  @endif
+  <hr>
+</div>
+	</div>
+</div>
 
 </div>
 
