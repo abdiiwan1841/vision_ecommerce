@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Ecom;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Size;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
@@ -17,7 +16,7 @@ class SizeController extends Controller
      */
     public function index()
     {
-        $sizes = Size::where('type','ecom')->get();
+        $sizes = Size::get();
         return view('sizes.index',compact('sizes'));
     }
 
@@ -86,7 +85,7 @@ class SizeController extends Controller
         $this->validate($request,[
             'edit_name' => 'required|max:30'
         ]);
-
+        
         $size->name = $request->edit_name;
         $size->type = 'ecom';
         $size->save();

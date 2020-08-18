@@ -61,6 +61,7 @@
                   <label for="signature">Signature</label>
                   <input type="file" class="form-control" name="signature">
                   <small>signature must be keep  size of 339x115 px otherwise it will cropped autometically </small>
+                  <img  src="{{asset('public/uploads/admin/signature/'.$admin->signature)}}" alt="">
                 </div>
                 <div class="form-group">
                   <button type="submit" class="btn btn-success">Update</button>

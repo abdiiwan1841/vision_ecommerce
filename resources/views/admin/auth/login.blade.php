@@ -34,7 +34,7 @@
             </div>
           </div>
             @error('adminname')
-            <span class="login-error">
+            <span style="color: red">
               <strong>{{ $message }}</strong>
           </span>
         @enderror
@@ -48,7 +48,7 @@
             </div>
           </div>
           @error('password')
-          <span class="login-error">
+          <span style="color: red">
             <strong>{{ $message }}</strong>
         </span>
       @enderror

@@ -94,7 +94,13 @@ class SaleController extends Controller
     public function show($id)
     {
         $sale = Sale::findOrFail($id);
-        return view('pos.sale.show',compact('sale'));
+        if(empty($sale->approved_by)){
+            $signature = null;
+        }else{
+            $signature = Admin::where('id',$sale->approved_by)->select('name','signature')->first();
+        }
+        
+        return view('pos.sale.show',compact('sale','signature'));
     }
 
 
@@ -133,6 +139,8 @@ class SaleController extends Controller
         $sale->discount = $request->discount;
         $sale->carrying_and_loading = $request->carrying_and_loading;
         $sale->sales_at = $request->sales_date." ".Carbon::now()->toTimeString();
+        $sale->sales_status = 0;
+        $sale->approved_by = null;
         $sale->amount = $amount_total;
         $sale->save();
 
@@ -157,13 +165,18 @@ class SaleController extends Controller
 
     public function destroy(Sale $sale)
     {
+        if(Auth::user()->role->id == 2){
+            Toastr::error('You Are Not Authorized', 'error');
+            return redirect()->back();
+        }else{
         $sale->deleted_at = now();
         $sale->sales_status = 2;
         $sale->amount = 0;
         $sale->save();
         $sale->product()->detach();
         Toastr::success('Sales cancelled Successfully', 'success');
-        return redirect(route('sale.index'));
+        return redirect(route('admin.inventorydashboard'));
+        }
     }
 
     public function invoice(Request $request,$id){

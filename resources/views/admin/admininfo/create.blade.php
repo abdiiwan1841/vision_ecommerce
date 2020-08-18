@@ -19,7 +19,7 @@
             <div class="card-body">
               <div class="row justify-content-center">
                 <div class="col-lg-4">
-                <form action="{{route('admininfo.store')}}" method="POST">
+                <form action="{{route('admininfo.store')}}" method="POST" enctype="multipart/form-data">
                   @csrf
                     @if ($errors->any())
     <div class="alert alert-danger">
@@ -63,6 +63,13 @@
                     @endforeach
                     
                   </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="signature">Signature (optional)</label>
+                  <input type="file" class="form-control" name="signature">
+                  <small>signature must be keep  size of 339x115 px otherwise it will cropped autometically </small>
+                
                 </div>
                 <div class="form-group">
                   <button type="submit" class="btn btn-success">Create</button>

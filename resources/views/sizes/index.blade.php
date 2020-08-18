@@ -87,7 +87,7 @@
     <div class="card-header">
       <div class="row">
         <div class="col-lg-8">
-          <h5 class="card-title text-left">Ecommerce Product Sizes</h5>
+          <h5 class="card-title text-left">Product Sizes</h5>
         </div>
         <div class="col-lg-4">
           <button type="button" onclick="addSize()" class="btn btn-info  float-right"><i class="fas fa-plus"> Add New</i></button>

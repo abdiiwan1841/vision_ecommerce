@@ -75,11 +75,16 @@
       </div>
       <div style="width: 40%;display: inline-block;">
         @if($general_opt_value['inv_diff_invoice_heading'] == 1)
+      
         <p style="font-weight: bold">{{$general_opt_value['inv_invoice_heading']}}</p>
+        <p>{{$general_opt_value['inv_invoice_address']}} <br> <b>Email :</b>  {{$general_opt_value['inv_invoice_email']}}</p>
+      
         @else
         <p style="font-weight: bold">{{$CompanyInfo->company_name}}</p>
-        @endif
         <p>{{$CompanyInfo->address}} <br> <b>Email :</b>  {{$CompanyInfo->email}} <br> <b>Phone:</b>  {{$CompanyInfo->phone}}</p>
+        
+        @endif
+       
         
       </div>
     <p><b>Order Date: {{$sale->sales_at->format('d-M-Y')}}</b> - <b>Order ID: # {{$sale->id}}</b></p>

@@ -15,7 +15,7 @@
 
 
 
-    <form action="{{route('generaloption.update',$g_opt->id)}}" method="POST">
+    <form action="{{route('generaloption.update',$g_opt->id)}}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -180,18 +180,38 @@
               <tr>
                 <td>Differnet Inventory Invoice Heading</td>
                 <td>  <div class="onoffswitch">
-                  <input type="checkbox" name="inv_diff_invoice_heading" class="onoffswitch-checkbox" id="inv_diff_invoice_heading" onchange="opt_show('inv_diff_invoice_heading','inv_heading_input')" value="1" @if($g_opt_value['inv_diff_invoice_heading'] == 1) checked @endif>
+                  <input type="checkbox" name="inv_diff_invoice_heading" class="onoffswitch-checkbox" id="inv_diff_invoice_heading" value="1" @if($g_opt_value['inv_diff_invoice_heading'] == 1) checked @endif>
                   <label class="onoffswitch-label" for="inv_diff_invoice_heading">
                       <span class="onoffswitch-inner"></span>
                       <span class="onoffswitch-switch"></span>
                   </label>
               </div></td>
               </tr>
-
-              <tr id="inv_heading_input">
+              
+              <tr class="diff_inv_input">
                 <td>Invoice Heaing</td>
             <td><input type="text" class="form-control" id="inv_invoice_heading" name="inv_invoice_heading"  value="{{$g_opt_value['inv_invoice_heading']}}"></td>
               </tr>
+              <tr class="diff_inv_input">
+                <td>Invoice Email</td>
+            <td><input type="email" class="form-control" id="inv_invoice_email" name="inv_invoice_email"  value="{{$g_opt_value['inv_invoice_email']}}"></td>
+              </tr>
+
+              <tr class="diff_inv_input">
+                <td>Invoice Address</td>
+            <td><textarea rows="7" class="form-control" id="inv_invoice_address" name="inv_invoice_address">{{$g_opt_value['inv_invoice_address']}}</textarea></td>
+              </tr>
+              <tr class="diff_inv_input">
+                <td>Invoice Logo</td>
+                <td><input type="file" class="form-control" name="inv_invoice_logo">
+                  <img style="width: 200px" src="{{asset('public/uploads/logo/invoicelogo/'.$g_opt_value['inv_invoice_logo'])}}" alt="">
+                </td>
+                
+              </tr>
+
+          
+         
+          
 
               <tr>
                 <td>Auto Signature On Inventory Invoices</td>
@@ -234,15 +254,24 @@
 
 @push('js')
 <script>
-function opt_show(parent_status,child_id){
-  var element = document.getElementById(parent_status);
-  if(element == 1){
-    $("#".child_id).show();
-  }else{
-    $("#".child_id).hide();
-  }
-}
+  $("#inv_diff_invoice_heading").change(function(){
+  if($(this).prop("checked") == true){
+      $(".diff_inv_input").show();
+    }
+    else if($(this).prop("checked") == false){
+      $(".diff_inv_input").hide();
+    }
+   
+  })
 </script>
 @endpush
 
-
+@push('css')
+@if($g_opt_value['inv_diff_invoice_heading'] == 0)
+<style>
+.diff_inv_input{
+  display: none;
+}
+</style>
+@endif
+@endpush

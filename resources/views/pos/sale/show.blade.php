@@ -19,24 +19,31 @@
                 <div class="col-lg-8">
                 @if(Route::current()->getName() == 'viewsales.show')
 
-                <a href="{{route('admin.inventorydashboard')}}" class="btn btn-info btn-sm mb-5"><i class="fa fa-angle-left"></i> back</a> 
+                <a href="{{route('admin.inventorydashboard')}}" class="btn btn-info btn-sm mb-5"><i class="fa fa-angle-left"></i> back to dashboard</a> 
                 @else
                 <a href="{{route('sale.index')}}" class="btn btn-info btn-sm mb-5"><i class="fa fa-angle-left"></i> back</a> 
                 @endif
               </div>
               <div class="col-lg-4">
-               
                 @if($sale->sales_status == 0)
                 @if(Auth::user()->role->id == 1)
                 <form action="{{route('sale.approve',$sale->id)}}" method="POST" >
                   @csrf
-                  <button onclick="return confirm('Are You Sure You Want To Approve Order')" type="submit" class="btn btn-warning btn-sm  float-right" style="margin-right: 5px;">
-                    <i class="fas fa-check"></i> APPROVE THIS ORDER
+                  <button onclick="return confirm('Are You Sure You Want To Approve Order')" type="submit" class="btn btn-warning btn-sm mb-3 float-right" style="margin-right: 5px;">
+                    <i class="fas fa-check"></i> APPROVE THIS ORDER ?
+                  </button>
+                </form>
+
+                <form action="{{route('sale.destroy',$sale->id)}}" method="POST" >
+                  @csrf
+                  @method('DELETE')
+                  <button onclick="return confirm('Are You Sure You Want To Cancel This Order')" type="submit" class="btn btn-danger btn-sm mb-5" style="margin-right: 5px;">
+                    <i class="fas fa-trash"></i> Cancel
                   </button>
                 </form>
                 @endif
                 @else
-              <button style="float: right" disabled type="button" class="btn btn-success"><i class="fas fa-check"></i>  Approved</button>
+              <button  disabled type="button" class="btn btn-success mb-5"><i class="fas fa-check"></i>  Approved by {{$signature->name}} <br><span class="badge badge-warning">{{$sale->updated_at->format('d-F-Y g:i a')}}</span></button>
                 @endif
               </div>
 
@@ -148,7 +155,7 @@
               <div class="row">
                 <!-- accepted payments column -->
                 <div class="col-6 mt-5">
-                  Service Provided By :  <hr> <strong> {{$sale->provided_by}}  <small> <br> at {{$sale->updated_at->format('d-M-Y g:i a')}}</small> </strong>
+                  Service Provided By :  <hr> <strong> {{$sale->provided_by}}  <small> <br> at {{$sale->created_at->format('d-M-Y g:i a')}}</small> </strong>
           
                 </div>
                 <!-- /.col -->

@@ -21,6 +21,8 @@ class CreateCashesTable extends Migration
             $table->foreignId('paymentmethod_id');
             $table->string('posted_by');
             $table->dateTime('received_at');
+            $table->integer('status')->default(0);
+            $table->integer('approved_by')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('paymentmethod_id')->references('id')->on('paymentmethods');

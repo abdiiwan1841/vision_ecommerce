@@ -16,7 +16,7 @@
     @endslot
 
     @slot('modal_form') 
-       <form action="{{route('productsizes.store')}}" method="POST" id="addForm">
+       <form action="{{route('sizes.store')}}" method="POST" id="addForm">
         @csrf
     @endslot
 

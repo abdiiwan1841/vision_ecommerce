@@ -22,11 +22,14 @@ class AdminLoginController extends Controller
     
         $credentials1 = ['adminname' => $request->adminname, 'password' => $request->password];
         $credentials2 = ['phone' => $request->adminname, 'password' => $request->password];
+        $credentials3 = ['email' => $request->adminname, 'password' => $request->password];
         $remember = $request->remember;
         if (Auth::guard('admin')->attempt($credentials1,$remember)) {
-            return redirect(route('admin.dashboard'));
+            return redirect(route('admin.inventorydashboard'));
         }elseif(Auth::guard('admin')->attempt($credentials2,$remember)){
-            return redirect(route('admin.dashboard'));
+            return redirect(route('admin.inventorydashboard'));
+        }elseif(Auth::guard('admin')->attempt($credentials3,$remember)){
+            return redirect(route('admin.inventorydashboard'));
         }else{
             Session()->flash('error', 'Invalid User/Password Conbination');
             return redirect()->back()->withInput($request->only('adminname', 'remember'));

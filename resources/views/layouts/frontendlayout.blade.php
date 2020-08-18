@@ -78,7 +78,7 @@
                
                         @else
                         <li>
-                        <a href="{{route('login')}}" class="login-panel"><i class="fa fa-user"></i>Login</a></li>
+                        <a href="{{route('login')}}" class="login-panel"><i class="fa fa-user"></i>Customer Login</a></li>
                         @endif
 
                     <li> 

@@ -23,11 +23,15 @@
         <li class="{{Request::is('admin/inventory/dashboard*') ? 'active' : '' }}">
             <a href="{{ route('admin.inventorydashboard') }}"><i class="fas fa-chart-line"></i> Inventory  Dashboard</a>
         </li>
-
+        @if(Auth::user()->role->id == 1)
         <li class="{{Request::is('admin/generaloption*') ? 'active' : '' }}">
             <a href="{{route('generaloption.index')}}"> <i class="fas fa-filter"></i>General Options</a>
         </li>
+        @endif
 
+        <li class="{{Request::is('admin/ecom/sizes*') ? 'active' : '' }}">
+            <a href="{{route('sizes.index')}}"> <i class="fas fa-window-maximize"></i>Product Sizes</a>
+        </li>
         
 
 
@@ -104,13 +108,9 @@
                     <a href="{{route('pages.index')}}"> <i class="fas fa-file"></i> Pages</a>
                 </li>
 
-                <li class="{{Request::is('admin/ecom/sizes*') ? 'active' : '' }}">
-                    <a href="{{route('sizes.index')}}"> <i class="fas fa-unity"></i> Sizes</a>
-                </li>
+               
 
-                
-
-
+            
                 <li class="{{Request::is('admin/ecom/tags') ? 'active' : '' }}">
                     <a href="{{route('tags.index')}}"> <i class="fas fa-tags"></i> Tags</a>
                 </li>
@@ -176,9 +176,7 @@
         <li class="{{Request::is('admin/pos/returnproduct*') ? 'active' : '' }}">
             <a href="{{ route('returnproduct.index') }}"><i class="fas fa-undo"></i> Inventory Return</a>
         </li>
-        <li class="{{Request::is('admin/pos/productsizes*') ? 'active' : '' }}">
-            <a href="{{route('productsizes.index')}}"><i class="fas fa-window-maximize"></i> Inventory Product Sizes</a>
-        </li>
+     
             
             </ul>
 
@@ -278,6 +276,7 @@
             </ul>
 
         </li>
+     
 
 
         <li class="{{Request::is('admin/action/changepassword') ? 'active' : '' }}">

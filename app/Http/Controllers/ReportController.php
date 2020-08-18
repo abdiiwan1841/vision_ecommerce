@@ -190,7 +190,7 @@ class ReportController extends Controller
         $returns = Returnproduct::where('user_id',$request->user)->whereBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('returned_at', 'ASC')->get();
        
 
-        $cashes = Cash::where('user_id',$request->user)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
+        $cashes = Cash::where('status',1)->where('user_id',$request->user)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
      
 
         $salesinfo = [];
@@ -228,7 +228,7 @@ class ReportController extends Controller
 
         $previous_returns = Returnproduct::where('user_id',$request->user)->whereNotBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
-        $previous_cashes = Cash::where('user_id',$request->user)->whereNotBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
+        $previous_cashes = Cash::where('status',1)->where('user_id',$request->user)->whereNotBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
         $previous_prevdue = Prevdue::where('user_id',$request->user)->whereNotBetween('due_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
@@ -266,7 +266,7 @@ class ReportController extends Controller
         $returns = Returnproduct::where('user_id',$request->user)->whereBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('returned_at', 'ASC')->get();
        
 
-        $cashes = Cash::where('user_id',$request->user)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
+        $cashes = Cash::where('status',1)->where('user_id',$request->user)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
      
 
         $salesinfo = [];
@@ -304,7 +304,7 @@ class ReportController extends Controller
 
         $previous_returns = Returnproduct::where('user_id',$request->user)->whereNotBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
-        $previous_cashes = Cash::where('user_id',$request->user)->whereNotBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
+        $previous_cashes = Cash::where('status',1)->where('user_id',$request->user)->whereNotBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
         $previous_prevdue = Prevdue::where('user_id',$request->user)->whereNotBetween('due_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
@@ -345,7 +345,7 @@ class ReportController extends Controller
         $returns = Returnproduct::with('product')->where('user_id',$request->user)->whereBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('returned_at', 'ASC')->get();
        
 
-        $cashes = Cash::where('user_id',$request->user)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
+        $cashes = Cash::where('status',1)->where('user_id',$request->user)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
      
 
         $salesinfo = [];
@@ -383,7 +383,7 @@ class ReportController extends Controller
 
         $previous_returns = Returnproduct::where('user_id',$request->user)->whereNotBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
-        $previous_cashes = Cash::where('user_id',$request->user)->whereNotBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
+        $previous_cashes = Cash::where('status',1)->where('user_id',$request->user)->whereNotBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
         $previous_prevdue = Prevdue::where('user_id',$request->user)->whereNotBetween('due_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
@@ -420,7 +420,7 @@ class ReportController extends Controller
         $returns = Returnproduct::with('product')->where('user_id',$request->user)->whereBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('returned_at', 'ASC')->get();
        
 
-        $cashes = Cash::where('user_id',$request->user)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
+        $cashes = Cash::where('status',1)->where('user_id',$request->user)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
      
 
         $salesinfo = [];
@@ -458,7 +458,7 @@ class ReportController extends Controller
 
         $previous_returns = Returnproduct::where('user_id',$request->user)->whereNotBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
-        $previous_cashes = Cash::where('user_id',$request->user)->whereNotBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
+        $previous_cashes = Cash::where('status',1)->where('user_id',$request->user)->whereNotBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
         $previous_prevdue = Prevdue::where('user_id',$request->user)->whereNotBetween('due_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
@@ -504,7 +504,7 @@ class ReportController extends Controller
         $returns = Returnproduct::with('product')->where('user_id',$customer->id)->whereBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
        
 
-        $cashes = Cash::where('user_id',$customer->id)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
+        $cashes = Cash::where('status',1)->where('user_id',$customer->id)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
 
 
@@ -516,7 +516,7 @@ class ReportController extends Controller
         $previous_returns = Returnproduct::with('product')->where('user_id',$customer->id)->whereNotBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
        
 
-        $previous_cashes = Cash::where('user_id',$customer->id)->whereNotBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
+        $previous_cashes = Cash::where('status',1)->where('user_id',$customer->id)->whereNotBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
         $prev_balance = ($previous_sales+ $previous_prevdue)-( $previous_cashes+$previous_returns);
 
@@ -561,7 +561,7 @@ class ReportController extends Controller
         $returns = Returnproduct::with('product')->where('user_id',$customer->id)->whereBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
        
 
-        $cashes = Cash::where('user_id',$customer->id)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
+        $cashes = Cash::where('status',1)->where('user_id',$customer->id)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
 
 
@@ -573,7 +573,7 @@ class ReportController extends Controller
         $previous_returns = Returnproduct::with('product')->where('user_id',$customer->id)->whereNotBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
        
 
-        $previous_cashes = Cash::where('user_id',$customer->id)->whereNotBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
+        $previous_cashes = Cash::where('status',1)->where('user_id',$customer->id)->whereNotBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
         $prev_balance = ($previous_sales+ $previous_prevdue)-( $previous_cashes+$previous_returns);
 
@@ -704,7 +704,7 @@ class ReportController extends Controller
 
         $ecomcashes = Order::where('payment_status',1)->whereBetween('paymented_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('paymented_at', 'ASC')->get();
 
-        $poscashes = Cash::whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
+        $poscashes = Cash::where('status',1)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
 
     
 
@@ -747,7 +747,7 @@ class ReportController extends Controller
 
         $ecomcashes = Order::where('payment_status',1)->whereBetween('paymented_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('paymented_at', 'ASC')->get();
 
-        $poscashes = Cash::whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
+        $poscashes = Cash::where('status',1)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
 
     
 

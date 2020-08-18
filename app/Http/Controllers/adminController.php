@@ -10,6 +10,7 @@ use App\User;
 use App\Admin;
 use App\Order;
 use Carbon\Carbon;
+use App\GeneralOption;
 use App\Returnproduct;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -47,6 +48,27 @@ class adminController extends Controller
         ]);
 
         $admin = new Admin;
+
+        if($request->hasFile('signature')){
+            //get form image
+            $image = $request->file('signature');
+            $slug = Str::slug($request['name']);
+            $current_date = Carbon::now()->toDateString();
+            //get unique name for image
+            $image_name = $slug."-".$current_date.".".$image->getClientOriginalExtension();
+
+   
+            //location for new image 
+            $signature_location = public_path('uploads/admin/signature/'.$image_name);
+            $original_location = public_path('uploads/admin/original/'.$image_name);
+            //resize image for category and upload temp 
+            Image::make($image)->resize(339,null,function ($constraint) {$constraint->aspectRatio();})->save($signature_location);
+            Image::make($image)->save($original_location);
+            $admin->signature =  $image_name;
+         }
+
+
+
         $admin->name = $request->name;
         $admin->adminname = Str::slug($request->name);
         $admin->email = $request->email;
@@ -131,18 +153,32 @@ class adminController extends Controller
     }
 
     public function inventorydashboard(){
+        $general_opt = GeneralOption::first();
+        $general_opt_value = json_decode($general_opt->options, true);
         $today = now()->toDateString();
-
-
         $todays_pos_sales = Sale::whereBetween('sales_at', [$today." 00:00:00", $today." 23:59:59"])->orderBy('sales_at', 'desc')->get();
 
         $todays_pos_returns = Returnproduct::where('type','pos')->whereBetween('returned_at', [$today." 00:00:00", $today." 23:59:59"])->orderBy('returned_at', 'desc')->get();
 
         $todays_pos_cash = Cash::whereBetween('received_at', [$today." 00:00:00", $today." 23:59:59"])->orderBy('received_at', 'desc')->get();
         $pending_sales = Sale::where('sales_status',0)->get();
+        $pending_cash = Cash::where('status',0)->get();
 
-        return view('admin.inventorydashboard',compact('todays_pos_sales','todays_pos_cash','todays_pos_returns','pending_sales'));
+        return view('admin.inventorydashboard',compact('todays_pos_sales','todays_pos_cash','todays_pos_returns','pending_sales','general_opt_value','pending_cash'));
     }
+
+    public function inv_pendingcash($id){
+        $admin = '';
+        $cash = Cash::findOrFail($id);
+        if(!empty($cash->approved_by)){
+        $admin = Admin::findOrFail($cash->approved_by);
+        }
+        return view('pos.cash.show',compact('cash','admin'));
+    }
+
+
+
+
 
     public function changepassword(){
         return view('admin.changepassword');

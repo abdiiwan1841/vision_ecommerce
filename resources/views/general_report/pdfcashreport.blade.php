@@ -26,10 +26,12 @@
                 <h5 style="text-align: center;font-family: Tahoma,sans-serif">Cash Report</h5>
                 @if($general_opt_value['inv_diff_invoice_heading'] == 1)
                 <p style="font-weight: bold;text-align: center">{{$general_opt_value['inv_invoice_heading']}}</p>
+                <p  style="text-align: center;font-size: 11px">{{$general_opt_value['inv_invoice_address']}} <br> <b>Email :</b>  {{$general_opt_value['inv_invoice_email']}}</p>
                 @else
                 <p style="font-weight: bold;text-align: center">{{$CompanyInfo->company_name}}</p>
+                <p style="text-align: center;font-size: 11px">{{$CompanyInfo->address}} <br> <b>Email :</b>  {{$CompanyInfo->email}} <br> <b>Phone:</b>  {{$CompanyInfo->phone}}</p>
                 @endif
-                      <p style="text-align: center;font-size: 11px">{{$CompanyInfo->address}} <br> <b>Email :</b>  {{$CompanyInfo->email}} <br> <b>Phone:</b>  {{$CompanyInfo->phone}}</p>
+                      
               </div>
 
 

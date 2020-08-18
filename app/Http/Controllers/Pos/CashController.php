@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Pos;
 
 
-use App\Http\Controllers\Controller;
 use App\Cash;
 use App\User;
+use App\Admin;
 use Carbon\Carbon;
 use App\Paymentmethod;
 use Illuminate\Http\Request;
 use App\Http\Requests\CashRequest;
+use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
 
@@ -62,9 +63,14 @@ class CashController extends Controller
     }
 
 
-    public function show(Cash $cash)
+    public function show($id)
     {
-        //
+        $admin = '';
+        $cash = Cash::findOrFail($id);
+        if(!empty($cash->approved_by)){
+        $admin = Admin::findOrFail($cash->approved_by);
+        }
+        return view('pos.cash.show',compact('cash','admin'));
     }
 
 
@@ -82,6 +88,8 @@ class CashController extends Controller
         $cash->paymentmethod_id = $request->payment_method;
         $cash->posted_by = Auth::user()->name;
         $cash->received_at = $request->received_at." ".Carbon::now()->toTimeString();
+        $cash->status = 0;
+        $cash->approved_by =null;
         $cash->save();
         Toastr::success('Cash Updated Successfully', 'success');
         return redirect(route('cash.index'));
@@ -93,4 +101,38 @@ class CashController extends Controller
     {
         
     }
+
+    public function approve(Request $request,$id){
+        if(Auth::user()->role->id == 2){
+            Toastr::error('You Are Not Authorized', 'error');
+            return redirect()->back();
+        }else{
+        $cash = Cash::findOrFail($id);
+        $cash->status = 1;
+        $cash->approved_by = Auth::user()->id;
+        $cash->save();
+        Toastr::success('Cash Approved Successfully', 'success');
+        return redirect()->back();
+        }
+    }
+
+    public function cancel(Request $request,$id){
+        if(Auth::user()->role->id == 2){
+            Toastr::error('You Are Not Authorized', 'error');
+            return redirect()->back();
+        }else{
+        $cash = Cash::findOrFail($id);
+        $cash->status = 2;
+        $cash->amount = 0;
+        $cash->approved_by = Auth::user()->id;
+        $cash->save();
+        Toastr::success('Cash Canceled Successfully', 'success');
+        return redirect()->back();
+        }
+    }
+
+    
+
+
+
 }

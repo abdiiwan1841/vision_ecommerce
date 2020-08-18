@@ -159,6 +159,7 @@
             <th scope="col">User</th>
             <th scope="col">Payment Method</th>
             <th scope="col">Amount</th>
+            <th scope="col">Status</th>
             <th scope="col">Reference</th>
             <th scope="col">Action</th>
           </tr>
@@ -174,9 +175,10 @@
               <td>{{$cash->user->name}}</td>
               <td>{{$cash->paymentmethod->name}}</td>
               <td>{{$cash->amount}}</td>
+              <td>{!!InvCashStatus($cash->status)!!}</td>
               <td>{{$cash->reference}}</td>
               <td>
-                <button class="btn btn-primary btn-sm" id="open_modal" onclick="EditProcess('{{route('cash.edit',$cash->id)}}','{{route('cash.update',$cash->id)}}')"  data-baseurl="{{asset('')}}" ><i class="fas fa-edit"></i></button> 
+              <button class="btn btn-primary btn-sm" id="open_modal" onclick="EditProcess('{{route('cash.edit',$cash->id)}}','{{route('cash.update',$cash->id)}}')"  data-baseurl="{{asset('')}}" ><i class="fas fa-edit"></i></button> | <a class="btn btn-sm btn-info" href="{{route('cash.show',$cash->id)}}"><i class="fas fa-eye"></i></a>
              
           
                   </td>

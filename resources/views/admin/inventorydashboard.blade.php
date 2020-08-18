@@ -13,9 +13,16 @@
 	<div class="col-lg-4">
 		<div class="card px-3 py-3 mb-3">
 			<div class="text-center">
+				@if($general_opt_value['inv_diff_invoice_heading'] == 1)
+				<img style="width: 300px" src="{{asset('public/uploads/logo/invoicelogo/'.$general_opt_value['inv_invoice_logo'])}}" alt="">
+				<h5>{{$general_opt_value['inv_invoice_heading']}}</h5>
+				<small>{{$general_opt_value['inv_invoice_email']}}  <br>{{$general_opt_value['inv_invoice_address']}}</small>
+
+				@else
 				<img src="{{asset('public/uploads/logo/cropped/'.$CompanyInfo->logo)}}" alt="">
 			<h5>{{$CompanyInfo->company_name}}</h5>
 			<small>{{$CompanyInfo->email}} <br> {{$CompanyInfo->phone}} <br>{{$CompanyInfo->address}}</small>
+			@endif
 
 			<h5>Inventory Dashboard </h5>
 	
@@ -148,7 +155,7 @@
 					@endphp
 					<tr @if($todays_sales_item->sales_status == 2) style="background: #f8a5c2" @endif>
 					<td class="align-middle">#{{$todays_sales_item->id}}</td>
-					<td  class="align-middle"><a data-toggle="tooltip" data-placement="top" title="Service Provided by {{$todays_sales_item->provided_by}}  @if($todays_sales_item->created_at == $todays_sales_item->updated_at)     at {{$todays_sales_item->created_at->format('d-M-Y g:i a')}} @else Updated at {{$todays_sales_item->updated_at->format('d-M-Y g:i a')}} @endif   - Click Here For Details"  class="btn btn-link" href="{{route('viewsales.show',$todays_sales_item->id)}}">{{$todays_sales_item->sales_at->format('d-M-Y g:i a')}} </a></td>
+					<td  class="align-middle"><a data-toggle="tooltip" data-placement="top" title="Service Provided by {{$todays_sales_item->provided_by}}  at {{$todays_sales_item->created_at->format('d-M-Y g:i a')}}    Click Here For Details"  class="btn btn-link" href="{{route('viewsales.show',$todays_sales_item->id)}}">{{$todays_sales_item->sales_at->format('d-M-Y g:i a')}} </a></td>
 					<td class="align-middle">{{$todays_sales_item->user->name}}</td>
 					<td class="align-middle">{{$sales_amount}}</td>
 					
@@ -199,9 +206,9 @@
 					$cash_amount = round($todays_pos_cash_item->amount);
 					$cash_summation = $cash_summation+$cash_amount;	
 				@endphp
-				<tr>
+				<tr @if($todays_pos_cash_item->status == 2) style="background: #f8a5c2" @elseif($todays_pos_cash_item->status == 1)  style="background: #b8e994" @endif>
 				<td class="align-middle">#{{$todays_pos_cash_item->id}}</td>
-				<td data-toggle="tooltip" data-placement="top" title="Posted By {{$todays_pos_cash_item->posted_by}} @if($todays_pos_cash_item->created_at == $todays_pos_cash_item->updated_at)  At {{$todays_pos_cash_item->created_at->format('d-M-Y g:i a')}} @else Updated At {{$todays_pos_cash_item->updated_at->format('d-M-Y g:i a')}} @endif "  class="align-middle">{{$todays_pos_cash_item->received_at->format('d-m-Y g:i a')}}</td>
+				<td data-toggle="tooltip" data-placement="top" title="Posted By {{$todays_pos_cash_item->posted_by}}   At {{$todays_pos_cash_item->created_at->format('d-M-Y g:i a')}}  class="align-middle">{{$todays_pos_cash_item->received_at->format('d-m-Y g:i a')}}</td>
 				<td class="align-middle">{{$todays_pos_cash_item->user->name}}</td>
 				<td class="align-middle">{{$cash_amount}}</td>
 				<td class="align-middle">{{$todays_pos_cash_item->reference}}</td>
@@ -253,7 +260,7 @@
 		    @endphp
 			<tr>
 			<td class="align-middle">#{{$todays_pos_return_item->id}}</td>
-			<td class="align-middle"><a data-toggle="tooltip" data-placement="top" title="Service Provided by {{$todays_pos_return_item->returned_by}}  @if($todays_pos_return_item->created_at == $todays_pos_return_item->updated_at)     at {{$todays_pos_return_item->created_at->format('d-M-Y g:i a')}} @else Updated at {{$todays_pos_return_item->updated_at->format('d-M-Y g:i a')}} @endif   - Click Here For Details" href="{{route('viewreturns.show',$todays_pos_return_item->id)}}">{{$todays_pos_return_item->returned_at->format('d-m-Y g:i a')}}</a></td>
+			<td class="align-middle"><a data-toggle="tooltip" data-placement="top" title="Service Provided by {{$todays_pos_return_item->returned_by}}     at {{$todays_pos_return_item->created_at->format('d-M-Y g:i a')}} - Click Here For Details" href="{{route('viewreturns.show',$todays_pos_return_item->id)}}">{{$todays_pos_return_item->returned_at->format('d-m-Y g:i a')}}</a></td>
 			<td class="align-middle">{{$todays_pos_return_item->user->name}}</td>
 			<td class="align-middle">{{$return_summation}}</td>
 			
@@ -302,7 +309,7 @@
 	  <thead class="thead-light">
 		<tr>
 		  <th class="align-middle">Sl</th>
-		  <th class="align-middle">Pending Order List</th>
+		  <th class="align-middle">Pending  List</th>
 		</tr>
 	  </thead>
 	  <tbody>
@@ -313,7 +320,7 @@
 		@endphp
 		<tr style="background: #f6e58d">
 		<td  class="align-middle"><strong>{{$key+1}}</strong></td>
-		<td  class="align-middle"><a style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_sales_item->provided_by}}  @if($pending_sales_item->created_at == $pending_sales_item->updated_at)     at {{$pending_sales_item->created_at->format('d-M-Y g:i a')}} @else Updated at {{$pending_sales_item->updated_at->format('d-M-Y g:i a')}} @endif   - Click Here For Details"  class="btn btn-link" href="{{route('viewsales.show',$pending_sales_item->id)}}"> <small>{{$pending_sales_item->sales_at->format('d-M-Y g:i a')}} </small> <br> <strong>{{$pending_sales_item->user->name}} - {{$sales_amount}} </strong>  </a></td>
+		<td  class="align-middle"><a style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_sales_item->provided_by}}  at {{$pending_sales_item->created_at->format('d-M-Y g:i a')}}   - Click Here For Details"  class="btn btn-link" href="{{route('viewsales.show',$pending_sales_item->id)}}"> <small>{{$pending_sales_item->sales_at->format('d-M-Y g:i a')}} </small> <br> <strong>{{$pending_sales_item->user->name}} =  {{$sales_amount}} </strong>  </a></td>
 		
 		</tr>
 		@endforeach
@@ -332,6 +339,57 @@
   <hr>
 </div>
 	</div>
+
+
+
+
+
+
+	<div class="card">
+		<div class="card-header">
+			<strong>Cash Pending For Approval</strong>
+		</div>
+	<div class="card-body">
+
+	@if(count($pending_cash) > 0)
+	  
+	<table class="table table-sm table-bordered" style="font-size: 14px;">
+	  <thead class="thead-light">
+		<tr>
+		  <th class="align-middle">Sl</th>
+		  <th class="align-middle">Pending Cash</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		
+		@foreach ($pending_cash as $key => $pending_cash_item)
+		@php
+			$sales_amount = round($pending_cash_item->amount);
+		@endphp
+		<tr style="background: #f6e58d">
+		<td  class="align-middle"><strong>{{$key+1}}</strong></td>
+		<td  class="align-middle"><a style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_cash_item->posted_by}} at {{$pending_cash_item->created_at->format('d-M-Y g:i a')}} - Click Here For Details"  class="btn btn-link" href="{{route('invdashboard.cashdetails',$pending_cash_item->id)}}"> <b> {{$pending_cash_item->user->name}} = {{$pending_cash_item->amount}} </b> <br> ( <small>{{$pending_cash_item->received_at->format('d-M-Y')}}</small> )  </a></td>
+		</tr>
+		@endforeach
+		  
+		
+	  </tbody>
+	  
+	</table>
+
+	
+  @else
+<div class="row">
+	<span class="alert alert-success">No Pending Cash Found</span>
+</div>
+  @endif
+  <hr>
+</div>
+	</div>
+
+
+
+
 </div>
 
 </div>

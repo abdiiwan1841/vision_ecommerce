@@ -58,6 +58,17 @@ function FashiShippingStatus($argument){
     }
     return $status;
 }
+function InvCashStatus($argument){
+    $status = "";
+    if($argument == 0 ){
+        $status = '<span class="badge badge-warning">pending</span>';
+    }elseif($argument == 1){
+        $status = '<span class="badge badge-success">Approved</span>';
+    }elseif($argument == 2){
+        $status = '<span class="badge badge-danger">Cancelled</span>';
+    }
+    return $status;
+}
 
 function FashiGetAmount($order_id){
     $order = Order::with('product')->findOrFail($order_id);

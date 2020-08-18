@@ -16,7 +16,7 @@
                 </div>
                 
             </div>
-            <div class="card-body">
+            <div class="card-body table-responsive">
                 <table class="table">
                     <tr>
                         <td>Sl.</td>
@@ -25,6 +25,7 @@
                         <td>Email</td>
                         <td>Phone</td>
                         <td>Role</td>
+                        <td>signature</td>
                         <td>Created At</td>
                         <td>Action</td>
                     </tr>
@@ -36,6 +37,7 @@
                         <td>{{$admin->email}}</td>
                         <td>{{$admin->phone}}</td>
                         <td>{{$admin->role->name}}</td>
+                    <td><img style="width: 100px" src="{{asset('public/uploads/admin/signature/'.$admin->signature)}}" alt=""></td>
                         <td>{{$admin->created_at->format('d-M-Y g:i a')}}</td>
                     <td><a class="btn btn-sm btn-primary" href="{{route('admininfo.edit',$admin->id)}}"><i class="fas fa-edit"></i></a></td>
                     </tr>

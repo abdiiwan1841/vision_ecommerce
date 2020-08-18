@@ -94,7 +94,7 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
 
     Route::post('removegalleryimage/{id}', 'Ecom\ProductController@removegalleryimage')->name('products.removegalleryimage');
    
-    Route::resource('ecom/sizes', 'Ecom\SizeController');
+    Route::resource('sizes', 'SizeController');
     Route::resource('ecom/categories', 'CategoryController');
     Route::resource('ecom/paymentmethod', 'PaymentmethodController');
 
@@ -110,6 +110,13 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     
 
     Route::resource('pos/cash', 'Pos\CashController');
+    Route::get('inventory/dashboard/cashdetails/{id}', 'adminController@inv_pendingcash')->name('invdashboard.cashdetails');
+
+
+
+    Route::post('pos/cash/approve/{id}', 'Pos\CashController@approve')->name('cash.approve');
+    Route::post('pos/cash/cancel/{id}', 'Pos\CashController@cancel')->name('cash.cancel');
+
     Route::get('pos/cashresult','Pos\CashController@index');
     Route::post('pos/cashresult','Pos\CashController@result')->name('poscash.result');
     Route::resource('pos/prevdue', 'Pos\PrevdueController');
@@ -118,7 +125,7 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::post('transfertoecom/{id}','Pos\ProductController@transfertoecom')->name('product.transfertoecom');
     Route::post('transfertoinventory/{id}','Ecom\ProductController@transfertoinventory')->name('product.transfertoinventory');
 
-    Route::resource('pos/productsizes', 'Pos\SizeController');
+ 
 
     Route::resource('pos/sale', 'Pos\SaleController');
     Route::post('pos/sale/approve/{id}', 'Pos\SaleController@approve')->name('sale.approve');
