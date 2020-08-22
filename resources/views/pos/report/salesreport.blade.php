@@ -6,10 +6,10 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                 Cash Report
+               Inventory Sales 
             </div>
             <div class="card-body">
-            <form action="{{route('report.showcashreport')}}" method="POST">
+            <form action="{{route('report.possalesresult')}}" method="POST">
               @csrf
                 <div class="row justify-content-center">
 
@@ -62,7 +62,12 @@
 @endpush
 
 @push('js')
-
+<script>
+  $('#user').select2({
+width: '100%',
+  theme: "bootstrap"
+});
+</script>
 <script src="{{asset('public/assets/js/flatpicker.min.js')}}"></script>
 <script>
   $("#start").flatpickr({dateFormat: 'Y-m-d'});

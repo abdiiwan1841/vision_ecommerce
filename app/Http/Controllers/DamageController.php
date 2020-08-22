@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use Session;
 use App\Damage;
 use App\Product;
-use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Brian2694\Toastr\Facades\Toastr;
+use Illuminate\Support\Facades\Auth;
 
 class DamageController extends Controller
 {
@@ -105,10 +106,15 @@ class DamageController extends Controller
      */
     public function destroy(Damage $damage)
     {
+        if(Auth::user()->role->id != 1){
+            Toastr::error('Only Superadmin Can Cancel This Damge Record', 'error');
+            return redirect()->back();
+        }else{
         $damage->deleted_at = now();
         $damage->save();
         $damage->product()->detach();
         Toastr::success('Damage Cancelled Successfully', 'success');
         return redirect()->route('damages.index');
+        }
     }
 }

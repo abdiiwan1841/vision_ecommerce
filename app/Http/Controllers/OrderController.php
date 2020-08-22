@@ -39,6 +39,10 @@ class OrderController extends Controller
      */
     public function create()
     {
+        if(Auth::user()->role->id != 1){
+            Toastr::error('Only Super Admin Can Create This Order', 'error');
+            return redirect()->back();
+        }
         $charge = Charge::first();
         $users = User::where('user_type','ecom')->get();
         $products = Product::where('type','ecom')->get();
@@ -136,6 +140,10 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
+        if(Auth::user()->role->id != 1){
+            Toastr::error('Only Super Admin Can Edit This Order', 'error');
+            return redirect()->back();
+        }
 
         $order =  Order::with('product')->findOrFail($id);
         $users = User::where('user_type','ecom')->get();

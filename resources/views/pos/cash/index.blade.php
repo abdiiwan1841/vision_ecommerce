@@ -33,14 +33,14 @@
             @php
                 $mytime = Carbon\Carbon::now();
             @endphp
-            <input type="text" class="form-control @error('received_at') is-invalid @enderror" name="received_at" id="received_at" value="{{$mytime->toDateString()}}">
+            <input type="text" class="form-control @error('received_at') is-invalid @enderror" name="received_at" id="received_at" value="{{old('received_at',$mytime->toDateString())}}">
             @error('received_at')
             <small class="form-error">{{ $message }}</small>
             @enderror
           </div>
           <div class="form-group">
             <label for="user">Customer</label>
-            <select data-placeholder="Select a User" name="user" id="user" class="form-control @error('user') is-invalid @enderror">
+            <select data-placeholder="Select a User" name="user" id="user" class="form-control @error('user') is-invalid @enderror" required>
               <option></option>
               @foreach ($users as $user)
                 <option value="{{$user->id}}" @if (old('user') == $user->id) selected  @endif>{{$user->name}}</option>
@@ -53,14 +53,14 @@
           </div>
           <div class="form-group">
             <label for="amount">Amount</label>
-          <input type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" id="amount" placeholder="Enter Amount" value="{{old('amount')}}">
+          <input type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" id="amount" placeholder="Enter Amount" value="{{old('amount')}}" required>
             @error('amount')
            <small class="form-error">{{ $message }}</small>
            @enderror
           </div>
           <div class="form-group">
             <label for="payment_method">Payment Method</label>
-            <select data-placeholder="Select Payment Method" name="payment_method" id="payment_method" class="form-control @error('payment_method') is-invalid @enderror">
+            <select data-placeholder="Select Payment Method" name="payment_method" id="payment_method" class="form-control @error('payment_method') is-invalid @enderror" required>
               <option></option>
               @foreach ($payment_methods as $pmd)
                 <option value="{{$pmd->id}}" @if (old('user') == $pmd->id) selected  @endif>{{$pmd->name}}</option>
@@ -145,12 +145,59 @@
     
                         <div class="col-lg-2">
                           <div class="form-group">
-                            <button type="submit" class="btn btn-info">submit</button>
+                            <button type="submit" class="btn btn-info">filter</button>
                           </div>
                          
                         </div>
                       </div>       
                     </form>
+
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <h3 class="mt-3 mb-5 text-uppercase text-center">Last 10 Transection</h3>
+                        <table class="table table-bordered table-striped table-hover mt-3">
+                          <thead>
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">Date</th>
+                              <th scope="col">User</th>
+                              <th scope="col">Payment Method</th>
+                              <th scope="col">Amount</th>
+                              <th scope="col">Status</th>
+                              <th scope="col">Reference</th>
+                              <th scope="col">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @php
+                                $i =1;
+                            @endphp
+                            @foreach ($cashes as $cash)
+                            <tr>
+                                <td>{{$i++}}</td>
+                                <td>{{$cash->received_at->format('d-m-Y g:i a')}}</td>
+                                <td>{{$cash->user->name}}</td>
+                                <td>{{$cash->paymentmethod->name}}</td>
+                                <td>{{$cash->amount}}</td>
+                                <td>{!!InvCashStatus($cash->status)!!}</td>
+                                <td>{{$cash->reference}}</td>
+                                <td>
+                                <button class="btn btn-primary btn-sm" id="open_modal" onclick="EditProcess('{{route('cash.edit',$cash->id)}}','{{route('cash.update',$cash->id)}}')"  data-baseurl="{{asset('')}}" ><i class="fas fa-edit"></i></button> | <a target="_blank" class="btn btn-sm btn-info" href="{{route('cash.show',$cash->id)}}"><i class="fas fa-eye"></i></a>
+                               
+                            
+                                    </td>
+                            </tr>
+                            @endforeach
+                            
+                      
+                  
+                  
+                           
+                            
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
 
             </div>
         </div>

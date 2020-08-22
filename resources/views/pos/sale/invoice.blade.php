@@ -170,10 +170,11 @@
   @if($general_opt_value['auto_signature_inv'] == 1)
   @if($signature)
 <img style="height: 50px" src="{{asset('public/uploads/admin/signature/'.$signature->signature)}}" alt="">
+<p>{{$signature->name}}</p>
   @else
-  <br><br><br>
+  <br><br>
   @endif
-  <p>{{$signature->name}}</p>
+ 
   @else
   <br><br>
   @endif

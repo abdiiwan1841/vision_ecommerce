@@ -29,7 +29,7 @@
                 @if(Auth::user()->role->id == 1)
                 <form action="{{route('sale.approve',$sale->id)}}" method="POST" >
                   @csrf
-                  <button onclick="return confirm('Are You Sure You Want To Approve Order')" type="submit" class="btn btn-warning btn-sm mb-3 float-right" style="margin-right: 5px;">
+                  <button onclick="return confirm('Are You Sure You Want To This Approve Order')" type="submit" class="btn btn-warning btn-sm mb-3 float-right" style="margin-right: 5px;">
                     <i class="fas fa-check"></i> APPROVE THIS ORDER ?
                   </button>
                 </form>
@@ -37,14 +37,15 @@
                 <form action="{{route('sale.destroy',$sale->id)}}" method="POST" >
                   @csrf
                   @method('DELETE')
-                  <button onclick="return confirm('Are You Sure You Want To Cancel This Order')" type="submit" class="btn btn-danger btn-sm mb-5" style="margin-right: 5px;">
+                  <button onclick="deleteItem({{$sale->id}})" type="button" class="btn btn-danger btn-sm mb-5" style="margin-right: 5px;">
                     <i class="fas fa-trash"></i> Cancel
                   </button>
                 </form>
                 @endif
                 @else
-              <button  disabled type="button" class="btn btn-success mb-5"><i class="fas fa-check"></i>  Approved by {{$signature->name}} <br><span class="badge badge-warning">{{$sale->updated_at->format('d-F-Y g:i a')}}</span></button>
-                @endif
+              <button  disabled type="button" class="btn btn-success"><i class="fas fa-check"></i>  Approved by {{$signature->name}} <br><span class="badge badge-warning">{{$sale->updated_at->format('d-F-Y g:i a')}}</span></button>
+    
+              @endif
               </div>
 
                 <div class="col-12">
@@ -100,6 +101,31 @@
                       <th>Customer Area: </th>
                       <td>{{$sale->user->area->name}}</td>
                     </tr>
+
+                    <tr>
+                      <th>Delivery Staus</th>
+                      <td> @if($sale->delivery_status == 0)
+                        @if(Auth::user()->role->id == 4 && $sale->sales_status ==1) 
+                        <form action="{{route('sale.delivery',$sale->id)}}" method="POST" >
+                        @csrf
+                        <button type="submit" onclick="return confirm('Are you Sure You Want To Mark This Sales Invoice As Delivered')" class="btn  btn-danger flot-right">Mark As Delivered</button>
+                        </form>
+                        @else
+                        <span class="badge badge-warning">pending</span>
+                        @endif
+          
+                        @else
+                        <span class="badge badge-success">Delivered</span>
+          
+                        @endif</td>
+                    </tr>
+                    @if($sale->delivery_status == 1)
+                    <tr>
+                      <th>Delivered By</th>
+                    <td>{{$delivered_by->name }}</td>
+                    </tr>
+                    @endif
+
                   </table>
                 </div>
 
@@ -188,9 +214,20 @@
 
               <!-- this row will not appear when printing -->
               <div class="row no-print">
-                <div class="col-12">
+                <div class="col-6">
 
                   @if($sale->sales_status == 1)
+
+                  @if(Auth::user()->role->id == 1)
+                  <form id="delete-from-{{$sale->id}}" style="display: inline-block;" action="{{route('sale.destroy',$sale->id)}}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" onclick="deleteItem({{$sale->id}})" class="btn btn-danger"><i class="fa fa-trash"></i> Cancel</a></button>
+                  </form>
+                  @endif
+                </div>
+                <div class="col-6">
+
                   <form action="{{route('sale.invoice',$sale->id)}}" method="POST" >
                     @csrf
                     <button type="submit" class="btn btn-primary float-right" style="margin-right: 5px;">
@@ -198,9 +235,13 @@
                     </button>
                     </form>
                     @else
-                    <span class="badge badge-danger float-right">This Order Is Waiting For Approval</span>
+                    <img style="width: 350px;" src="{{asset('public/assets/images/pending.png')}}" alt="">
                  
                   @endif
+
+                 
+
+                  
                  
                   
                 </div>
@@ -216,3 +257,43 @@
     <!-- /.content -->
 
     @endsection
+
+
+    @push('js')
+    <script>
+    function deleteItem(id){
+      const swalWithBootstrapButtons = Swal.mixin({
+         customClass: {
+             confirmButton: 'btn btn-success btn-sm',
+             cancelButton: 'btn btn-danger btn-sm'
+         },
+         buttonsStyling: true
+         })
+
+ swalWithBootstrapButtons.fire({
+title: 'Are you sure you want to cancel this order?',
+text: "You won't be able to revert this!",
+icon: 'warning',
+showCancelButton: true,
+confirmButtonColor: '#3085d6',
+cancelButtonColor: '#d33',
+confirmButtonText: 'Yes, Cancel it!'
+}).then((result) => {
+         if (result.value) {
+             event.preventDefault();
+             document.getElementById('delete-from-'+id).submit();
+         } else if (
+             /* Read more about handling dismissals below */
+             result.dismiss === Swal.DismissReason.cancel
+         ) {
+             swalWithBootstrapButtons.fire(
+             'Cancelled',
+             'Your Data  is safe :)',
+             'error'
+             )
+         }
+         });
+     }
+</script>
+
+    @endpush

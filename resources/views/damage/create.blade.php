@@ -9,7 +9,7 @@
           <div class="row">
             <div class="col-lg-4"><a href="{{route('damages.index')}}" class="btn btn-sm btn-warning"><i class="fa fa-angle-left"></i> back</a></div>
             <div class="col-lg-8">
-               <strong class="float-right">CREATE DAMAGE PRODUCT</strong> 
+               <strong class="float-right">CREATE DAMAGE'S OR SAMPLE'S RECORD</strong> 
             </div>
           </div>
           <hr>
@@ -138,7 +138,7 @@
       </div>
       <div class="row">
       <div class="col-lg-4">
-        <label for="reason">Damage Reasons</label>
+        <label for="reason">Reasons</label>
         <textarea class="form-control" name="reason" id="reason" cols="30" rows="5"></textarea>
       </div>
       <div class="col-lg-6">

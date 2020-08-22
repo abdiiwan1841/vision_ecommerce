@@ -219,7 +219,7 @@
         <a class="btn btn-info" href="{{route('products.index')}}">back</a>
         </div>
         <div class="col-lg-8">
-          <h5 class="card-title text-right">EDIT ECOMMERCE PRODUCTS</h5>
+          <h5 class="card-title text-right">EDIT  PRODUCTS</h5>
         </div>
       </div>
          
@@ -281,10 +281,10 @@
             <div class="col-lg-10">
               <div class="form-group">
                 <label for="category">Category</label>
-                <select data-placeholder="Select a Category" name="category" id="category" class="form-control @error('category') is-invalid @enderror" onchange="saveValue(this)" required>
+                <select data-placeholder="Select a Category" name="category" id="category" class="form-control @error('category') is-invalid @enderror" required>
                   <option></option>
                   @foreach ($categories as $category)
-                <option value="{{$category->id}}" @if (old('category') == $category->id) selected  @endif>{{$category->category_name}}</option>
+                <option value="{{$category->id}}" @if ($product->category_id == $category->id) selected  @endif>{{$category->category_name}}</option>
                   @endforeach
                 </select>
                 @error('category')
@@ -471,12 +471,26 @@
       product Transfer
     </div>
     <div class="card-body">
-      <h4>Transfer <b>" {{$product->product_name}} " </b> To Inventory Module</h4>
-      <form action="{{route('product.transfertoinventory',$product->id)}}" method="POST">
+      <h4><b>" {{$product->product_name}} " </b>  Is Currently In {!!showProductTypes($product->type)!!} Module</h4>
+
+      @if($product->type === 'ecom')
+      <form action="{{route('product.transfertoinventory',$product->id)}}" method="POST" class="mt-3">
         @csrf
         <input type="hidden" name="type" value="pos">
-      <button onclick="return confirm('Are you sure you want to transfer this product to Inventory module?')" type="submit" class="btn btn-danger btn-sm">Confirm Transfer</button>
+      <button onclick="return confirm('Are you sure you want to transfer this product to Inventory module?')" type="submit" class="btn btn-danger btn-sm">Move To Inventory Module</button>
       </form>
+      @elseif($product->type === 'pos')
+
+      <form action="{{route('product.transfertoecom',$product->id)}}" method="POST">
+        @csrf
+        <input type="hidden" name="type" value="ecom">
+      <button onclick="return confirm('Are you sure you want to transfer this product to e-Commerce module?')" type="submit" class="btn btn-warning btn-sm">Move To E-Commerce Module</button>
+      </form>
+
+      @endif
+
+
+
     </div>
   </div>
   
@@ -487,11 +501,14 @@
 @endsection
 
 @push('css')
-<link rel="stylesheet" href="{{asset('public/assets/css/trix.css')}}">    
+<link rel="stylesheet" href="{{asset('public/assets/css/trix.css')}}">
+ 
 @endpush
 @push('js')
 <script src="{{asset('public/assets/js/trix.js')}}"></script>
 <script>
+
+
 function addSize(){
   $('#DataModal').modal('show');
 }

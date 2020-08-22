@@ -20,9 +20,11 @@ class CreateSalesTable extends Migration
             $table->float('carrying_and_loading',10,2);
             $table->dateTime('sales_at');
             $table->float('amount',14,2)->nullable();
-            $table->integer('sales_status');
+            $table->integer('sales_status')->default(0);
             $table->string('provided_by')->nullable();
             $table->integer('approved_by')->nullable();
+            $table->integer('delivery_status')->default(0);
+            $table->integer('delivered_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

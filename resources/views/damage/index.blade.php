@@ -11,7 +11,7 @@
                         <h5 class="card-title">Product Damages</h5>
                     </div>
                     <div class="col-lg-8">
-                        <a href="{{route('damages.create')}}" class="btn btn-info btn-sm float-right"><i class="fa fa-plus"></i> New Damage</a>
+                        <a href="{{route('damages.create')}}" class="btn btn-info btn-sm float-right"><i class="fa fa-plus"></i> New Damages / Samples</a>
                     </div>
                 </div>
                 
@@ -23,11 +23,11 @@
 
               @foreach ($damages as $item)
               
-            <p>Damage Id : #{{$item->id}}  Date: {{$item->damaged_at->format('d-M-Y g:i a')}}
+            <p>Id : #{{$item->id}}  Date: {{$item->damaged_at->format('d-M-Y g:i a')}}
                <form action="{{route('damages.destroy',$item->id)}}" method="POST">
               @csrf
               @method('delete')
-               <button onclick="return confirm('Are You Sure you want to cancel This Damage')" type="submit" class="btn btn-sm btn-danger">Cancel #{{$item->id}}</button>
+               <button @if(Auth::user()->role->id != 1) disabled @endif onclick="return confirm('Are You Sure you want to cancel This Damage')" type="submit" class="btn btn-sm btn-danger">Cancel This Record ID#{{$item->id}}</button>
             </form></p>
               <table class="table table-sm">
                 <tr>

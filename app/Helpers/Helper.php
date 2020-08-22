@@ -52,13 +52,37 @@ function FashiShippingStatus($argument){
     if($argument == 0 ){
         $status = '<span class="badge badge-warning">pending</span>';
     }elseif($argument == 1){
-        $status = '<span class="badge badge-success">Shipped</span>';
+        $status = '<span class="badge badge-success">Delivered</span>';
     }elseif($argument == 2){
         $status = '<span class="badge badge-danger">cancelled</span>';
     }
     return $status;
 }
 function InvCashStatus($argument){
+    $status = "";
+    if($argument == 0 ){
+        $status = '<span class="badge badge-warning">pending</span>';
+    }elseif($argument == 1){
+        $status = '<span class="badge badge-success">Approved</span>';
+    }elseif($argument == 2){
+        $status = '<span class="badge badge-danger">Cancelled</span>';
+    }
+    return $status;
+}
+
+function showProductTypes($argument){
+    $status = "";
+    if($argument == 'ecom' ){
+        $status = '<span class="badge badge-warning">E-commerce</span>';
+    }elseif($argument == 'pos'){
+        $status = '<span class="badge badge-danger">Inventory</span>';
+    }elseif($argument == 'raw'){
+        $status = '<span class="badge badge-danger">Raw Materials</span>';
+    }
+    return $status;
+}
+
+function InvReturnStatus($argument){
     $status = "";
     if($argument == 0 ){
         $status = '<span class="badge badge-warning">pending</span>';

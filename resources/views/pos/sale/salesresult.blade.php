@@ -52,7 +52,7 @@
 
                     <div class="col-lg-2">
                       <div class="form-group">
-                        <button type="submit" class="btn btn-info">submit</button>
+                        <button type="submit" class="btn btn-info">filter</button>
                       </div>
                      
                     </div>
@@ -65,10 +65,11 @@
                   <tr>
                     <th scope="col">#</th>
                     <th scope="col">SID</th>
-                    <th scope="col">Sales At</th>
+                    <th scope="col">Sales Date</th>
                     <th scope="col">Customer</th>
                     <th scope="col">Net Amount</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Created By</th>
                     <th scope="col">Action</th>
                   </tr>
                 </thead>
@@ -83,27 +84,24 @@
                     @endphp
    
                    
-                    <tr @if($item->deleted_at != NULL) style="background: red;color: #fff"  @endif>
-                      <td scope="row"></td>
-                      <td>#{{$item->id}}</td>
-                      <td>{{$item->sales_at->format('d-m-Y g:i a')}}</td>
-                      <td>{{$item->user->name}}</td>
-                    <td>{{round($item->amount)}}</td>
+                    <tr @if($item->deleted_at != NULL) style="background: #ff7979;color: #fff"  @endif>
+                      <td class="align-middle" scope="row"></td>
+                      <td class="align-middle">#{{$item->id}}</td>
+                      <td class="align-middle">{{$item->sales_at->format('d-m-Y g:i a')}}</td>
+                      <td class="align-middle">{{$item->user->name}}</td>
+                    <td class="align-middle">{{round($item->amount)}}</td>
+                    
                      
 
                       
-                    <td>{!!FashiSalesStatus($item->sales_status)!!}</td>
+                    <td class="align-middle">{!!FashiSalesStatus($item->sales_status)!!}</td>
+                    <td class="align-middle"><small>{{$item->provided_by}} <br>{{$item->created_at->format('d-m-y g:i a')}}</small></td>
                     @if($item->deleted_at == NULL) 
-                      <td ><a class="btn btn-info btn-sm" target="_blank" href="{{route('sale.show',$item->id)}}"><i class="fa fa-eye"></i></a> | <a target="_blank" class="btn btn-primary btn-sm" href="{{route('sale.edit',$item->id)}}"><i class="fa fa-edit"></i></a> {{-- |
-                        <form id="delete-from-{{$item['id']}}" style="display: inline-block" action="{{route('sale.destroy',$item->id)}}" method="POST">
-                          @csrf
-                          @method('DELETE')
-                          <button type="button" onclick="deleteItem({{$item['id']}})" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a></button>
-                        </form>
-                        --}}
+                      <td ><a class="btn btn-info btn-sm" target="_blank" href="{{route('sale.show',$item->id)}}"><i class="fa fa-eye"></i></a> | <a target="_blank" class="btn btn-primary btn-sm" href="{{route('sale.edit',$item->id)}}"><i class="fa fa-edit"></i></a> 
+                        
                       </td>
                     @else
-                      <td>No Action</td>
+                    <td class="align-middle"><small>By: {{App\Admin::where('id',$item->approved_by)->first()->name }} </small> <br><small>At {{$item->updated_at->format('d M Y g: i a')}}</small></td>
                     @endif
                       
                     </tr>

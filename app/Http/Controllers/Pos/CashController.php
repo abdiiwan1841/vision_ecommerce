@@ -19,9 +19,10 @@ class CashController extends Controller
 
     public function index()
     {
+        $cashes = Cash::take(10)->orderBy('id', 'desc')->get();
         $users = User::where('user_type','pos')->get();
         $payment_methods = Paymentmethod::all();
-        return view('pos.cash.index',compact('users','payment_methods'));
+        return view('pos.cash.index',compact('users','payment_methods','cashes'));
     }
 
     

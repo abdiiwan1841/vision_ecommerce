@@ -222,7 +222,7 @@
         <a class="btn btn-info" href="{{route('products.index')}}">back</a>
         </div>
         <div class="col-lg-8">
-          <h5 class="card-title text-right">ADD NEW ECOMMERCE PRODUCTS</h5>
+          <h5 class="card-title text-right">ADD NEW PRODUCTS</h5>
            <button type="button" onclick="reset()" id="reset" class="btn btn-success float-right"><i class="fa fa-sync-alt"></i>  <b>RESET THIS FORM</b></button>
         </div>
       </div>
@@ -254,7 +254,7 @@
           
   
           <div class="form-group">
-            <label for="price">Product Price</label>
+            <label for="price">Ecommerce Price</label>
             <input type="text" class="form-control @error('price') is-invalid @enderror" name="price" id="price" placeholder="Enter Price" value="{{old('price')}}" oninput="saveValue(this)" required>
             @error('price')
             <small class="form-error">{{ $message }}</small>
@@ -322,6 +322,21 @@
             <div class="col-lg-2" style="margin-top: 28px">
                 <button onclick="addSize()" type="button" class="btn btn-info"><i class="fa fa-plus"></i></button>
             </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12 mb-3">
+            <label for="show_in">Show In: </label>
+            <select class="form-control  @error('show_in') is-invalid @enderror" name="show_in" id="show_in">
+              <option value="">-select a module-</option>
+              <option value="ecom">E-commerce And Inventory Both</option>
+              <option value="pos">On Inventory Module</option>
+              <option value="raw">Raw Materials Module</option>
+            </select>
+            @error('show_in')
+                  <small class="form-error">{{ $message }}</small>
+            @enderror
+            <p id="show_in_msg" class="alert alert-danger mt-3"></p>
+          </div>
         </div>
         </div>
         <div class="col-lg-6">
@@ -456,11 +471,32 @@
 @endsection
 @push('css')
 <link rel="stylesheet" href="{{asset('public/assets/css/trix.css')}}">
+<style>
+  #show_in_msg{
+    display: none;
+  }
+</style>
 @endpush
 
 @push('js')
 <script src="{{asset('public/assets/js/trix.js')}}"></script>
 <script>
+
+$("#show_in").change(function(){
+    let s_value = $("#show_in").val();
+    if(s_value === 'ecom'){
+      $("#show_in_msg").text('N.B: Product Can be Accessed In both Inventory And Ecommerce Module').show();
+    }else if(s_value === 'pos'){
+      $("#show_in_msg").text('N.B: Product Can be Accessed Only For Inventory Module').show();
+    }else if(s_value === 'raw'){
+      $("#show_in_msg").text('N.B: Product Can be Accessed Only Raw Materials Module').show();
+    }else{
+      $("#show_in_msg").text('').hide();
+    }
+});
+
+
+
 var trixedelement = document.querySelector("trix-editor");
 if(getSavedValue("product_name") != ""){
   document.getElementById("product_name").value = getSavedValue("product_name");
@@ -618,3 +654,4 @@ $("#AddImage").click(function(){
 
 
 @endpush
+

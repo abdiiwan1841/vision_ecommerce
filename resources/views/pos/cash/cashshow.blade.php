@@ -145,7 +145,7 @@
 
             <div class="col-lg-2">
               <div class="form-group">
-                <button type="submit" class="btn btn-info">submit</button>
+                <button type="submit" class="btn btn-info">filter</button>
               </div>
              
             </div>

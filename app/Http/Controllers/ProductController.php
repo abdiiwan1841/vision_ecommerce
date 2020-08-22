@@ -1,7 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Ecom;
-use App\Http\Controllers\Controller;
+namespace App\Http\Controllers;
 use Session;
 use App\Size;
 use App\Tags;
@@ -28,9 +27,7 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function __construct(){
-        $this->middleware('auth:admin');
-    }
+ 
 
 
     public function index()
@@ -40,8 +37,8 @@ class ProductController extends Controller
         $tags = Tags::all();
         $brands = Brand::all();
         $sizes = Size::get();
-        $products = Product::where('type','ecom')->with('category','subcategory','brand','tags')->get();
-        return view('ecom.products.index',compact('products','categories','subcategory', 'tags', 'brands','sizes'));
+        $products = Product::with('category','subcategory','brand','tags')->get();
+        return view('products.index',compact('products','categories','subcategory', 'tags', 'brands','sizes'));
     }
 
     /**
@@ -56,7 +53,7 @@ class ProductController extends Controller
         $tags = Tags::all();
         $brands = Brand::all();
         $sizes = Size::get();
-        return view('ecom.products.create',compact('categories','subcategory', 'tags', 'brands','sizes'));
+        return view('products.create',compact('categories','subcategory', 'tags', 'brands','sizes'));
     }
 
     /**
@@ -113,7 +110,7 @@ class ProductController extends Controller
      $product->brand_id = $request['brand'];
      $product->description = $request['description'];
      $product->size_id = $request['size'];
-     $product->type = 'ecom';
+     $product->type = $request->show_in;
      $product->save();
      $product->tags()->attach($request['tags']);
 
@@ -139,7 +136,7 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::with('subcategory','brand','tags')->findOrFail($id);
-        return view('ecom.products.show',compact('product'));
+        return view('products.show',compact('product'));
     }
 
     /**
@@ -150,13 +147,13 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $product = Product::where('type','ecom')->with('tags')->findOrFail($id);
+        $product = Product::with('tags')->findOrFail($id);
         $categories = Category::all();
         $subcategory = Subcategory::all();
         $tags = Tags::all();
         $brands = Brand::all();
         $sizes = Size::get();
-        return view('ecom.products.edit',compact('product','categories','subcategory','tags','brands','sizes'));
+        return view('products.edit',compact('product','categories','subcategory','tags','brands','sizes'));
     }
 
 
@@ -259,7 +256,6 @@ class ProductController extends Controller
         $product->subcategory_id = $request['subcategory'];
         $product->brand_id = $request['brand'];
         $product->size_id = $request['size'];
-        $product->type = 'ecom';
         $product->save();
 
         $product->tags()->sync($request['tags']);
@@ -328,8 +324,21 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $product->type = $request->type;
         $product->save();
-        Session::flash('success','Product Successfully Transfered To Inventory Module');
-        return redirect()->route('posproducts.edit',$id);
+        Toastr::success('Successfully ! Product Transfer To Inventory Module', 'success');
+        return redirect()->back();
+
+    }
+
+    public function transfertoecom(Request $request,$id){
+        $this->validate($request,[
+            'type' => 'required',
+        ]);
+
+        $product = Product::findOrFail($id);
+        $product->type = $request->type;
+        $product->save();
+        Toastr::success('Successfully ! Product Transfer To Ecommerce Module', 'success');
+        return redirect()->back();
 
     }
 }

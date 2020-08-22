@@ -21,7 +21,8 @@ class SaleController extends Controller
 
     public function index()
     {
-        return view('pos.sale.index');
+        $sales = Sale::withTrashed('user','prouduct')->take(10)->orderBy('id', 'desc')->get();
+        return view('pos.sale.index',compact('sales'));
     }
 
     public function result(Request $request){
@@ -99,8 +100,13 @@ class SaleController extends Controller
         }else{
             $signature = Admin::where('id',$sale->approved_by)->select('name','signature')->first();
         }
+        if(empty($sale->delivered_by)){
+            $delivered_by = null;
+        }else{
+            $delivered_by = Admin::where('id',$sale->delivered_by)->select('name')->first();
+        }
         
-        return view('pos.sale.show',compact('sale','signature'));
+        return view('pos.sale.show',compact('sale','signature','delivered_by'));
     }
 
 
@@ -171,6 +177,7 @@ class SaleController extends Controller
         }else{
         $sale->deleted_at = now();
         $sale->sales_status = 2;
+        $sale->approved_by = Auth::user()->id;
         $sale->amount = 0;
         $sale->save();
         $sale->product()->detach();
@@ -184,7 +191,12 @@ class SaleController extends Controller
         $general_opt_value = json_decode($general_opt->options, true);
         $sale = Sale::findOrFail($id);
         $current_user = User::findOrFail($sale->user_id);
-        $signature = Admin::where('id',$sale->approved_by)->select('name','signature')->first();
+        if(empty($sale->approved_by)){
+            $signature = null;
+        }else{
+            $signature = Admin::where('id',$sale->approved_by)->select('name','signature')->first();
+        }
+        
 
 
         $pdf = PDF::loadView('pos.sale.invoice',compact('sale','current_user','general_opt_value','signature'));
@@ -202,6 +214,21 @@ class SaleController extends Controller
         $sale->save();
         Toastr::success('Sales Approved Successfully', 'success');
         return redirect()->back();
+        }
+    }
+
+    public function delivery($id){
+        if(Auth::user()->role->id != 4){
+            Toastr::error('You Are Not Authorized', 'error');
+            return redirect()->back();
+        }else{
+        $sale = Sale::findOrFail($id);
+        $sale->timestamps = false;
+        $sale->delivery_status = 1;
+        $sale->delivered_by = Auth::user()->id;
+        $sale->save();
+        Toastr::success('Sales Invoice Mark as Delivered', 'success');
+        return redirect()->route('admin.inventorydashboard');
         }
     }
 }

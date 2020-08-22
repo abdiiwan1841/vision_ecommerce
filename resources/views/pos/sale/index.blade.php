@@ -8,7 +8,7 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-lg-4">
-                        <h5 class="card-title">POS Sales</h5>
+                        <h5 class="card-title">Inventory Sales Invoices</h5>
                     </div>
                     <div class="col-lg-8">
                         <a href="{{route('sale.create')}}" class="btn btn-info btn-sm float-right"><i class="fa fa-plus"></i> New Sales Invoice</a>
@@ -52,12 +52,65 @@
     
                         <div class="col-lg-2">
                           <div class="form-group">
-                            <button type="submit" class="btn btn-info">submit</button>
+                            <button type="submit" class="btn btn-info">filter</button>
                           </div>
                          
                         </div>
                       </div>       
                     </form>
+
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <h3 class="mt-3 mb-5 text-uppercase text-center">Last 10 Sales Activity</h3>
+                        <table class="table">
+                          <thead class="thead-light">
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">SID</th>
+                              <th scope="col">Sales Date</th>
+                              <th scope="col">Customer</th>
+                              <th scope="col">Net Amount</th>
+                              <th scope="col">Status</th>
+                              <th scope="col">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                              @php
+                                $count=0;    
+                              @endphp
+                              @foreach ($sales as $key => $item)
+                              @php
+                                  $netamount = $item->amount;
+                                  $discount = $item->amount*($item->discount_percent/100);
+                              @endphp
+             
+                             
+                              <tr @if($item->sales_status == 2) style="background: #ff7979;color: #fff"  @endif>
+                                <td scope="row"></td>
+                                <td>#{{$item->id}}</td>
+                                <td>{{$item->sales_at->format('d-m-Y g:i a')}}</td>
+                                <td>{{$item->user->name}}</td>
+                              <td>{{round($item->amount)}}</td>
+                               
+          
+                                
+                              <td>{!!FashiSalesStatus($item->sales_status)!!}</td>
+                              @if($item->deleted_at == NULL) 
+                                <td ><a class="btn btn-info btn-sm" target="_blank" href="{{route('sale.show',$item->id)}}"><i class="fa fa-eye"></i></a> | <a target="_blank" class="btn btn-primary btn-sm" href="{{route('sale.edit',$item->id)}}"><i class="fa fa-edit"></i></a> 
+                                </td>
+                              @else
+                              <td><small>By: {{App\Admin::where('id',$item->approved_by)->first()->name }} </small> <br><small>At {{$item->updated_at->format('d M Y g: i a')}}</small></td>
+                              @endif
+                                
+                              </tr>
+          
+            
+                              @endforeach
+                            
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
 
             </div>
         </div>

@@ -1,5 +1,7 @@
+
 @extends('layouts.adminlayout')
-@section('title','Inventory Products')
+@section('title','Product')
+
 @section('content')
 <div class="row">
 <div class="col-lg-12">
@@ -7,25 +9,25 @@
     <div class="card-header">
       <div class="row">
         <div class="col-lg-8">
-          <h5 class="card-title text-left">Inventory PRODUCTS</h5>
+          <h5 class="card-title text-left">PRODUCTS</h5>
         </div>
         <div class="col-lg-4">
-        <a href="{{route('posproducts.create')}}" class="btn btn-info btn-sm float-right">+ Add New Product</a>
-         
+        <a href="{{route('products.create')}}" class="btn btn-sm btn-info float-right"><i class="fas fa-plus">ADD NEW PRODUCT</i></a>
         </div>
       </div>
     </div>
     <div class="card-body table-responsive">
       
      
-      <table class="table table-bordered table-striped table-hover mt-3" id="jq_datatables">
+      <table class="table table-bordered  table-hover mt-3" id="jq_datatables">
         <thead>
           <tr>
             <th>#</th>
             <th>Name</th>
             <th>Image</th>
-            <th>size</th>
             <th>Price</th>
+            <th>Size</th>
+            <th>Type</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -33,24 +35,26 @@
     
         @foreach ($products as $key => $product)
         
-            <tr>
+            <tr @if($product->type == 'ecom') style="background: #f7f1e3" @endif>
             <td>{{$key+1}}</td>
-                <td>{{$product['product_name']}}</td>
+                <td style="width: 180px;">{{$product['product_name']}}</td>
                 <td> <img style="height: 50px;" class="img-responsive img-thumbnail" src="{{asset('public/uploads/products/thumb/'.$product['image'])}}" alt=""></td>
-            <td>{{$product->size->name}}</td>
-                <td> @if($product->discount_price == NULL)
+                <td>@if($product->discount_price == NULL)
                   Tk.{{$product->price}}
                   @else Tk.{{$product->discount_price}} 
                   <small> <del>Tk.({{$product->price}})</del></small>
                   @endif</td>
+                <td>{{$product->size->name }}</td>
+                <td>{!!showProductTypes($product->type)!!}</td>
+
             <td>
-            <a href="{{route('posproducts.edit',$product->id)}}" class="btn btn-primary btn-sm" ><i class="fas fa-edit"></i></a> 
+            <a href="{{route('products.edit',$product->id)}}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a> 
          
-              <a class="btn btn-info btn-sm"  href="{{route('posproducts.show',$product['id'])}}"><i class="fas fa-eye"></i></a>
-              <form id="delete-from-{{$product['id']}}" style="display: inline-block" action="{{route('posproducts.destroy',$product['id'])}}" method="POST">
+              <a class="btn btn-info btn-sm"  href="{{route('products.show',$product['id'])}}"><i class="fas fa-eye"></i></a>
+              <form id="delete-from-{{$product['id']}}" style="display: inline-block" action="{{route('products.destroy',$product['id'])}}" method="POST">
                     @csrf
                     @method('DELETE')
-                    <button type="button" onclick="deleteProduct({{$product['id']}})"  class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
+                    <button @if(Auth::user()->role->id != 1 && Auth::user()->role->id != 2 ) disabled @endif type="button" onclick="deleteProduct({{$product['id']}})"  class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
         
                 </form> 
               </td>
@@ -76,38 +80,12 @@
 @push('js')
 
 
-@if ($errors->any())
-{{-- prevent The Modal Close If Any Error In the Form --}}
-<script>
-
-  if(sessionStorage.getItem("editMode") === 'true'){
-    $('#editDataModal').modal('show');
-    $('#editForm').attr('action', sessionStorage.getItem("update_url"));
-
-  }else{
-    $('#addDataModal').modal('show');
-    console.log(sessionStorage.getItem("editMode"));
-  }
-
-</script>
-@endif
-
-
 
 
 <script>
-// Exit The Edit Mode 
 
 
-function addMode(){
-  $('#addDataModal').modal('show');
-  if (typeof(Storage) !== "undefined") {
-    // Store
-    sessionStorage.setItem("editMode",false);
-    // Retrieve
-    console.log(sessionStorage.getItem("editMode"));
-  }
-}
+
 
 // Show Current Image On the Form Before Upload
 
@@ -142,6 +120,7 @@ $("#image").change(function() {
 $("#edit_image").change(function() {
   EditProductreadURL(this);
 });
+
 
 
 
@@ -208,16 +187,39 @@ function deleteProduct(id){
   //For Addmodal
 
 
+    $('#edit_size').select2({
+      width: '100%',
+      theme: "bootstrap"
+    });
+
+  //For Editmodal
+  $('#edit_category').select2({
+      width: '100%',
+      theme: "bootstrap"
+    });
+    $('#edit_subcategory').select2({
+      width: '100%',
+      theme: "bootstrap"
+    });
+    $('#edit_tags').select2({
+      width: '100%',
+      theme: "bootstrap",templateSelection: function (data, container) {
+    $(container).css("background-color", colors[2]);
+    $(container).css("color", "#ffffff");
+    return data.text;
+}
+    });
+    $('#edit_brand').select2({
+      width: '100%',
+      theme: "bootstrap",
+      
+    });
+
 </script>
 <script src="{{asset('public/assets/js/datatables.min.js')}}"></script>
 <script src="{{asset('public/assets/js/dataTables.bootstrap4.min.js')}}"></script>
 <script>
-$('#jq_datatables').DataTable({
-  "order": [ [2, 'desc'] ],
-  "columnDefs": [
-        { "targets": [2,5], "searchable": false }
-    ],
-});
+$('#jq_datatables').DataTable();
 </script>
 
 @endpush

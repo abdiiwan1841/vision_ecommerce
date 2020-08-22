@@ -22,6 +22,8 @@ class CreateReturnproductsTable extends Migration
             $table->dateTime('returned_at');
             $table->string('type');
             $table->string('returned_by')->nullable();
+            $table->integer('return_status');
+            $table->integer('approved_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

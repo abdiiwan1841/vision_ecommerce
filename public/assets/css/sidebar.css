@@ -126,8 +126,13 @@ ul ul#Frontend a i{
     margin-right: 5px;
 }
 ul ul#Frontend a {
-    background: #30336b;
+    background: #833471;
 }
+ul ul#product_section a {
+    background: #1dd1a1;
+}
+
+
 
 
 ul ul a {

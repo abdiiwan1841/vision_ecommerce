@@ -8,7 +8,7 @@
 <section class="invoice_content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-12">
+          <div class="col-lg-12">
 
 
 
@@ -16,12 +16,36 @@
             <div class="invoice p-3 mb-3">
               <!-- title row -->
               <div class="row">
+                <div class="col-lg-8">
                 @if(Route::current()->getName() == 'viewreturns.show')
 
                 <a href="{{route('admin.inventorydashboard')}}" class="btn btn-info btn-sm mb-5"><i class="fa fa-angle-left"></i> back</a> 
                 @else
                 <a href="{{route('returnproduct.index')}}" class="btn btn-info btn-sm mb-5"><i class="fa fa-angle-left"></i> back</a> 
                 @endif
+                </div>
+                <div class="col-lg-4">
+                  @if($returnDetails->return_status == 0)
+                  @if(Auth::user()->role->id == 1)
+                  <form action="{{route('returnproduct.approve',$returnDetails->id)}}" method="POST" >
+                    @csrf
+                    <button onclick="return confirm('Are You Sure You Want To Approve Order')" type="submit" class="btn btn-warning btn-sm mb-3 float-right" style="margin-right: 5px;">
+                      <i class="fas fa-check"></i> APPROVE THIS  RETURN ?
+                    </button>
+                  </form>
+  
+                  <form action="{{route('returnproduct.destroy',$returnDetails->id)}}" method="POST" >
+                    @csrf
+                    @method('DELETE')
+                    <button onclick="return confirm('Are You Sure You Want To Cancel This Order')" type="submit" class="btn btn-danger btn-sm mb-5" style="margin-right: 5px;">
+                      <i class="fas fa-trash"></i> Cancel
+                    </button>
+                  </form>
+                  @endif
+                  @else
+                <button  disabled type="button" class="btn btn-success mb-5"><i class="fas fa-check"></i>  Approved by {{$signature->name}} <br><span class="badge badge-warning">{{$returnDetails->updated_at->format('d-F-Y g:i a')}}</span></button>
+                  @endif
+                </div>
                 
                 <div class="col-12">
                   <h4>
@@ -33,7 +57,7 @@
               </div>
               <!-- info row -->
               <div class="row invoice-info">
-                <div class="col-lg-9">
+                <div class="col-sm-6 invoice-col">
                   <h5>From</h5> <hr>
                   <table class="table table-borderless">
                     
@@ -72,6 +96,26 @@
                    
                   </table>
         
+                </div>
+
+
+                <div class="col-sm-6">
+                  <P>Other Infotmation</P>
+                  <table class="table table-bordered">
+                    <tr>
+                      <th>Customer Division: </th>
+                      <td>{{$returnDetails->user->division->name}}</td>
+                    </tr>
+                    <tr>
+                      <th>Customer District: </th>
+                      <td>{{$returnDetails->user->district->name}}</td>
+                    </tr>
+
+                    <tr>
+                      <th>Customer Area: </th>
+                      <td>{{$returnDetails->user->area->name}}</td>
+                    </tr>
+                  </table>
                 </div>
 
 
@@ -118,21 +162,18 @@
                   </table>
                 </div>
                 <!-- /.col -->
-              </div>
-              <!-- /.row -->
-
-              <div class="row">
+    
                 <!-- accepted payments column -->
-                <div class="col-lg-6">
+                <div class="col-6 mt-5">
 
-                 <p> Service Provided By :  <hr> <strong> {{$returnDetails->returned_by}}  <small> <br> @if($returnDetails->created_at == $returnDetails->updated_at ) at {{$returnDetails->created_at->format('d-M-Y g:i a')}}</small> @else Updated At {{$returnDetails->updated_at->format('d-M-Y g:i a')}} @endif </strong> </p>
+                  Service Provided By :  <hr> <strong> {{$returnDetails->returned_by}}  <small> <br> at {{$returnDetails->created_at->format('d-M-Y g:i a')}}</small> </strong>
                 </div>
                 <!-- /.col -->
-                <div class="col-lg-6">
-                  <div class="table-responsive">
+                <div class="col-6">
+                  <div class="">
                     <table class="table">
                       <tr>
-                        <th style="width:50%">Subtotal:</th>
+                        <th>Subtotal:</th>
                       <td>{{$sum}}</td>
                       </tr>
                       <tr>
@@ -159,13 +200,18 @@
               <div class="row no-print">
                 <div class="col-12">
                   
-                 
+                  @if($returnDetails->return_status == 1)
                   <form action="{{route('returnproduct.invoice',$returnDetails->id)}}" method="POST" >
                     @csrf
                     <button type="submit" class="btn btn-primary float-right" style="margin-right: 5px;">
                       <i class="fas fa-download"></i> Generate PDF
                     </button>
                     </form>
+                    @else
+                  <img style="width: 350px;float:right" src="{{asset('public/assets/images/pending.png')}}" alt="">
+                  
+                 
+                  @endif
 
 
                 </div>
@@ -173,6 +219,8 @@
             </div>
             <!-- /.invoice -->
           </div><!-- /.col -->
+
+          
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </section>

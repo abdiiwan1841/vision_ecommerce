@@ -33,6 +33,7 @@ class ProductStoreRequest extends FormRequest
             'tags' => 'required',
             'size' => 'required',
             'description' => 'required',
+            'show_in' => 'required',
 
         ];
     }

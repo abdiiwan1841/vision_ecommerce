@@ -8,26 +8,28 @@
 
 <div class="row justify-content-center">
   
-<div class="col-lg-3">
+<div class="col-lg-3" style="margin: 0 30px">
  
 
 <div class="login-box mt-5">
 
   <!-- /.login-logo -->
   <div class="card">
-    <div class="card-body login-card-body">
-    	<h4 class="text-center">Ecommerce <b>ADMIN</b></h4>
+    <div class="card-body login-card">
+      <h4 class="text-center"><b>ADMIN LOGIN</b></h4>
+      <div  style="width: 100%;text-align:center;margin: 20px 0">
+      <a href="{{route('homepage.index')}}"><img src="{{asset('public/uploads/logo/cropped/'.$CompanyInfo->logo)}}" alt=""></a>
+      </div>
+    
       @if (Session::has('error'))
             <span class="text-danger">{{ Session::get('error') }}</span>
       @endif
       <form action="" method="post">
         @csrf
-        <label for="username">Username/Phone</label>
+        <label for="username">Email/Phone</label>
         <div class="input-group mb-3">
          
-          <input type="text" class="form-control" placeholder="Enter Username or Phone" id="username" name="adminname" value="@if(old('adminname') == null){{'admin'}}@else{{old('adminname')}}
-@endif"
-            > 
+          <input type="text" class="form-control" placeholder="Enter Email or Phone" id="username" name="adminname" value="{{old('adminname')}}"> 
           <div class="input-group-append">
             <div class="input-group-text">
                 <i class="fa fa-user"></i>
@@ -41,7 +43,7 @@
         </div>
         <label for="password">Password</label>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" id="password" placeholder="Password" name="password" value="12345678">
+          <input type="password" class="form-control" id="password" placeholder="Password" name="password">
           <div class="input-group-append">
             <div class="input-group-text">
               <i class="fa fa-lock"></i>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Pos;
 
 use PDF;
 use App\User;
+use App\Admin;
 use App\Charge;
 use App\Product;
 use Carbon\Carbon;
@@ -24,7 +25,8 @@ class ReturnproductController extends Controller
      */
     public function index()
     {
-        return view('pos.return.index');
+        $returns = Returnproduct::withTrashed('user','prouduct')->take(10)->orderBy('id', 'desc')->get();
+        return view('pos.return.index',compact('returns'));
     }
 
     public function result(Request $request){
@@ -111,7 +113,12 @@ class ReturnproductController extends Controller
     public function show($id)
     {
         $returnDetails = Returnproduct::with('product','user')->findOrFail($id);
-        return view('pos.return.show',compact('returnDetails'));
+        if(empty($returnDetails->approved_by)){
+            $signature = null;
+        }else{
+            $signature = Admin::where('id',$returnDetails->approved_by)->select('name','signature')->first();
+        }
+        return view('pos.return.show',compact('returnDetails','signature'));
     }
 
 
@@ -177,12 +184,19 @@ class ReturnproductController extends Controller
     public function destroy($id)
     {
         $returnDetails = Returnproduct::findOrFail($id);
+        if(Auth::user()->role->id == 2){
+            Toastr::error('You Are Not Authorized', 'error');
+            return redirect()->back();
+        }else{
+        $returnDetails->return_status = 2;
+        $returnDetails->approved_by = Auth::user()->id;
         $returnDetails->deleted_at = now();
         $returnDetails->amount = 0;
         $returnDetails->save();
         $returnDetails->product()->detach();
         Toastr::success('Return cancelled Successfully', 'success');
-        return redirect()->back();
+        return redirect()->route('returnproduct.index');
+        }
     }
 
     public function invoice(Request $request,$id){
@@ -190,8 +204,29 @@ class ReturnproductController extends Controller
         $general_opt_value = json_decode($general_opt->options, true);
         $returnDetails = Returnproduct::with('product','user')->findOrFail($id);
         $current_user = User::findOrFail($returnDetails->user_id);
+        if(empty($returnDetails->approved_by)){
+           $signature = '';
+        }else{
+            $signature = Admin::where('id',$returnDetails->approved_by)->select('name','signature')->first();
+        }
 
-        $pdf = PDF::loadView('pos.return.invoice',compact('returnDetails','current_user','general_opt_value'));
+        $pdf = PDF::loadView('pos.return.invoice',compact('returnDetails','current_user','general_opt_value','signature'));
         return $pdf->download('invoice.pdf');
+    }
+
+
+
+    public function approve(Request $request,$id){
+        if(Auth::user()->role->id == 2){
+            Toastr::error('You Are Not Authorized', 'error');
+            return redirect()->back();
+        }else{
+        $returnproduct = Returnproduct::findOrFail($id);
+        $returnproduct->return_status = 1;
+        $returnproduct->approved_by = Auth::user()->id;
+        $returnproduct->save();
+        Toastr::success('Sales Return Approved Successfully', 'success');
+        return redirect()->back();
+        }
     }
 }

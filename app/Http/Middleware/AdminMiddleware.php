@@ -6,7 +6,7 @@ use Closure;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
 
-class SuperAdminMiddleware
+class AdminMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,7 +17,7 @@ class SuperAdminMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::user()->role->id == 1 ){
+        if(Auth::user()->role->id == 1 || Auth::user()->role->id == 2 ){
             return $next($request);
         }else{
             Toastr::error('You Are Not Authorized To Access This Routes', 'error');

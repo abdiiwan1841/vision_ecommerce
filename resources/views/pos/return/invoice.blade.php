@@ -136,22 +136,33 @@
   
   </div>
   <div style="margin-top: 50px;">
-    <div style="width: 33.33%;display: inline-block;text-align:center">
+    <div style="width: 33.33%;display: inline-block;text-align:center;@if($general_opt_value['auto_signature_inv'] == 1) margin-top: 23px @endif">
     <p>{{$returnDetails->returned_by}}</p>
       <hr>
       <p style="text-align:center">Service Provided By </p>
   
   </div>
-  <div style="width: 33.33%;display: inline-block;text-align:center">
+  <div style="width: 33.33%;display: inline-block;text-align:center;@if($general_opt_value['auto_signature_inv'] == 1) margin-top: 23px @endif">
     <p></p>
     <hr>
     <p style="text-align:center">Received By </p>
   </div>
-  <div style="width: 33.33%;display: inline-block;">
+  <div style="width: 33.33%;display: inline-block;text-align:center">
+    @if($general_opt_value['auto_signature_inv'] == 1)
+    @if($signature)
+  <img style="height: 50px" src="{{asset('public/uploads/admin/signature/'.$signature->signature)}}" alt="">
+  <p>{{$signature->name}}</p>
+    @else
     <br><br>
+    @endif
+   
+    @else
+    <br><br>
+    @endif
   <hr>
   <p style="text-align:center">Authorized By </p>
   </div>
+  
   </div>
 
 

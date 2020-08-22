@@ -70,7 +70,7 @@
 	<div class="card">
     <div class="card-header">
 
-          <h5 class="card-title text-left">CHANGE ALL PRODUCT PRICE</h5>
+          <h5 class="card-title text-left">CHANGE TRADE PRICE</h5>
 
 
     </div>

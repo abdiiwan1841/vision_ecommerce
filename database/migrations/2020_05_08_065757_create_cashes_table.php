@@ -17,7 +17,7 @@ class CreateCashesTable extends Migration
             $table->id();
             $table->float('amount', 14, 2);
             $table->foreignId('user_id');
-            $table->string('reference');
+            $table->string('reference')->nullable();
             $table->foreignId('paymentmethod_id');
             $table->string('posted_by');
             $table->dateTime('received_at');

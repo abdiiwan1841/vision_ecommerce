@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
+use PhpParser\Node\Stmt\Return_;
 
 class adminController extends Controller
 {
@@ -163,8 +164,11 @@ class adminController extends Controller
         $todays_pos_cash = Cash::whereBetween('received_at', [$today." 00:00:00", $today." 23:59:59"])->orderBy('received_at', 'desc')->get();
         $pending_sales = Sale::where('sales_status',0)->get();
         $pending_cash = Cash::where('status',0)->get();
+        $pending_delivery = Sale::where('sales_status',1)->where('delivery_status',0)->get();
+        $pending_returns = Returnproduct::where('return_status',0)->get();
+        $last_ten_dlv = Sale::where('delivery_status',1)->take(10)->orderBy('id','desc')->get();
 
-        return view('admin.inventorydashboard',compact('todays_pos_sales','todays_pos_cash','todays_pos_returns','pending_sales','general_opt_value','pending_cash'));
+        return view('admin.inventorydashboard',compact('todays_pos_sales','todays_pos_cash','todays_pos_returns','pending_sales','general_opt_value','pending_cash','pending_returns','pending_delivery','last_ten_dlv'));
     }
 
     public function inv_pendingcash($id){

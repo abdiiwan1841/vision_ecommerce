@@ -46,11 +46,11 @@
                         <!-- Authentication Links -->
                         @guest
                        
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                             <a class="nav-link" href="{{route('admin.login') }}">Admin Login</a>
                             
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="{{route('employee.login') }}">Employee Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{route('employee.login') }}">Employee Login</a></li> --}}
                             
                         @else
         

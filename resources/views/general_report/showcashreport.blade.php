@@ -13,7 +13,7 @@
                 <div class="col-lg-12">
                   <form action="{{route('report.showcashreport')}}" method="POST">
                     @csrf
-                      <div class="row">
+                      <div class="row justify-content-center">
 
                         <div class="col-lg-3">
                           <div class="form-group">

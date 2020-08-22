@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Sale;
+use App\Damage;
 use App\Product;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -54,6 +55,20 @@ class StockController extends Controller
         $sales_history = DB::table('order_product')->join('products','order_product.product_id','=','products.id')->join('users','order_product.user_id','=','users.id')->select('order_product.*','products.product_name', 'users.name')->where('product_id', '=', $id)->orderBy('ordered_at','desc')->get();
 
         return view('admin.stock.orderhistory',compact('product','sales_history'));
+    }
+
+    public function damagehistory($id){
+        $product = Product::findOrFail($id);
+        $damage_history = DB::table('damage_product')->join('products','damage_product.product_id','=','products.id')->select('damage_product.*','products.product_name')->where('product_id', '=', $id)->orderBy('damaged_at','desc')->get();
+
+        return view('admin.stock.damagehistory',compact('product','damage_history'));
+    }
+
+    public function freehistory($id){
+        $product = Product::findOrFail($id);
+        $free_history = DB::table('product_sale')->join('products','product_sale.product_id','=','products.id')->join('users','product_sale.user_id','=','users.id')->select('product_sale.*','products.product_name','users.name')->where('product_sale.product_id', '=', $id)->where('product_sale.free', '>', 0)->orderBy('sales_at','desc')->get();
+        
+        return view('admin.stock.freehistory',compact('product','free_history'));
     }
 
 

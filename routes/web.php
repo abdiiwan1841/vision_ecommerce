@@ -68,188 +68,154 @@ Route::get('admin/login', 'Auth\AdminLoginController@adminLogin')->name('admin.l
 Route::post('admin/login', 'Auth\AdminLoginController@adminLoginSubmit')->name('admin.loginsubmit');
 
 
-Route::get('employee/login', 'Auth\EmployeeLoginController@EmployeeLogin')->name('employee.login');
-Route::post('employee/login', 'Auth\EmployeeLoginController@EmployeeLoginSubmit')->name('employee.loginsubmit');
-
-
-Route::group(['prefix'=> 'employee','middleware' => ['auth:employee']], function(){
-//Employee Logout
-Route::get('logout', 'Auth\EmployeeLoginController@employeeLogout')->name('employee.logout');
-Route::get('dashboard', 'Employee\EmployeeController@dashboard')->name('employee.dashboard');
-});
 
 
 
+
+//Access For All Admin
 
 Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
-    Route::get('company','CompanyController@index')->name('company.index');
-    Route::get('company/{id}/edit','CompanyController@edit')->name('company.edit');
-    Route::put('company/{id}','CompanyController@update')->name('company.update');
     Route::get('dashboard', 'adminController@dashboard')->name('admin.dashboard');
     Route::get('inventory/dashboard', 'adminController@inventorydashboard')->name('admin.inventorydashboard');
     Route::get('logout', 'Auth\AdminLoginController@adminLogout')->name('admin.logout');
-    Route::resource('pos/customers', 'Pos\UserController');
-    Route::get('ecom/customers', 'Ecom\UserController@index')->name('ecomcustomer.index');
-    Route::resource('ecom/products', 'Ecom\ProductController');
+    Route::get('action/changepassword','adminController@changepassword')->name('admin.changepassword');
+    Route::put('action/changepassword/update','adminController@passUpdate')->name('admin.passupdate');
+    Route::get('myaccount/profile','adminController@profile')->name('admin.profile');
+    Route::get('myaccount/profile/edit','adminController@editprofile')->name('admin.editprofile');
+    Route::put('myaccount/profile/update','adminController@updateprofile')->name('admin.updateprofile');
 
-    Route::post('removegalleryimage/{id}', 'Ecom\ProductController@removegalleryimage')->name('products.removegalleryimage');
-   
-    Route::resource('sizes', 'SizeController');
-    Route::resource('ecom/categories', 'CategoryController');
-    Route::resource('ecom/paymentmethod', 'PaymentmethodController');
-
-    Route::resource('payment', 'PaymentController');
-    Route::resource('ecom/tags', 'TagsController');
-    Route::resource('ecom/brands', 'BrandController');
-    Route::resource('ecom/sliders', 'SliderController');
-    Route::resource('ecom/subcategories', 'SubcategoryController');
-    Route::resource('ecom/order', 'OrderController');
-    Route::get('ecom/order/{id}/view', 'OrderController@show')->name('order.view');
-
-    Route::resource('ecom/deliveryinfo', 'DeliveryinfoController')->only(['index' ,'edit', 'update']);
-    
-
-    Route::resource('pos/cash', 'Pos\CashController');
-    Route::get('inventory/dashboard/cashdetails/{id}', 'adminController@inv_pendingcash')->name('invdashboard.cashdetails');
-
-
-
-    Route::post('pos/cash/approve/{id}', 'Pos\CashController@approve')->name('cash.approve');
-    Route::post('pos/cash/cancel/{id}', 'Pos\CashController@cancel')->name('cash.cancel');
-
-    Route::get('pos/cashresult','Pos\CashController@index');
-    Route::post('pos/cashresult','Pos\CashController@result')->name('poscash.result');
-    Route::resource('pos/prevdue', 'Pos\PrevdueController');
-    Route::resource('pos/posproducts', 'Pos\ProductController');
-
-    Route::post('transfertoecom/{id}','Pos\ProductController@transfertoecom')->name('product.transfertoecom');
-    Route::post('transfertoinventory/{id}','Ecom\ProductController@transfertoinventory')->name('product.transfertoinventory');
-
- 
-
-    Route::resource('pos/sale', 'Pos\SaleController');
-    Route::post('pos/sale/approve/{id}', 'Pos\SaleController@approve')->name('sale.approve');
-    Route::get('inventory/dashboard/viewsales/{id}', 'Pos\SaleController@show')->name('viewsales.show');
-    Route::get('inventory/dashboard/viewreturns/{id}', 'Pos\ReturnproductController@show')->name('viewreturns.show');
-
-    Route::post('pos/saleresult','Pos\SaleController@result')->name('sale.result');
-    Route::post('pos/sale/{id}/invoice', 'Pos\SaleController@invoice')->name('sale.invoice');
-    
-    Route::post('order/cash/{id}', 'OrderController@cashSubmit')->name('order.cashsubmit');
-    Route::put('order/approval/{id}', 'OrderController@approval')->name('order.approval');
-    Route::put('order/shipping/{id}', 'OrderController@shipped')->name('order.shipped');
-
-    Route::put('order/cance/{id}', 'OrderController@OrderCancel')->name('order.cancel');
-    Route::get('order/invoice/{id}', 'OrderController@invoice')->name('order.invoice');
-    Route::resource('suppliers', 'SupplierController');
-
-    Route::resource('purchase', 'PurchaseController');
-    Route::post('purchase/result','PurchaseController@result')->name('purchase.result');
-    Route::get('purchase/result','PurchaseController@index');
-
-
-    Route::resource('p_order', 'PurchaseorderController');
-
-
-    Route::resource('ecom/pages', 'PageController');
-
-    Route::resource('ecom/return', 'Ecom\ReturnproductController');
-    Route::resource('pos/returnproduct', 'Pos\ReturnproductController');
-    Route::post('pos/returnproductresult','Pos\ReturnproductController@result')->name('returnproduct.result');
-    Route::get('pos/returnproductresult','Pos\ReturnproductController@index');
-    Route::post('pos/returnproduct/{id}/invoice', 'Pos\ReturnproductController@invoice')->name('returnproduct.invoice');
-
-
-    Route::resource('ecom/deals', 'Ecom\DealController');
-    Route::resource('ecom/district', 'DistrictController');
-    Route::resource('ecom/area', 'AreaController');
-
-
-
-
-    Route::get('ecom/charge', 'ChargeController@index')->name('charge.index');
-    Route::get('ecom/charge/{id}/edit', 'ChargeController@edit')->name('charge.edit');
-    Route::put('ecom/charge/{id}', 'ChargeController@update')->name('charge.update');
-
-    Route::get('ecom/menus', 'MenuController@index')->name('admin.menus');
-    
-    
     Route::get('stock/saleshistory/{id}', 'StockController@saleshistory')->name('stock.saleshistory');
     Route::get('stock/purchasehistory/{id}', 'StockController@purchasehistory')->name('stock.purchasehistory');
     Route::get('stock/returnhistory/{id}', 'StockController@returnhistory')->name('stock.returnhistory');
     Route::get('stock/orderhistory/{id}', 'StockController@orderhistory')->name('stock.orderhistory');
-   
+    Route::get('stock/damagehistory/{id}', 'StockController@damagehistory')->name('stock.damagehistory');
+    Route::get('stock/freehistory/{id}', 'StockController@freehistory')->name('stock.freehistory');
+    Route::get('stock', 'StockController@index')->name('stock.index');
+    Route::resource('damages','DamageController');
+    Route::get('inventory/dashboard/viewsales/{id}', 'Pos\SaleController@show')->name('viewsales.show');
+    Route::post('pos/sale/delivery/{id}', 'Pos\SaleController@delivery')->name('sale.delivery');
+
+});
+
+
+//Access For Accountant, Admin And Superadmin Only
+
+Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], function(){
+    Route::resource('pos/customers', 'Pos\UserController');
+    Route::get('ecom/customers', 'Ecom\UserController@index')->name('ecomcustomer.index');
+    Route::resource('product_section/products', 'ProductController');
+    Route::post('removegalleryimage/{id}', 'ProductController@removegalleryimage')->name('products.removegalleryimage');
+    Route::resource('product_section/sizes', 'SizeController');
+    Route::resource('product_section/categories', 'CategoryController');
+    Route::resource('product_section/tags', 'TagsController');
+    Route::resource('product_section/brands', 'BrandController');
+    Route::resource('product_section/subcategories', 'SubcategoryController');
+    Route::resource('ecom/order', 'OrderController');
+    Route::get('ecom/order/{id}/view', 'OrderController@show')->name('order.view');
+    Route::get('pos/cashresult','Pos\CashController@index');
+    Route::post('pos/cashresult','Pos\CashController@result')->name('poscash.result');
+    Route::resource('pos/prevdue', 'Pos\PrevdueController');
+    Route::post('transfertoecom/{id}','ProductController@transfertoecom')->name('product.transfertoecom');
+    Route::post('transfertoinventory/{id}','ProductController@transfertoinventory')->name('product.transfertoinventory');
+    Route::resource('pos/sale', 'Pos\SaleController');
+    Route::resource('purchase', 'PurchaseController');
+    Route::get('inventory/dashboard/cashdetails/{id}', 'adminController@inv_pendingcash')->name('invdashboard.cashdetails');
+
+
+
+    Route::get('report/pos/salesreport/', 'ReportController@SalesReport')->name('report.possalesreport');
+    Route::post('report/pos/salesreport/', 'ReportController@SalesReportResult')->name('report.possalesresult');
+    Route::post('report/pos/salesreport/pdf', 'ReportController@pdfSalesReport')->name('report.pdfpossalesresult');
 
 
     Route::get('report/pos/divisiowisenreport/', 'ReportController@DivisionReport')->name('report.divisionreport');
     Route::post('report/pos/divisiowisenreport/result', 'ReportController@DivisionReportResult')->name('report.divisionreportresult');
     Route::post('report/pos/divisiowisenreport/result/pdf', 'ReportController@pdfDivisionReportResult')->name('report.pdfdivisionreportresult');
-
-    Route::get('stock', 'StockController@index')->name('stock.index');
     Route::get('report/stockreport', 'StockController@stockreport')->name('stockreport.report');
     Route::post('report/stockreport', 'StockController@stockreportshow')->name('stockreport.show');
-
-
     Route::get('report/ecom/ecomuserstatement', 'ReportController@ecomUserStatement')->name('report.ecomuserstatement');
     Route::post('report/ecom/ecomuserstatement', 'ReportController@showEcomUserstatement')->name('report.showecomuserstatement');
     Route::post('report/ecom/ecomuserstatement/pdf', 'ReportController@pdfEcomUserstatement')->name('report.pdfcomuserstatement');
-
-
     Route::get('report/ecom/divisiowisenreport/', 'ReportController@EcomDivisionReport')->name('report.ecomdivisionreport');
     Route::post('report/ecom/divisiowisenreport/result', 'ReportController@EcomDivisionReportResult')->name('report.ecomdivisionreportresult');
     Route::post('report/ecom/divisiowisenreport/result/pdf', 'ReportController@pdfEcomDivisionReportResult')->name('report.pdfecomdivisionreportresult');
-
-
-
-
+    //Inventory Customer Report
     Route::get('report/pos/posuserstatement', 'ReportController@posUserStatement')->name('report.posuserstatement');
     Route::post('report/pos/posuserstatement', 'ReportController@showPosUserstatement')->name('report.showposuserstatement');
     Route::post('report/pos/posuserstatement/pdf', 'ReportController@pdfPosUserstatement')->name('report.pdfposuserstatement');
-
+    //Inventory Customer Detail Report
     Route::get('report/pos/posdeatailstatement', 'ReportController@posDeatilStatement')->name('report.posdetailstatement');
     Route::post('report/pos/posdeatailstatement', 'ReportController@showPosDeatilStatement')->name('report.showposdetailstatement');
     Route::post('report/pos/posdeatailstatement/pdf', 'ReportController@pdfPosDeatilStatement')->name('report.pdfposdetailstatement');
-
-
-
+    //Cash Report
     Route::get('report/cashreport', 'ReportController@cashreport')->name('report.poscashreport');
     Route::post('report/cashreport', 'ReportController@showcashreport')->name('report.showcashreport');
     Route::post('report/cashreport/pdf', 'ReportController@pdfcashreport')->name('report.pdfcashreport');
-
-
-
     Route::get('allprice','PriceController@index')->name('price.index');
     Route::put('allprice/{id}','PriceController@update')->name('price.update');
-
     Route::get('tp','PriceController@tpindex')->name('tp.index');
     Route::put('tp/{id}','PriceController@tpupdate')->name('tp.update');
+    Route::resource('payment', 'PaymentController');
+    Route::get('ecom/charge', 'ChargeController@index')->name('charge.index');
+    Route::get('ecom/charge/{id}/edit', 'ChargeController@edit')->name('charge.edit');
+    Route::put('ecom/charge/{id}', 'ChargeController@update')->name('charge.update');
+    Route::post('pos/saleresult','Pos\SaleController@result')->name('sale.result');
+    Route::post('pos/sale/{id}/invoice', 'Pos\SaleController@invoice')->name('sale.invoice');
+    Route::post('order/cash/{id}', 'OrderController@cashSubmit')->name('order.cashsubmit');
+    Route::put('order/approval/{id}', 'OrderController@approval')->name('order.approval');
+    Route::put('order/shipping/{id}', 'OrderController@shipped')->name('order.shipped');
+    Route::put('order/cance/{id}', 'OrderController@OrderCancel')->name('order.cancel');
+    Route::get('order/invoice/{id}', 'OrderController@invoice')->name('order.invoice');
+    Route::resource('suppliers', 'SupplierController');
+    Route::post('purchase/result','PurchaseController@result')->name('purchase.result');
+    Route::get('purchase/result','PurchaseController@index');
+    Route::resource('p_order', 'PurchaseorderController');
+    Route::resource('ecom/return', 'Ecom\ReturnproductController');
+    Route::resource('pos/returnproduct', 'Pos\ReturnproductController');
+    Route::post('pos/returnproductresult','Pos\ReturnproductController@result')->name('returnproduct.result');
+    Route::get('pos/returnproductresult','Pos\ReturnproductController@index');
+    Route::post('pos/returnproduct/{id}/invoice', 'Pos\ReturnproductController@invoice')->name('returnproduct.invoice');
+    Route::get('inventory/dashboard/viewreturns/{id}', 'Pos\ReturnproductController@show')->name('viewreturns.show');
+    Route::resource('pos/cash', 'Pos\CashController');
+});
 
+
+
+
+
+//Access Only For SuperAdmin And Admin  
+Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','admin']], function(){
+    Route::get('company','CompanyController@index')->name('company.index');
+    Route::get('company/{id}/edit','CompanyController@edit')->name('company.edit');
+    Route::put('company/{id}','CompanyController@update')->name('company.update');
+    Route::resource('ecom/paymentmethod', 'PaymentmethodController');
+    Route::resource('ecom/sliders', 'SliderController');
+    Route::resource('ecom/deliveryinfo', 'DeliveryinfoController')->only(['index' ,'edit', 'update']);
+    Route::post('pos/cash/approve/{id}', 'Pos\CashController@approve')->name('cash.approve');
+    Route::post('pos/cash/cancel/{id}', 'Pos\CashController@cancel')->name('cash.cancel');
+    Route::post('pos/sale/approve/{id}', 'Pos\SaleController@approve')->name('sale.approve');
+    Route::resource('ecom/pages', 'PageController');
+    Route::post('pos/returnproduct/approve/{id}', 'Pos\ReturnproductController@approve')->name('returnproduct.approve');
+    Route::resource('ecom/deals', 'Ecom\DealController');
+    Route::resource('ecom/district', 'DistrictController');
+    Route::resource('ecom/area', 'AreaController');
+    Route::get('ecom/menus', 'MenuController@index')->name('admin.menus');
     Route::get('ecom/advertisement','AdvertisementController@index')->name('advertisement.index');
     Route::get('ecom/advertisement/{id}/edit','AdvertisementController@edit')->name('advertisement.edit');
     Route::put('ecom/advertisement/{id}','AdvertisementController@update')->name('advertisement.update');
-
-    Route::get('myaccount/profile','adminController@profile')->name('admin.profile');
-    Route::get('myaccount/profile/edit','adminController@editprofile')->name('admin.editprofile');
-    Route::put('myaccount/profile/update','adminController@updateprofile')->name('admin.updateprofile');
-
-
-    Route::get('action/changepassword','adminController@changepassword')->name('admin.changepassword');
-    Route::put('action/changepassword/update','adminController@passUpdate')->name('admin.passupdate');
-
-    Route::resource('damages','DamageController');
     Route::get('comments','CommentsController@index')->name('comments.index');
     Route::post('approvecomment/{id}','CommentsController@approve')->name('comments.approve');
     Route::post('destroycomment/{id}','CommentsController@destroy')->name('comments.destroy');
     Route::get('generaloption','GeneralOptionController@index')->name('generaloption.index');
     Route::get('generaloption/{id}/edit','GeneralOptionController@edit')->name('generaloption.edit');
     Route::put('generaloption/{id}','GeneralOptionController@update')->name('generaloption.update');
-
-    Route::resource('emp_type','EmployeeTypeController');
-    Route::resource('employee','EmployeeController');
-
     
 });
 
+
+//Access For Only Super Admin
 Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','superadmin']], function(){
+    Route::resource('emp_type','EmployeeTypeController');
+    Route::resource('employee','EmployeeController');
     Route::resource('admininfo','adminController');
 });
