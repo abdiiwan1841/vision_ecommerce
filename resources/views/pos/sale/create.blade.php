@@ -28,7 +28,7 @@
 
               <div class="form-group">
                 <label for="user">Customer </label>
-                <select data-placeholder="-select user-" class="js-example-responsive" name="user" id="user" class="form-control">
+                <select data-placeholder="-select a customer-" class="js-example-responsive" name="user" id="user" class="form-control">
                 <option></option>
                  
                   @foreach ($users as $user)

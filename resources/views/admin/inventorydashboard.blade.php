@@ -304,24 +304,19 @@
 				  <thead class="thead-light">
 					<tr>
 					  <th class="align-middle">ID</th>
-					  <th class="align-middle">Date</th>
+					  <th class="align-middle">Invoice Date</th>
 					  <th class="align-middle">Customer</th>
-					  <th class="align-middle">Amount</th>
 					  <th class="align-middle">Delivery Status</th>
 					</tr>
 				  </thead>
 				  <tbody>
 					
 					@foreach ($last_ten_dlv as $last_ten_item)
-					@php
-						$sales_amount = round($last_ten_item->amount);
-						$sales_summation = $sales_summation+$sales_amount;	
-					@endphp
+	
 					<tr @if($last_ten_item->sales_status == 2) style="background: #f8a5c2" @endif>
 					<td class="align-middle">#{{$last_ten_item->id}}</td>
-					<td  class="align-middle"><a data-toggle="tooltip" data-placement="top" title="Service Provided by {{$last_ten_item->provided_by}}  at {{$last_ten_item->created_at->format('d-M-Y g:i a')}}    Click Here For Details"  class="btn btn-link" href="{{route('viewsales.show',$last_ten_item->id)}}">{{$last_ten_item->sales_at->format('d-M-Y g:i a')}} </a></td>
+					<td  class="align-middle"><a data-toggle="tooltip" data-placement="top" title="Service Provided by {{$last_ten_item->provided_by}}  at {{$last_ten_item->created_at->format('d-M-Y g:i a')}}    Click Here For Details"  class="btn btn-link" href="{{route('viewsales.show',$last_ten_item->id)}}">{{$last_ten_item->sales_at->format('d-F-Y')}} </a></td>
 					<td class="align-middle">{{$last_ten_item->user->name}}</td>
-					<td class="align-middle">{{$sales_amount}}</td>
 					<td class="align-middle">{!!FashiShippingStatus($last_ten_item->delivery_status)!!}</td>
 
 					
@@ -332,20 +327,11 @@
 				  </tbody>
 				  
 				</table>
-				<div class="row justify-content-end">
-					<div class="col-lg-3 ">
-						<table class="table">
-							<tr>
-								<th>Total</th>
-								<th>{{$sales_summation}}</th>
-							</tr>
-						</table>
-					</div>
-				</div>
+
 				
 			  @else
 				<div class="row">
-				<span class="alert alert-success">No Sales Found Today</span>
+				<span class="alert alert-success">No Delivery Found</span>
 			</div>
 		
 			  @endif
@@ -493,7 +479,7 @@
 	
   @else
 <div class="row">
-	<span class="alert alert-success">No Pending Sales Found</span>
+	<span class="alert alert-success">No Pending Returns Found</span>
 </div>
   @endif
   <hr>
@@ -510,7 +496,7 @@
 	<!-- Card Start -->
 	<div class="card mt-3">
 		<div class="card-header bg-warning">
-			<strong>Invoice Pending For Delivery</strong>
+			<strong>Invoice Pending For Delivery</strong> <br><small>N.B: Only a deliverman user can mark this as delivered</small>
 		</div>
 	<div class="card-body">
 

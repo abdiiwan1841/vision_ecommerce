@@ -809,7 +809,7 @@ class ReportController extends Controller
 
         $datewise_sorted_data = [];
         foreach($sales as $sale){
-            $datewise_sorted_data[] = ['date' => $sale->sales_at->format('d-F-Y'),'customer' => $sale->user->name,'address' =>$sale->user->address,'phone' =>$sale->user->phone ,'id' => $sale->id, 'amount' => $sale->amount];
+            $datewise_sorted_data[] = ['date' => $sale->sales_at->format('d-m-Y'),'customer' => $sale->user->name,'address' =>$sale->user->address,'phone' =>$sale->user->phone ,'id' => $sale->id, 'amount' => $sale->amount];
         }
         usort($datewise_sorted_data,  array($this, "date_sort"));
 

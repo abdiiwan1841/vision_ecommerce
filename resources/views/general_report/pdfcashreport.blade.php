@@ -39,33 +39,50 @@
 
 
                   <div class="statement_table">
-                    <p style="text-align: center;margin-bottom: 10px;font-weight: bold">From {{date("d-M-Y", strtotime($request->start) )}} To {{date("d-M-Y", strtotime($request->end) )}}</p>
-                    <table class="table table-bordered table-striped">
+                    <p style="text-align: center;margin-bottom: 30px;font-weight: bold">From {{date("d-M-Y", strtotime($request->start) )}} To {{date("d-M-Y", strtotime($request->end) )}}</p>
+                    <table class="table table-sm">
        
                         <tr style="background: #ddd">
                           <td >Date</td>
-                          <td class="align-middle">User</td>
+                          <td class="align-middle">Customer</td>
+                          <td class="align-middle">Address</td>
+                          <td class="align-middle">Phone</td>
                           <td class="align-middle">Amount</td>
                           <td class="align-middle">Ref</td>
                           <td class="align-middle">Source</td>
                         </tr>
-      
+                        @php
+                        $sum = 0;
+                        @endphp
                         @foreach ($datewise_sorted_data as $item)
                         @php
-                        $username = DB::table('users')->where('id',$item['user_id'])->select('name')->first();
-                       
+                        $userinfo = DB::table('users')->where('id',$item['user_id'])->select('name','phone','address')->first();
+                        $sum = $sum+$item['amount'];
+                        
                         @endphp
                         <tr>
                           <td class="align-middle" >{{$item['date']}}</td>
-                          <td  class="align-middle" >{{ $username->name}}</td>
-                          <td  class="align-middle" >{{$item['amount']}}</td>
+                          <td  class="align-middle" >{{ $userinfo->name}}</td>
+                          <td style="width: 100px"  class="align-middle" >{{ $userinfo->address}}</td>
+                          <td  class="align-middle" >{{ $userinfo->phone}}</td>
+                          <td  class="align-middle" ><b>{{$item['amount']}}</b></td>
                           <td  class="align-middle">{{$item['reference']}}</td>
                           <td  class="align-middle">{{$item['source']}}</td>
                         </tr>
                         @endforeach
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td> <b>Total Amount:</b> </td>
+                        <td><b>{{$sum}}</b></td>
+                          <td></td>
+                          <td></td>
+                        </tr>
       
       
                       </table>
+                      
                 </div>
 
 

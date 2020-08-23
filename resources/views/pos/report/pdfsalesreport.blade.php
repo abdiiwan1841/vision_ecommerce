@@ -42,8 +42,7 @@
                     <p style="text-align: center;margin-bottom: 10px;font-weight: bold">From {{date("d-M-Y", strtotime($request->start) )}} To {{date("d-M-Y", strtotime($request->end) )}}</p>
                     <table class="table table-sm">
          
-                      <tr>
-                        <th scope="col">Sl.</th>
+                      <tr style="background: #dddddd">
                         <th scope="col">Sales ID</th>
                         <th scope="col">Date</th>
                         <th scope="col">Customer</th>
@@ -60,13 +59,12 @@
                       $salessum = $salessum + $item['amount']
                       @endphp
                       <tr>
-                        <td>{{$key+1}}</td>
                         <td>#{{$item['id']}}</td>
                         <td>{{$item['date']}}</td>
                         <td>{{$item['customer']}}</td>
-                        <td>{{$item['address']}}</td>
+                        <td style="width: 100px">{{$item['address']}}</td>
                         <td>{{$item['phone']}}</td>
-                        <td>{{$item['amount']}}</td>
+                        <td><b>{{$item['amount']}}</b></td>
                       </tr>
                       @endforeach
                  

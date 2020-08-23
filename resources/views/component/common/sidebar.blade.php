@@ -195,13 +195,13 @@
             <a href="{{ route('prevdue.index') }}"><i class="fas fa-search-dollar"></i> Previous Due</a>
         </li>
         <li class="{{Request::is('admin/pos/sale*') ? 'active' : '' }}">
-            <a href="{{ route('sale.index') }}"><i class="fas fa-people-carry"></i> Inventory Sale</a>
+            <a href="{{ route('sale.index') }}"><i class="fas fa-people-carry"></i>Sales</a>
         </li>
         <li class="{{Request::is('admin/pos/cash*') ? 'active' : '' }}">
-            <a href="{{ route('cash.index') }}"><i class="fas fa-hand-holding-usd"></i> Inventory Cash</a>
+            <a href="{{ route('cash.index') }}"><i class="fas fa-hand-holding-usd"></i>Cashes</a>
         </li>
         <li class="{{Request::is('admin/pos/returnproduct*') ? 'active' : '' }}">
-            <a href="{{ route('returnproduct.index') }}"><i class="fas fa-undo"></i> Inventory Return</a>
+            <a href="{{ route('returnproduct.index') }}"><i class="fas fa-undo"></i>Returns</a>
         </li>
         
             
