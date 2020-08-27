@@ -774,7 +774,7 @@ class ReportController extends Controller
 
 
         $pdf = PDF::loadView('general_report.pdfcashreport',compact('datewise_sorted_data','request','general_opt_value'));
-        return $pdf->download('invoice.pdf');
+        return $pdf->download('cash report from '.$request->start.' to '. $request->end.'.pdf');
     }
 
 

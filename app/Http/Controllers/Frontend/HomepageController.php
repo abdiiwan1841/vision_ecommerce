@@ -40,7 +40,7 @@ class HomepageController extends Controller
         $general_opt_value = json_decode($general_opt->options, true);
 
         $ad = Advertisement::first();
-        $products = Product::where('type','ecom')->with('subcategory')->inRandomOrder()->take(10)->get();
+        $products = Product::where('type','ecom')->with('subcategory')->inRandomOrder()->take(18)->get();
         $random_product = Product::where('type','ecom')->inRandomOrder()->take($general_opt_value['hot_pd_noi'])->get();
         $new_products = Product::where('type','ecom')->orderBy('id','desc')->take($general_opt_value['new_pd_noi'])->get();
         $sliders = Slider::get();

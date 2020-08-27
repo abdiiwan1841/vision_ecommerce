@@ -406,7 +406,7 @@
 
           <div class="form-group">
             <label for="image">Product Image</label>
-          <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="image" required>
+          <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="image" >
             @error('image')
             <small class="form-error">{{ $message }}</small>
             @enderror

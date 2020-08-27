@@ -26,10 +26,10 @@
       @endif
       <form action="" method="post">
         @csrf
-        <label for="username">Email/Phone</label>
+        <label for="username">Email/Phone Or Username</label>
         <div class="input-group mb-3">
          
-          <input type="text" class="form-control" placeholder="Enter Email or Phone" id="username" name="adminname" value="{{old('adminname')}}"> 
+          <input type="text" class="form-control" placeholder="Enter Email,Phone Or Username" id="username" name="adminname" value="{{old('adminname')}}"> 
           <div class="input-group-append">
             <div class="input-group-text">
                 <i class="fa fa-user"></i>

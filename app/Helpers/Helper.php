@@ -70,6 +70,30 @@ function InvCashStatus($argument){
     return $status;
 }
 
+function VisionSmsResponse($response){
+    if($response == 1101){
+        return "success";
+    }elseif($response == 1000){
+        return "Invalid user or Password";
+    }elseif($response == 1002){
+        return "Empty Number";
+    }elseif($response == 1003){
+        return "Invalid message or empty message";
+    }elseif($response == 1004 ){
+        return "Invalid number";
+    }elseif($response == 1005 ){
+        return "All Number is Invalid";
+    }elseif($response == 1006  ){
+        return "insufficient Balance";
+    }elseif($response == 1009 ){
+        return "Inactive Account";
+    }elseif($response == 1010 ){
+        return "Max number limit exceeded";
+    }else{
+        return "";
+    }
+}
+
 function showProductTypes($argument){
     $status = "";
     if($argument == 'ecom' ){

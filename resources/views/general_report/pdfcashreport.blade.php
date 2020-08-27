@@ -63,7 +63,7 @@
                         <tr>
                           <td class="align-middle" >{{$item['date']}}</td>
                           <td  class="align-middle" >{{ $userinfo->name}}</td>
-                          <td style="width: 100px"  class="align-middle" >{{ $userinfo->address}}</td>
+                          <td style="width: 80px"  class="align-middle" >{{ $userinfo->address}}</td>
                           <td  class="align-middle" >{{ $userinfo->phone}}</td>
                           <td  class="align-middle" ><b>{{$item['amount']}}</b></td>
                           <td  class="align-middle">{{$item['reference']}}</td>

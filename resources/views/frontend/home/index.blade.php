@@ -184,8 +184,7 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
             
                         <ul>
   
-                       
-                        <li class="w-icon active"><a id="pd-{{$single_product->id}}" data-instock="{{$single_product->in_stock}}" data-name="{{$single_product->product_name}}" data-image="{{asset('public/uploads/products/tiny/'.$single_product->image)}}" data-id="{{$single_product->id}}" data-price="@if($single_product->discount_price == NULL) {{ $single_product->price}} @else {{ $single_product->discount_price}} @endif" href="#" class="add-to-cart"><i class=" icon_cart_alt"></i></a></li>
+                     
                  
   
   
@@ -244,11 +243,7 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
                      
               
                           <ul>
-    
-                         
-                          <li class="w-icon active"><a id="pd-{{$single_product->id}}" data-instock="{{$single_product->in_stock}}" data-name="{{$single_product->product_name}}" data-image="{{asset('public/uploads/products/tiny/'.$single_product->image)}}" data-id="{{$single_product->id}}" data-price="@if($single_product->discount_price == NULL) {{ $single_product->price}} @else {{ $single_product->discount_price}} @endif" href="#" class="add-to-cart"><i class=" icon_cart_alt"></i></a></li>
-                   
-    
+
     
     
                               <li class="quick-view"><a href="{{route('singleproduct.index',$single_product->id)}}">+ View Details</a></li>
@@ -286,75 +281,78 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
 </div>
 
 
+<div class="col-lg-12">
 
-
-
-
-
-
-
-    <!-- Women Banner Section Begin -->
-    <section class="women-banner spad">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-3">
-                <div class="product-large set-bg" data-setbg="{{asset('public/uploads/ad/cropped/'.$ad->image)}}">
-                <h2>{{$ad->title}}</h2>
-                <a href="{{$ad->button_link}}">{{$ad->button_text}}</a>
-                    </div>
-                </div>
-                <div class="col-lg-8 offset-lg-1">
-                    <div class="filter-control-2">
-                        <ul>
-                          <li class="product-item active" data-owl-filter="*">All</li>
-                            @foreach($category as $item)
-                            <li class="product-item" data-owl-filter=".{{Str::slug($item->category_name, '-')}}">{{$item->category_name}}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    <div class="product-slider owl-carousel">
-
-                        @foreach ($products as $single_product)
-                       
-                    <div class="product-item  {{Str::slug($single_product->category->category_name, '-')}}">
-                            <div class="pi-pic">
-                            <img src="{{asset('public/uploads/products/thumb/'.$single_product->image)}}" alt="{{$single_product->product_name}}">
-
-                              @if($single_product->in_stock == 0)
-                              <div class="stock-out">Stock Out</div>
-                              @else
-                              <div class="sale">Available</div>
-                              @endif
-          
-                                <ul>
-                                  
-                                    <li class="quick-view"><a href="{{route('singleproduct.index',$single_product->id)}}">+ View Details</a></li>
-                                </ul>
-                            </div>
-                            <div class="pi-text">
-                              <div class="catagory-name"><span style="color: {{$colors[rand(0,9)]}}">{{$single_product->subcategory->subcategory_name}}</span> - Size:  {{$single_product->size->name}} </div>
-                                <a href="#">
-                                    <h5>{{$single_product->product_name}}</h5>
-                                </a>
-                                <div class="product-price">
-                                  @if($single_product->discount_price == NULL)
-                                  Tk.{{$single_product->price}}
-                                  @else Tk.{{$single_product->discount_price}}
-                                  <span>Tk.{{$single_product->price}}</span>
-                                  @endif
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-
+<div class="product-list banner-section spad">
+  <div class="container-fluid">
+    <div class="section-title">
+      <h2>Our Products</h2>
+    </div>
+  <div class="row">
     
-   
-                    </div>
+      @foreach ($products as $single_product)
+
+      <div class="col-lg-2 col-sm-6">
+          <div class="product-item">
+            
+              <div class="pi-pic">
+              <img src="{{asset('public/uploads/products/thumb/'.$single_product->image)}}" alt="{{$single_product->product_name}}">
+                 
+                
+
+                  @if($single_product->in_stock == 0)
+                  <div class="stock-out">Stock Out</div>
+                  @endif
+
+                  <div class="icon">
+                    <span class="badge badge-pink">{{$single_product->brand->brand_name}}</span> 
                 </div>
-            </div>
-        </div>
-    </section>
-    <!-- Women Banner Section End -->
+             
+      
+                  <ul>
+
+                 
+                  <li class="w-icon active homepd"><a id="pd-{{$single_product->id}}" data-instock="{{$single_product->in_stock}}" data-name="{{$single_product->product_name}}" data-image="{{asset('public/uploads/products/tiny/'.$single_product->image)}}" data-id="{{$single_product->id}}" data-price="@if($single_product->discount_price == NULL) {{ $single_product->price}} @else {{ $single_product->discount_price}} @endif" href="#" class="add-to-cart"><i class=" icon_cart_alt"></i></a></li>
+           
+
+
+
+                      <li class="quick-view homepd"><a href="{{route('singleproduct.index',$single_product->id)}}">+ View Details</a></li>
+                      
+                  </ul>
+                </div>
+           
+              <div class="pi-text">
+                <div class="catagory-name"><span style="color: {{$colors[rand(0,9)]}}">{{$single_product->subcategory->subcategory_name}}</span> - Size:  {{$single_product->size->name}} </div>
+                  <a href="{{route('singleproduct.index',$single_product->id)}}">
+                      <h5>{{$single_product->product_name}}</h5>
+                  </a>
+                  <div class="product-price">
+                    @if($single_product->discount_price == NULL)
+                    Tk.{{$single_product->price}}
+                    @else Tk.{{$single_product->discount_price}}
+                    <span>Tk.{{$single_product->price}}</span>
+                    @endif
+                  </div>
+              </div>
+          </div>
+          </div>
+      @endforeach
+    </div>
+    <div style="width: 100%;text-align: center" >
+    <a class="btn site-btn" href="{{route('shoppage.index')}}">More Products</a>
+    </div>
+    
+     
+    </div>
+
+  </div>
+
+
+</div>
+
+
+
 
 
   

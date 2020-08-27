@@ -85,7 +85,31 @@ class SaleController extends Controller
 
         $sales->product()->attach($product_info);
 
-        Toastr::success('Sales Created Successfully', 'success');
+        
+        // $url = "http://66.45.237.70/api.php";
+        // $number="01736402322";
+        // $text="New Invoice, Date: ".$sales->sales_at->format('d-m-Y')." ID:# ".$sales->id."  ".$sales->user->name.",  ".$sales->user->address.", Amount: ".$sales->amount." .Please Approve,Thanks";
+        // $data= array(
+        // 'username'=>"shajibazher",
+        // 'password'=>"UtUs6B8WVqjmm72",
+        // 'number'=>"$number",
+        // 'message'=>"$text"
+        // );
+
+        // $ch = curl_init(); // Initialize cURL
+        // curl_setopt($ch, CURLOPT_URL,$url);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $smsresult = curl_exec($ch);
+        // $p = explode("|",$smsresult);
+        // $sendstatus = $p[0];
+        // if($sendstatus == 1101){
+        //     Toastr::success('Sales Invoice Created Successfully An Sms has been Sent to respected Phone Number For order Approval', 'success');
+        // }else{
+        //     Toastr::success('Sales Created Successfully', 'success');
+        //     Toastr::error(VisionSmsResponse($sendstatus), 'error');
+        // }
+
         return $sales->id;
     }
 
@@ -164,7 +188,29 @@ class SaleController extends Controller
         $sale->product()->attach($product_info);
 
 
-        Toastr::success('Sales Created Successfully', 'success');
+        // $url = "http://66.45.237.70/api.php";
+        // $number="01736402322";
+        // $text="A Sales Invoice Is Edited By ".Auth::user()->name.", Invoice Date: ".$sale->sales_at->format('d-m-Y')." ID:# ".$sale->id."  ".$sale->user->name. " Please Approve,Thanks";
+        // $data= array(
+        // 'username'=>"shajibazher",
+        // 'password'=>"UtUs6B8WVqjmm72",
+        // 'number'=>"$number",
+        // 'message'=>"$text"
+        // );
+
+        // $ch = curl_init(); // Initialize cURL
+        // curl_setopt($ch, CURLOPT_URL,$url);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $smsresult = curl_exec($ch);
+        // $p = explode("|",$smsresult);
+        // $sendstatus = $p[0];
+        // if($sendstatus == 1101){
+        //     Toastr::success('Sales Invoice Updated Successfully An Sms has been Sent to respected Phone Number: '.$number.' For Approval', 'success');
+        // }else{
+        //     Toastr::success('Sales Updated Successfully', 'success');
+        //     Toastr::error(VisionSmsResponse($sendstatus), 'error');
+        // }
         return $sale->id;
     }
 
@@ -204,16 +250,47 @@ class SaleController extends Controller
     }
 
     public function approve(Request $request,$id){
-        if(Auth::user()->role->id == 2){
+        if(Auth::user()->role->id != 1){
             Toastr::error('You Are Not Authorized', 'error');
             return redirect()->back();
         }else{
-        $sale = Sale::findOrFail($id);
+        $sale = Sale::with('product')->findOrFail($id);
         $sale->sales_status = 1;
         $sale->approved_by = Auth::user()->id;
         $sale->save();
-        Toastr::success('Sales Approved Successfully', 'success');
-        return redirect()->back();
+
+        //For Sent Product To Sms Product 
+        // $pdinfo = "";
+        // foreach($sale->product as $pd){
+        //     $pdinfo .= $pd->product_name." = ".$pd->pivot->qty.",";
+        // }
+
+
+        // $url = "http://66.45.237.70/api.php";
+        // $number="01724136687";
+        // $text="New Invoice Approved By ".Auth::user()->name.", Date: ".$sale->sales_at->format('d-m-Y')." Customer: ".$sale->user->name.",  ".$sale->user->address." Amount= ".$sale->amount.". Check Details On Site, Thanks";
+        // $data= array(
+        // 'username'=>"shajibazher",
+        // 'password'=>"UtUs6B8WVqjmm72",
+        // 'number'=>"$number",
+        // 'message'=>"$text"
+        // );
+
+        // $ch = curl_init(); // Initialize cURL
+        // curl_setopt($ch, CURLOPT_URL,$url);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $smsresult = curl_exec($ch);
+        // $p = explode("|",$smsresult);
+        // $sendstatus = $p[0];
+        // if($sendstatus == 1101){
+        //     Toastr::success('Invoice Approved Successfully An sms has been sent to '.$number, 'success');
+        // }else{
+        //     Toastr::success('Invoice Approved Successfully', 'success');
+        //     Toastr::error(VisionSmsResponse($sendstatus), 'error');
+        // }
+        
+        return redirect()->route('admin.inventorydashboard');
         }
     }
 

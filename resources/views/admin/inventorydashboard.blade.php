@@ -409,6 +409,7 @@
 		<tr>
 		  <th class="align-middle">Sl</th>
 		  <th class="align-middle">Pending Cash</th>
+		  <th class="align-middle">Action</th>
 		</tr>
 	  </thead>
 	  <tbody>
@@ -419,7 +420,28 @@
 		@endphp
 		<tr style="background: #ffcccc">
 		<td  class="align-middle"><strong>{{$key+1}}</strong></td>
-		<td  class="align-middle"><a style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_cash_item->posted_by}} at {{$pending_cash_item->created_at->format('d-M-Y g:i a')}} - Click Here For Details"  class="btn btn-link" href="{{route('invdashboard.cashdetails',$pending_cash_item->id)}}"> <b> {{$pending_cash_item->user->name}} = {{$pending_cash_item->amount}} </b> <br> ( <small>{{$pending_cash_item->received_at->format('d-M-Y')}}</small> )  </a></td>
+		<td  class="align-middle"><a style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_cash_item->posted_by}} at {{$pending_cash_item->created_at->format('d-M-Y g:i a')}} - Click Here For Details"  class="btn btn-link" href="{{route('invdashboard.cashdetails',$pending_cash_item->id)}}">  {{$pending_cash_item->user->name}}  <br> = <b> {{$pending_cash_item->amount}} tk</b> <br> ( <small>{{$pending_cash_item->received_at->format('d-M-Y')}}</small> )  </a></td>
+		<td class="align-middle"> 
+			@if($pending_cash_item->status == 0)
+	
+			@if(Auth::user()->role->id == 1)
+				<form action="{{route('cash.approve',$pending_cash_item->id)}}" method="POST" style="display: inline-block">
+
+				@csrf
+			   
+					<button onclick="return confirm('Are you sure you want to Confirm This Cash')"  type="submit" class="btn btn-sm btn-success">Approve</button>
+				</form> 
+				
+
+				@else
+
+				<span class="badge badge-warning">pending</span>
+			@endif
+			@else
+
+
+			<span class="badge badge-warning">pending</span>
+			@endif</td>
 		</tr>
 		@endforeach
 		  
