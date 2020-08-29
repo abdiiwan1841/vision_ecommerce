@@ -217,16 +217,16 @@ class ReturnproductController extends Controller
 
 
     public function approve(Request $request,$id){
-        if(Auth::user()->role->id == 2){
-            Toastr::error('You Are Not Authorized', 'error');
-            return redirect()->back();
-        }else{
         $returnproduct = Returnproduct::findOrFail($id);
+        if(Auth::user()->role->id == 2){
+            return ['id'=> $returnproduct->id,'status' => $returnproduct->return_status,'msg' => 'You Are Not Authorized' ];
+        }else{
+        
         $returnproduct->return_status = 1;
         $returnproduct->approved_by = Auth::user()->id;
         $returnproduct->save();
-        Toastr::success('Sales Return Approved Successfully', 'success');
-        return redirect()->back();
+
+       return ['id'=> $returnproduct->id,'status' => $returnproduct->return_status,'msg' => 'Return Invoice Approved Successfully' ];
         }
     }
 }

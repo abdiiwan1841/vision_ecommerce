@@ -63,6 +63,16 @@ class ApiInformationController extends Controller
 
     }
 
+
+    public function pendingSalesInfo($id){
+        return Sale::with('product','user')->findOrFail($id);
+    }
+
+
+    public function pendingReturnInfo($id){
+        return Returnproduct::with('product','user')->findOrFail($id);
+    }
+
     public function saleinfo($id){
         $sale =  Sale::with('product')->findOrFail($id);
 

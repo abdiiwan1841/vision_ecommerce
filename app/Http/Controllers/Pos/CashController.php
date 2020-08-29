@@ -104,7 +104,7 @@ class CashController extends Controller
     }
 
     public function approve(Request $request,$id){
-        if(Auth::user()->role->id == 2){
+        if(Auth::user()->role->id != 1){
             Toastr::error('You Are Not Authorized', 'error');
             return redirect()->back();
         }else{
@@ -112,8 +112,7 @@ class CashController extends Controller
         $cash->status = 1;
         $cash->approved_by = Auth::user()->id;
         $cash->save();
-        Toastr::success('Cash Approved Successfully', 'success');
-        return redirect()->back();
+        return $id;
         }
     }
 
