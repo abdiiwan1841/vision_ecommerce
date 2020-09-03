@@ -171,6 +171,7 @@ class SaleController extends Controller
         $sale->sales_at = $request->sales_date." ".Carbon::now()->toTimeString();
         $sale->sales_status = 0;
         $sale->approved_by = null;
+        $sale->edited = 1;
         $sale->amount = $amount_total;
         $sale->save();
 
@@ -228,7 +229,7 @@ class SaleController extends Controller
         $sale->save();
         $sale->product()->detach();
         Toastr::success('Sales cancelled Successfully', 'success');
-        return redirect(route('admin.inventorydashboard'));
+        return redirect()->route('returnproduct.index');
         }
     }
 
@@ -260,6 +261,8 @@ class SaleController extends Controller
         $sale->approved_by = Auth::user()->id;
         $sale->save();
 
+        //check if the invoice is not edited then send sms
+        if($sale->edited != 1){
         //For Sent Product To Sms Product 
         // $pdinfo = "";
         // foreach($sale->product as $pd){
@@ -268,7 +271,7 @@ class SaleController extends Controller
 
 
         // $url = "http://66.45.237.70/api.php";
-        // $number="01724136687";
+        // $number="01724136687,01958454158";
         // $text="New Invoice Approved By ".Auth::user()->name.", Date: ".$sale->sales_at->format('d-m-Y')." Customer: ".$sale->user->name.",  ".$sale->user->address." Amount= ".$sale->amount.". Check Details On Site, Thanks";
         // $data= array(
         // 'username'=>"shajibazher",
@@ -290,23 +293,25 @@ class SaleController extends Controller
         //     Toastr::success('Invoice Approved Successfully', 'success');
         //     Toastr::error(VisionSmsResponse($sendstatus), 'error');
         // }
+
+        }
+        //endcheck if invoice is edited
         
         return ['id'=> $sale->id,'status' => $sale->sales_status,'msg' => 'Sales Invoice Approved Successfully' ];
         }
     }
 
     public function delivery($id){
-        if(Auth::user()->role->id != 4){
-            Toastr::error('You Are Not Authorized', 'error');
-            return redirect()->back();
-        }else{
         $sale = Sale::findOrFail($id);
+        if(Auth::user()->role->id != 4){
+            return ['id'=> $sale->id,'status' => $sale->delivery_status,'msg' => 'You Are Not Authorized' ];
+        }else{
+        
         $sale->timestamps = false;
         $sale->delivery_status = 1;
         $sale->delivered_by = Auth::user()->id;
         $sale->save();
-        Toastr::success('Sales Invoice Mark as Delivered', 'success');
-        return redirect()->route('admin.inventorydashboard');
+        return ['id'=> $sale->id,'status' => $sale->delivery_status,'msg' => 'Invoice Mark as Delivered' ];
         }
     }
 }

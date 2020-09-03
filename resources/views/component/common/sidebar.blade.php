@@ -226,17 +226,29 @@
         <a href="{{ route('purchase.index') }}"> <i class="fas fa-store"></i> Purchase</a>
         </li>
         
-        <li class="{{Request::is('admin/p_order*') ? 'active' : '' }}">
-            <a href="{{ route('p_order.index') }}"> <i class="fas fa-shopping-bag"></i> Purchase Order</a>
-            </li>
+  
         
-            <li class="{{Request::is('admin/payment') ? 'active' : '' }}">
-                <a href="{{ route('payment.index') }}"><i class="fas fa-dollar-sign"></i> Payment</a>
-            </li>
             
-            <li class="{{Request::is('admin/suppliers*') ? 'active' : '' }}">
+
+
+            <li class="">
+            <a href="#suppliersection" data-toggle="collapse" aria-expanded="{{Request::is('admin/suppliersection*') ? 'true' : '' }}" class="dropdown-toggle"> <i class="fas fa-hospital-user"></i> Suppliers Section</a>
+            <ul class="collapse list-unstyled {{Request::is('admin/suppliersection*') ? 'active collapse show' : '' }}" id="suppliersection">
+            
+            <li class="{{Request::is('admin/suppliersection/suppliers') ? 'active' : '' }}">
                 <a href="{{ route('suppliers.index') }}"> <i class="fas fa-hospital-user"></i> Suppliers</a>
             </li>
+
+            <li class="{{Request::is('admin/suppliersection/payment') ? 'active' : '' }}">
+                <a href="{{ route('payment.index') }}"><i class="fas fa-dollar-sign"></i> Payment</a>
+            </li>
+            <li class="{{Request::is('admin/suppliersection/supplierdue') ? 'active' : '' }}">
+                <a href="{{ route('supplierdue.index') }}"><i class="fas fa-search-dollar"></i> Supplier Due</a>
+            </li>
+
+            </ul>
+
+           </li>
         
             
            
@@ -294,7 +306,12 @@
 
                 <li class="{{Request::is('admin/report/pos/salesreport*') ? 'active' : '' }}">
                     <a href="{{ route('report.possalesreport') }}"><i class="fa fa-layer-group"></i>Inventory Sales Report According To Date</a>
-                </li>                
+                </li>
+
+                <li class="{{Request::is('admin/report/supplierdue*') ? 'active' : '' }}">
+                    <a href="{{ route('report.supplierdue') }}"><i class="fa fa-layer-group"></i>Supplier Due Report</a>
+                </li>     
+                
             </ul>
         
         </li>

@@ -27,12 +27,11 @@
                 <div class="col-lg-4">
                   @if($returnDetails->return_status == 0)
                   @if(Auth::user()->role->id == 1)
-                  <form action="{{route('returnproduct.approve',$returnDetails->id)}}" method="POST" >
-                    @csrf
-                    <button onclick="return confirm('Are You Sure You Want To Approve Order')" type="submit" class="btn btn-warning btn-sm mb-3 float-right" style="margin-right: 5px;">
+     
+                    <button onclick="returnApprove('{{route('returnproduct.approve',$returnDetails->id)}}')" type="submit" class="btn btn-warning btn-sm mb-3 float-right" style="margin-right: 5px;">
                       <i class="fas fa-check"></i> APPROVE THIS  RETURN ?
                     </button>
-                  </form>
+             
   
                   <form action="{{route('returnproduct.destroy',$returnDetails->id)}}" method="POST" >
                     @csrf
@@ -227,3 +226,31 @@
     <!-- /.content -->
 
     @endsection
+
+
+    @push('js')
+    <script src="{{asset('public/assets/js/axios.min.js')}}"></script>
+    <script>
+      	function returnApprove(return_approve_url){
+		axios.post(return_approve_url)
+		.then(function (response) {
+			let feedback = JSON.parse(response.request.response);
+			if(feedback.status == 0){
+				toastr.error(feedback.msg, 'Notifications')
+			}else if(feedback.status == 1){
+			
+			toastr.success('Return Invoice Approved Successfully', 'Notifications')
+      location.reload();
+			
+			}
+
+			
+		})
+		.catch(function (error) {
+			console.log(error);
+			
+		});
+	}
+    </script>
+
+    @endpush

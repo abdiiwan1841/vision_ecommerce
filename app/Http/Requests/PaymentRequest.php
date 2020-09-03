@@ -26,7 +26,7 @@ class PaymentRequest extends FormRequest
         return [
             'supplier' => 'required',
             'amount' => 'required|integer',
-            'reference' => 'required',
+            'reference' => 'max:20',
             'payments_at' => 'required',
         ];
     }

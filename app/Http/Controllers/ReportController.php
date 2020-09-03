@@ -7,9 +7,13 @@ use App\Cash;
 use App\Sale;
 use App\User;
 use App\Order;
+use App\Payment;
 use App\Prevdue;
 use App\Division;
+use App\Purchase;
+use App\Supplier;
 use Carbon\Carbon;
+use App\Supplierdue;
 use App\GeneralOption;
 use App\Returnproduct;
 use Illuminate\Http\Request;
@@ -815,6 +819,138 @@ class ReportController extends Controller
 
         $pdf = PDF::loadView('pos.report.pdfsalesreport',compact('datewise_sorted_data','request','general_opt_value'));
         return $pdf->download('invoice.pdf');
+    }
+
+
+    public function supplierdue(){
+        $suppliers = Supplier::all();
+        return view('general_report.supplierreport',compact('suppliers'));
+    }
+
+    public function showsupplierdue(Request $request){
+        $this->validate($request,[
+            'supplier' => 'required|numeric',
+            'start' => 'required|date',
+            'end' => 'required|date',
+        ]);
+
+        $current_supplier = User::findOrFail($request->supplier);
+        $suppliers = Supplier::all();
+
+
+        $supplierdue = Supplierdue::where('supplier_id',$request->supplier)->whereBetween('due_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('due_at', 'ASC')->get();
+
+        $purchase = Purchase::where('supplier_id',$request->supplier)->whereBetween('purchased_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('purchased_at', 'ASC')->get();
+
+
+        $payments = Payment::where('supplier_id',$request->supplier)->whereBetween('payments_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('payments_at', 'ASC')->get();
+
+
+
+
+            
+
+        $supplierdueinfo = [];
+        foreach($supplierdue as $sdue){
+            $supplierdueinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$sdue->due_at)->format('d-m-Y'), 'id' => $sdue->id, 'particular'=>  'prevdue', 'debit' => $sdue->amount,  'credit' => 0,'reference' => $sdue->reference];
+        }
+
+    
+        $purchaseinfo = [];
+        foreach($purchase as $pinfo){
+            $purchaseinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$pinfo->purchased_at)->format('d-m-Y'), 'id' => $pinfo->id, 'particular'=>  'purchase', 'debit' => $pinfo->amount,  'credit' => 0,'reference' => NULL];
+        }
+
+        $paymentinfo = [];
+        foreach($payments as $payment){
+            $paymentinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$payment->payments_at)->format('d-m-Y'), 'id' => $payment->id, 'particular'=>  'payment', 'debit' => 0,  'credit' => $payment->amount,'reference' => $payment->reference];
+        }
+
+        $merge_data =  array_merge($supplierdueinfo,$purchaseinfo, $paymentinfo);
+
+        $datewise_sorted_data = [];
+        foreach($merge_data as $merge){
+            $datewise_sorted_data[] = ['date' => $merge['date'],'id' => $merge['id'],'particular' => $merge['particular'], 'debit' => $merge['debit'], 'credit' => $merge['credit'],'reference' => $merge['reference'] ];
+        }
+
+       usort($datewise_sorted_data,  array($this, "date_sort"));
+
+       $prevsupplierdue = Supplierdue::where('supplier_id',$request->supplier)->whereNotBetween('due_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
+
+       $prevpurchase = Purchase::where('supplier_id',$request->supplier)->whereNotBetween('purchased_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
+
+       $prevpayments = Payment::where('supplier_id',$request->supplier)->whereNotBetween('payments_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
+
+       $balance = ($prevsupplierdue+$prevpurchase) - ($prevpayments);
+
+        return view('general_report.showsuppliereport',compact('datewise_sorted_data','request','suppliers','balance','current_supplier'));
+
+
+    }
+
+    public function pdfsupplierdue(Request $request){
+        $this->validate($request,[
+            'supplier' => 'required|numeric',
+            'start' => 'required|date',
+            'end' => 'required|date',
+        ]);
+
+        $general_opt = GeneralOption::first();
+        $general_opt_value = json_decode($general_opt->options, true);
+
+        $current_supplier = User::findOrFail($request->supplier);
+        $suppliers = Supplier::all();
+
+
+        $supplierdue = Supplierdue::where('supplier_id',$request->supplier)->whereBetween('due_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('due_at', 'ASC')->get();
+
+        $purchase = Purchase::where('supplier_id',$request->supplier)->whereBetween('purchased_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('purchased_at', 'ASC')->get();
+
+
+        $payments = Payment::where('supplier_id',$request->supplier)->whereBetween('payments_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('payments_at', 'ASC')->get();
+
+
+
+
+            
+
+        $supplierdueinfo = [];
+        foreach($supplierdue as $sdue){
+            $supplierdueinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$sdue->due_at)->format('d-m-Y'), 'id' => $sdue->id, 'particular'=>  'prevdue', 'debit' => $sdue->amount,  'credit' => 0,'reference' => $sdue->reference];
+        }
+
+    
+        $purchaseinfo = [];
+        foreach($purchase as $pinfo){
+            $purchaseinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$pinfo->purchased_at)->format('d-m-Y'), 'id' => $pinfo->id, 'particular'=>  'purchase', 'debit' => $pinfo->amount,  'credit' => 0,'reference' => NULL];
+        }
+
+        $paymentinfo = [];
+        foreach($payments as $payment){
+            $paymentinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$payment->payments_at)->format('d-m-Y'), 'id' => $payment->id, 'particular'=>  'payment', 'debit' => 0,  'credit' => $payment->amount,'reference' => $payment->reference];
+        }
+
+        $merge_data =  array_merge($supplierdueinfo,$purchaseinfo, $paymentinfo);
+
+        $datewise_sorted_data = [];
+        foreach($merge_data as $merge){
+            $datewise_sorted_data[] = ['date' => $merge['date'],'id' => $merge['id'],'particular' => $merge['particular'], 'debit' => $merge['debit'], 'credit' => $merge['credit'],'reference' => $merge['reference'] ];
+        }
+
+       usort($datewise_sorted_data,  array($this, "date_sort"));
+
+       $prevsupplierdue = Supplierdue::where('supplier_id',$request->supplier)->whereNotBetween('due_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
+
+       $prevpurchase = Purchase::where('supplier_id',$request->supplier)->whereNotBetween('purchased_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
+
+       $prevpayments = Payment::where('supplier_id',$request->supplier)->whereNotBetween('payments_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
+
+       $balance = ($prevsupplierdue+$prevpurchase) - ($prevpayments);
+
+
+       
+       $pdf = PDF::loadView('general_report.pdfsupplierreport',compact('datewise_sorted_data','request','suppliers','balance','current_supplier','general_opt_value'));
+       return $pdf->download('suppleriduereport.pdf');
     }
 
 

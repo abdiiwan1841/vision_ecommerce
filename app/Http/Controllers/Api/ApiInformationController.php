@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 use Session;
 use App\Area;
+use App\Cash;
 use App\Sale;
 use App\User;
 use App\Order;
@@ -128,5 +129,13 @@ class ApiInformationController extends Controller
 
     public function priceInfo($id){
         return Product::findOrFail($id);
+    }
+
+
+    public function invdueinfo($id){
+        $sales = Sale::where('user_id',$id)->sum('amount');
+        $cashes = Cash::where('user_id',$id)->where('status',1)->sum('amount');
+        $returns = Returnproduct::where('user_id',$id)->sum('amount');
+        return $sales-($cashes+$returns);
     }
 }

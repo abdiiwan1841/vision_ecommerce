@@ -39,7 +39,7 @@
                       </tr>
                       <tr>
                         <td>Status:</td>
-                      <td>{!!InvCashStatus($cash->status)!!}</td>
+                      <td id="cash-{{$cash->id}}">{!!InvCashStatus($cash->status)!!}</td>
                       </tr>
                       <tr>
                         <td>Cash Received Date:</td>
@@ -55,13 +55,9 @@
                       <tr>
                         <td>Action</td>
                         <td>
-   
-                          <form action="{{route('cash.approve',$cash->id)}}" method="POST" style="display: inline-block">
-      
-                          @csrf
                          
-                              <button onclick="return confirm('Are you sure you want to Confirm This Cash')"  type="submit" class="btn btn-sm btn-success"><i class="fas fa-check"></i> Approve</button>
-                          </form> |
+                              <button onclick="Confirmation('{{route('cash.approve',$cash->id)}}','{{$cash->user->name}}','{{$cash->amount}}')"  type="button" class="btn btn-sm btn-success"><i class="fas fa-check"></i> Approve</button>
+                           |
                           <form action="{{route('cash.cancel',$cash->id)}}" method="POST" style="display: inline-block">
                             @csrf
                             <button type="submit" onclick="return confirm('Are you sure you want to cancel this cash')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Cancel</button>
@@ -100,6 +96,74 @@
   </div>
 
 @endsection
+
+
+@push('js')
+<script src="{{asset('public/assets/js/axios.min.js')}}"></script>
+<script>
+
+const swalWithBootstrapButtons = Swal.mixin({
+  customClass: {
+    confirmButton: 'btn btn-success',
+    cancelButton: 'btn btn-warning  mr-3'
+  },
+  buttonsStyling: false
+});
+
+
+
+	function CashApprove(cash_aprove_url){
+		axios.post(cash_aprove_url)
+		.then(function (response) {
+			
+			$("#cash-"+response.request.response).html('<span class="badge badge-success">Approved</span>');
+      location.reload();
+			
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+
+	}
+
+
+
+
+
+  function Confirmation(cash_aprove_url,customer,amount){
+	swalWithBootstrapButtons.fire({
+  title: 'Are you sure? '+customer+' Amount: '+amount+' tk',
+  text: "You won't be able to revert this!",
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonText: 'Yes, approve it!',
+  cancelButtonText: 'Later',
+  reverseButtons: true
+}).then((result) => {
+  if (result.value) {
+	CashApprove(cash_aprove_url)
+    swalWithBootstrapButtons.fire(
+      'Approved Successfully!',
+      'Your Data Has Been Stored',
+      'success'
+    )
+  } else if (
+    /* Read more about handling dismissals below */
+    result.dismiss === Swal.DismissReason.cancel
+  ) {
+    swalWithBootstrapButtons.fire(
+      'Denied',
+      'No More Changes On Database :)',
+      'error'
+    )
+  }
+});
+}
+
+
+</script>
+
+@endpush
 
 
 

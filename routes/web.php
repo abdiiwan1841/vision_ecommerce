@@ -101,6 +101,7 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
 //Access For Accountant, Admin And Superadmin Only
 
 Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], function(){
+    Route::resource('suppliersection/supplierdue', 'SupplierdueController');
     Route::resource('pos/customers', 'Pos\UserController');
     Route::get('ecom/customers', 'Ecom\UserController@index')->name('ecomcustomer.index');
     Route::resource('product_section/products', 'ProductController');
@@ -123,9 +124,13 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], f
 
 
 
-    Route::get('report/pos/salesreport/', 'ReportController@SalesReport')->name('report.possalesreport');
-    Route::post('report/pos/salesreport/', 'ReportController@SalesReportResult')->name('report.possalesresult');
+    Route::get('report/pos/salesreport', 'ReportController@SalesReport')->name('report.possalesreport');
+    Route::post('report/pos/salesreport', 'ReportController@SalesReportResult')->name('report.possalesresult');
     Route::post('report/pos/salesreport/pdf', 'ReportController@pdfSalesReport')->name('report.pdfpossalesresult');
+
+    Route::get('report/supplierdue', 'ReportController@supplierdue')->name('report.supplierdue');
+    Route::post('report/supplierdue', 'ReportController@showsupplierdue')->name('report.showsupplierdue');
+    Route::post('report/supplierdue/pdf', 'ReportController@pdfsupplierdue')->name('report.pdfsupplierdue');
 
 
     Route::get('report/pos/divisiowisenreport/', 'ReportController@DivisionReport')->name('report.divisionreport');
@@ -155,7 +160,7 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], f
     Route::put('allprice/{id}','PriceController@update')->name('price.update');
     Route::get('tp','PriceController@tpindex')->name('tp.index');
     Route::put('tp/{id}','PriceController@tpupdate')->name('tp.update');
-    Route::resource('payment', 'PaymentController');
+    Route::resource('suppliersection/payment', 'PaymentController');
     Route::get('ecom/charge', 'ChargeController@index')->name('charge.index');
     Route::get('ecom/charge/{id}/edit', 'ChargeController@edit')->name('charge.edit');
     Route::put('ecom/charge/{id}', 'ChargeController@update')->name('charge.update');
@@ -166,10 +171,9 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], f
     Route::put('order/shipping/{id}', 'OrderController@shipped')->name('order.shipped');
     Route::put('order/cance/{id}', 'OrderController@OrderCancel')->name('order.cancel');
     Route::get('order/invoice/{id}', 'OrderController@invoice')->name('order.invoice');
-    Route::resource('suppliers', 'SupplierController');
+    Route::resource('suppliersection/suppliers', 'SupplierController');
     Route::post('purchase/result','PurchaseController@result')->name('purchase.result');
     Route::get('purchase/result','PurchaseController@index');
-    Route::resource('p_order', 'PurchaseorderController');
     Route::resource('ecom/return', 'Ecom\ReturnproductController');
     Route::resource('pos/returnproduct', 'Pos\ReturnproductController');
     Route::post('pos/returnproductresult','Pos\ReturnproductController@result')->name('returnproduct.result');

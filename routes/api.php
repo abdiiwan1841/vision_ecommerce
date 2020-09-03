@@ -32,4 +32,4 @@ Route::get('social', 'Api\ApiInformationController@social')->name('social.api');
 Route::get('priceinfo/{id}', 'Api\ApiInformationController@priceInfo')->name('price.api');
 Route::get('pendingsales/{id}', 'Api\ApiInformationController@pendingSalesInfo')->name('pendingsaleinfo.api');
 Route::get('pendingreturns/{id}', 'Api\ApiInformationController@pendingReturnInfo')->name('pendingreturninfo.api');
-
+Route::get('invdueinfo/{id}', 'Api\ApiInformationController@invdueinfo');

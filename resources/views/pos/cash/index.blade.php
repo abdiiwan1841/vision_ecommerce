@@ -28,6 +28,9 @@
     
 
     @slot('modal_body')
+        <div class="form-group">
+           <h5 id="due" style="color: red;text-align: right"></h5>
+        </div>
           <div class="form-group">
             <label for="received_at">Cash Receive Date</label>
             @php
@@ -216,6 +219,8 @@
 @endpush
 
 @push('js')
+<script src="{{asset('public/assets/js/axios.min.js')}}"></script>
+
 @if ($errors->any())
 {{-- prevent The Modal Close If Any Error In the Form --}}
 <script>
@@ -237,15 +242,49 @@ if(sessionStorage.getItem("editMode") === 'true'){
 
 
 <script>
+
+var baseurl = '{{url('/')}}';
 $( "#user" ).change(function() {
     var user_id = $("#user option:selected").val();
-    $.get("{{url('/')}}/api/userinfo/"+user_id, function(data, status){
-      if(status === 'success'){
-        $('#user-details').show();
-        $("#user-details").html("<div class='user-deatils'><h4 class='text-center'> "+data.name+"</h4><br><b>Address :</b> "+data.address+"<br><b>Phone :</b> "+data.phone+"<br><b>Email :</b>"+data.inventory_email+"</div>");
+
+
+  function getUserInfo() {
+    return axios.get(baseurl+"/api/userinfo/"+user_id);
+  }
+  function getDueInfo() {
+    return axios.get(baseurl+"/api/invdueinfo/"+user_id);
+  }
+
+
+  axios.all([getUserInfo(),getDueInfo()])
+
+
+  .then(function (results) {
+    const USERINFO = JSON.parse(results[0].request.response);
+
+    $('#user-details').show();
+    $("#user-details").html("<div class='user-deatils'><h4 class='text-center'> "+USERINFO.name+"</h4><br><b>Address :</b> "+USERINFO.address+"<br><b>Phone :</b> "+USERINFO.phone+"<br><b>Email :</b>"+USERINFO.inventory_email+"</div>");
+    const DUEINFO = results[1].request.response;
+    $("#due").html('Current Due: <span>'+DUEINFO+'</span>/-');
+  });
+
+
+
+
+
+
+
+
+
+
+
+    // $.get(baseurl+"/api/userinfo/"+user_id, function(data, status){
+    //   if(status === 'success'){
+    //     $('#user-details').show();
+    //     $("#user-details").html("<div class='user-deatils'><h4 class='text-center'> "+data.name+"</h4><br><b>Address :</b> "+data.address+"<br><b>Phone :</b> "+data.phone+"<br><b>Email :</b>"+data.inventory_email+"</div>");
         
-      }
-    });
+    //   }
+    // });
 });
 
 
@@ -265,7 +304,7 @@ function addMode(store_url){
   $('#addForm').trigger("reset");
   $(".is-invalid").removeClass("is-invalid");
   $(".form-error").remove();
-  $('#user').val('').trigger('change');
+  //$('#user').val('').trigger('change');
   $('#user-details').hide();
   if(putremove == undefined){
     putremove = $('input[value="PUT"]').detach();

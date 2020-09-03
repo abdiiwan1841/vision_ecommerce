@@ -28,8 +28,8 @@
 
               <div class="form-group">
                 <label for="user">Customer </label>
-                <select data-placeholder="-select a customer-" class="js-example-responsive" name="user" id="user" class="form-control">
-                <option></option>
+                <select  class="js-example-responsive" name="user" id="user" class="form-control">
+                
                  
                   @foreach ($users as $user)
                 <option value="{{$user->id}}">{{$user->name}}</option>    
@@ -44,7 +44,7 @@
           </div>
 
 
-          <div class="col-lg-6">
+          <div class="col-lg-5">
             <div class="form-group">
               <div id="customer-details"></div>
             </div>
@@ -52,12 +52,12 @@
 
 
 
-           <div class="col-lg-2">
+           <div class="col-lg-3">
           <div class="card">
             
             <div class="card-header">
               
-                <span class="float-left"><b>RESET</b></span> <button type="button" onclick="reset()" id="reset" class="btn btn-success float-right"><i class="fa fa-sync-alt"></i> </button>
+                <span class="float-left"><b>RESET FIELDS</b></span> <button type="button" onclick="reset()" id="reset" class="btn btn-success float-right"><i class="fa fa-sync-alt"></i> </button>
               </div>
               
             </div>
@@ -80,8 +80,7 @@
                   @endforeach
 
                 </select>
-                <div class="product_err err_form"></div>
-               
+                <div class="product_err err_form"></div>             
               </div>
               <div class="form-group">
                 <span class="text-center" id="selected-product-info"></span>
@@ -153,9 +152,9 @@
             <td>Sl.</td>
             <td>Name</td>
             <td>Image</td>
+            <td>Qty</td>
             <td>Price</td>
             <td>Size</td>
-            <td>Qty</td>
             <td>Free</td>
             <td>Total</td>
             <td>Action</td>
@@ -216,7 +215,12 @@
 @endpush
 
 @push('js')
+<script src="{{asset('public/assets/js/axios.min.js')}}"></script>
+
+
 <script>
+
+
 
   //Toater Alert 
   const Toast = Swal.mixin({
@@ -232,8 +236,50 @@
 })
 
 function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
+var baseurl = '{{url('/')}}';
+var salestoreurl = '{{route('sale.store')}}';
+function displayCart() {
+  var discount_amount = $(".discount").val();
+  var cartArray = salesCart.listCart();
+  var output = "";
+  var subtotal = salesCart.totalCart();
+  var disc = subtotal*sales_discount;
+  var netamount = subtotal-discount_amount;
+  var g_total = parseFloat(netamount)+parseFloat(carrying_and_loading);
+  var j =1;
+  for(var i in cartArray) {
+    output += "<tr>"
+      + "<td>" + j++ + "</td>"
+      + "<td>" + cartArray[i].o_name + "</td>"
+      + "<td><img style='width: 50px;' src='"+baseurl+"/public/uploads/products/tiny/"+cartArray[i].image+"' class='img-thumbnail' /></td>"
+      + "<td>"+ cartArray[i].count +"</td>"
+      + "<td>" + cartArray[i].price + "</td>"
+      + "<td>" + cartArray[i].product_size + "</td>"
+      + "<td>"+ cartArray[i].free +"</td>"
+      + "<td>" + Math.round(cartArray[i].total) + "</td>" 
+      + "<td><button class='delete-item btn btn-sm badge-danger' data-name=" + cartArray[i].name + ">X</button></td>"
+      +  "</tr>";
+  }
+  $('.show-cart').html(output);
+  $('.total-cart').html(salesCart.totalCart());
 
-var baseuel = '{{url('/')}}';
+  $('.date').html('Sales Date: '+sessionStorage.sales_date);
+  $.get(baseurl+"/api/userinfo/"+sessionStorage.user_id, function(data, status){
+      if(status === 'success'){
+        $("#customer-info").html("<b>Name :</b>"+data.name+"</br><b>Address :</b>  "+data.address+"<br><b>Phone :</b> "+data.phone+"<br><b>Email :</b> "+data.email);
+        
+      }
+  });
+  $('.net-amount').text(Math.round(netamount));
+  $('.discount').text( Math.round(disc));
+  $('.carrying_and_loading').text(carrying_and_loading);
+  $('.grand-total').html(Math.round(g_total));
+}
+
+
+
+
+
 
   function reset(){
     sessionStorage.clear();
@@ -561,7 +607,7 @@ $('.add-to-cart').click(function(event) {
     $(".product_err").text('');
   }
   if(id.length > 0){
-  $.get(baseuel+"/api/productinfo/"+id, function(data, status){
+  $.get(baseurl+"/api/productinfo/"+id, function(data, status){
     if(status === 'success'){
       var image = data[0].image;
       var current_stock = data[1];
@@ -631,30 +677,77 @@ $( "#user" ).change(function() {
 });
 
 
+
+
 $( "#product").change(function() {
+  var rate = 0;
+  let product_id = $("#product option:selected").val();
   $("#product + span").removeClass("is-invalid");
   $(".product_err").text('');
-    var product_id = $("#product option:selected").val();
 
-    if(product_id.length > 0){
+  //if id found
+  if(product_id.length > 0){
+  let current_user_id = $("#user option:selected").val();
+  function getProductInfo() {
+    return axios.get(baseurl+"/api/productinfo/"+product_id);
+  }
+  function getUserInfo() {
+    return axios.get(baseurl+"/api/userinfo/"+current_user_id);
+  }
 
-        $.get(baseuel+"/api/productinfo/"+product_id, function(data, status){
-          if(status === 'success'){
-              $("#selected-product-info").html('<table class="table table-sm table-hover table-dark"><tr><td> <b>'+data[0].product_name+'</b></td></tr><tr><td><img class="img-responsive img-thumbnail" src="'+baseuel+'/public/uploads/products/tiny/'+data[0].image+'" /></td></tr><tr><td>Trade Price: '+data[0].tp+'</td></tr><tr><tr><td>General Price: '+data[0].current_price+'</td></tr><tr><td>Current Stock : '+data[1]+'</td></tr></table>');
 
-            
-            $("#selected-product-info").show();
-            $("#price").val(data[0].tp).removeClass('is-invalid');
-            $("#qty").val('').removeClass('is-invalid');
-            
+  axios.all([getProductInfo(),getUserInfo()])
 
-            
-          }
+  .then(function (response) {
+
+  let productresponse =  JSON.parse(response[0].request.response);
+  let userresponse = JSON.parse(response[1].request.response);
+
+  $("#selected-product-info").html('<table class="table table-sm table-dark table-hover"><tr><td> <b>'+productresponse[0].product_name+'</b></td></tr><tr><td><img class="img-responsive img-thumbnail" src="'+baseurl+'/public/uploads/products/tiny/'+productresponse[0].image+'" /></td></tr><tr><td> Size: '+productresponse[0].size.name+'</td></tr><tr><td>Trade Price: '+productresponse[0].tp+'</td></tr><tr><tr><td>Ecommerce Price: '+productresponse[0].current_price+'</td></tr><tr><td>Current Stock : '+productresponse[1]+'</td></tr></table>');
+  $("#selected-product-info").show();
+  $("#qty").val('').removeClass('is-invalid');
+
+
+
+
+  if(userresponse.pricedata){
+
+  let custompriceinit = JSON.parse(userresponse.pricedata);
+  let pricedata = JSON.parse(custompriceinit);
+
+  pricedata.forEach(function(item, index,arr){
+      if(product_id == item.id){
+        Swal.fire('Special Rate '+item.price+' tk Found','For:  '+userresponse.name+' Product: '+ item.o_name+' Rate : '+item.price,'info');
+        
        
-      });
+        rate = item.price;
+      }
+     
+  })
+  if(rate > 0){
+    $("#price").val(rate);
+  }else{
+    $("#price").val(productresponse[0].tp);
+  }
+  
+
+  }else{
+    $("#price").val(productresponse[0].tp);
+  }
+
+  })
+
+
+    .catch(function (error) {
+    // handle error
+    console.log(error);
+    })
+
+
 
     }
-   
+    //end product id found
+ 
 
 });
 
@@ -724,7 +817,7 @@ $("#sales_date").change(function(){
   if(od.length === 0){
     $("#sales_date").addClass('is-invalid');
     $(".date_err").addClass('invalid-feedback');
-    $(".date_err").text('Qty Field is Required');
+    $(".date_err").text('Date Field is Required');
   }else{
     $("#sales_date").removeClass('is-invalid');
     $(".date_err").removeClass('invalid-feedback');
@@ -795,44 +888,6 @@ var carrying_and_loading = $('#carrying_and_loading').val();
 
 
 
-function displayCart() {
-  var discount_amount = $(".discount").val();
-  var cartArray = salesCart.listCart();
-  var baseuel = '{{url('/')}}';
-  var output = "";
-  var subtotal = salesCart.totalCart();
-  var disc = subtotal*sales_discount;
-  var netamount = subtotal-discount_amount;
-  var g_total = parseFloat(netamount)+parseFloat(carrying_and_loading);
-  var j =1;
-  for(var i in cartArray) {
-    output += "<tr>"
-      + "<td>" + j++ + "</td>"
-      + "<td>" + cartArray[i].o_name + "</td>"
-      + "<td><img style='width: 50px;' src='"+baseuel+"/public/uploads/products/tiny/"+cartArray[i].image+"' class='img-thumbnail' /></td>"
-      + "<td>" + cartArray[i].price + " Tk</td>"
-      + "<td>" + cartArray[i].product_size + "</td>"
-      + "<td>"+ cartArray[i].count +"</td>"
-      + "<td>"+ cartArray[i].free +"</td>"
-      + "<td>" + Math.round(cartArray[i].total) + " Tk</td>" 
-      + "<td><button class='delete-item btn btn-sm badge-danger' data-name=" + cartArray[i].name + ">X</button></td>"
-      +  "</tr>";
-  }
-  $('.show-cart').html(output);
-  $('.total-cart').html(salesCart.totalCart());
-
-  $('.date').html('Sales Date: '+sessionStorage.sales_date);
-  $.get("{{url('/')}}/api/userinfo/"+sessionStorage.user_id, function(data, status){
-      if(status === 'success'){
-        $("#customer-info").html("<b>Name :</b>"+data.name+"</br><b>Address :</b>  "+data.address+"<br><b>Phone :</b> "+data.phone+"<br><b>Email :</b> "+data.email);
-        
-      }
-  });
-  $('.net-amount').text(Math.round(netamount));
-  $('.discount').text( Math.round(disc));
-  $('.carrying_and_loading').text(carrying_and_loading);
-  $('.grand-total').html(Math.round(g_total));
-}
 
 // Delete item button
 
@@ -867,61 +922,42 @@ $('.show-cart').on("change", ".item-count", function(event) {
   displayCart();
 });
 
-displayCart();
+
+if (sessionStorage.getItem("salesCart") != null) {
+    displayCart()
+}
 
 
 // Ajax 
 
 function confirm_sales(){
   $(document).ready(function () {
-    var discount_amount = $(".discount").val();
+  var discount_amount = $(".discount").val();
  
    if(sessionStorage.salesCart.length < 3){
       alert('please select a product');
    }else{
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
 
-    $.ajax({
-          data: {
-            'sales_date' : sessionStorage.sales_date,
-            'user_id' : sessionStorage.user_id,
-            'discount' : discount_amount,
-            'carrying_and_loading' : carrying_and_loading,
-            'product' : sessionStorage.salesCart,
-          },
-          url: "{{route('sale.store')}}",
-          type: "POST",
-          dataType: 'json',
-          success: function (data) {
-            console.log(data);
-              sessionStorage.clear();
-              var b_url = '{{url('/')}}';
-              window.location = b_url+'/admin/pos/sale/'+data
-              
-          },
-          error: function (data) {
-            console.log(data);
-           sessionStorage.clear();
-           if(data.status == 200){
-              console.log(data.status);
-           }else{
-            
-           var errdata = "";
-           $.each(data.responseJSON.errors, function( key, value ) {
-                    errdata += "<li>"+value+"</li>";
-            });
-            $('#error').html(errdata);
-            $('#error').addClass('alert alert-danger');
-           }
-              
-          }
-      });
+
+    axios.post(salestoreurl, {
+        'sales_date' : sessionStorage.sales_date,
+        'user_id' : sessionStorage.user_id,
+        'discount' : discount_amount,
+        'carrying_and_loading' : carrying_and_loading,
+        'product' : sessionStorage.salesCart,
+  })
+  .then(function (response) {
+    sessionStorage.clear();
+    window.location = baseurl+'/admin/pos/sale/'+response.request.response
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
       $('#confirm-btn').attr('disabled',true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading.....' );
     }
+
+    //document ready end
   });
   
 }

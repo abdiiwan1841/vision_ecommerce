@@ -241,7 +241,7 @@
 				@endphp
 				<tr @if($todays_pos_cash_item->status == 2) style="background: #f8a5c2" @elseif($todays_pos_cash_item->status == 1)  style="background: #b8e994" @endif>
 				<td class="align-middle">#{{$todays_pos_cash_item->id}}</td>
-				<td data-toggle="tooltip" data-placement="top" title="Posted By {{$todays_pos_cash_item->posted_by}}   At {{$todays_pos_cash_item->created_at->format('d-M-Y g:i a')}}  class="align-middle">{{$todays_pos_cash_item->received_at->format('d-m-Y')}}</td>
+				<td data-toggle="tooltip" data-placement="top" title="Posted By {{$todays_pos_cash_item->posted_by}}   At {{$todays_pos_cash_item->created_at->format('d-M-Y g:i a')}}"  class="align-middle">{{$todays_pos_cash_item->received_at->format('d-m-Y')}}</td>
 				<td class="align-middle">{{$todays_pos_cash_item->user->name}}</td>
 				<td class="align-middle">{{$cash_amount}}</td>
 				<td class="align-middle">{{$todays_pos_cash_item->reference}}</td>
@@ -437,7 +437,7 @@
 
 	@if(count($pending_cash) > 0)
 	  
-	<table class="table table-sm table-bordered" style="font-size: 14px;">
+	<table class="table table-sm" style="font-size: 14px;">
 	  <thead class="thead-light">
 		<tr>
 		  <th class="align-middle">Sl</th>
@@ -451,15 +451,38 @@
 		@php
 			$sales_amount = round($pending_cash_item->amount);
 		@endphp
-		<tr style="background: #ffcccc">
+		<tr class="cash-{{$pending_cash_item->id}} bglight">
 		<td  class="align-middle"><strong>{{$key+1}}</strong></td>
-		<td  class="align-middle"><a style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_cash_item->posted_by}} at {{$pending_cash_item->created_at->format('d-M-Y g:i a')}} - Click Here For Details"  class="btn btn-link" href="javascript:void(0)">  {{$pending_cash_item->user->name}}  <br> = <b> {{$pending_cash_item->amount}} tk</b> <br> ( <small>{{$pending_cash_item->received_at->format('d-M-Y')}}</small> )  </a></td>
+		<td  class="align-middle">
+			<table class="table table-sm">
+				<tr>
+					<td>Name:</td>
+					<th>{{$pending_cash_item->user->name}}</th>	
+				</tr>
+				<tr>
+					<td>Addr:</td>
+					<td>{{$pending_cash_item->user->address}}</td>	
+				</tr>
+				<tr>
+					<td>Amount: </td>
+					<th><h4>{{$pending_cash_item->amount}}/-</h4></th>
+				</tr>
+				<tr>
+					<td>Date:</td>
+					<td>{{$pending_cash_item->received_at->format('d-M-Y')}}</td>
+				</tr>
+				
+			</table>
+			
+		
+		
+		</td>
 		<td class="align-middle"> 
 			@if($pending_cash_item->status == 0)
 	
 			@if(Auth::user()->role->id == 1)
 			
-				<button id="cash-{{$pending_cash_item->id}}"  onclick="Confirmation('{{route('cash.approve',$pending_cash_item->id)}}','{{$pending_cash_item->user->name}}','{{$pending_cash_item->amount}}')"  type="button" class="btn btn-sm btn-dark">Approve</button>
+				<button id="cash-{{$pending_cash_item->id}}"  onclick="Confirmation('{{route('cash.approve',$pending_cash_item->id)}}','{{$pending_cash_item->user->name}}','{{$pending_cash_item->amount}}')"  type="button" class="btn btn-sm btn-danger">Approve</button>
 
 				@else
 
@@ -470,7 +493,10 @@
 
 			<span class="badge badge-warning">pending</span>
 			@endif</td>
+			
 		</tr>
+		
+		
 		@endforeach
 		  
 		
@@ -494,7 +520,7 @@
 
 	<!-- Card Start -->
 	<div class="card mt-3">
-		<div class="card-header bg-primary text-white">
+		<div class="card-header" style="background: #b8e994">
 			<strong>Return Invoice Pending For Approval</strong>
 		</div>
 	<div class="card-body">
@@ -568,10 +594,11 @@
 		@php
 			$sales_amount = round($pending_delivery_item->amount);
 		@endphp
-		<tr style="background: #b8e994">
+		<tr class="delivery-{{$pending_delivery_item->id}}">
 		<td  class="align-middle"><strong>{{$key+1}}</strong></td>
 		<td  class="align-middle"><a style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_delivery_item->provided_by}}  at {{$pending_delivery_item->created_at->format('d-M-Y g:i a')}}   - Click Here For Details"  class="btn btn-link" href="{{route('viewsales.show',$pending_delivery_item->id)}}"> <small>{{$pending_delivery_item->sales_at->format('d-M-Y g:i a')}} </small> <br> <strong>{{$pending_delivery_item->user->name}} </strong> <br> <small>Delivery Status:   </small> </a></td>
-		<td class="align-middle">{!!FashiShippingStatus($pending_delivery_item->delivery_status)!!}</td>
+		<td class="align-middle"> @if(Auth::user()->role->id == 4) 
+		<button onclick="DeliveryConfirmation('{{route('sale.delivery',$pending_delivery_item->id)}}','{{$pending_delivery_item->user->name}}')" id="delivery-{{$pending_delivery_item->id}}"  type="button" class="btn btn-sm btn-danger">Mark</button>  @else  {!!FashiShippingStatus($pending_delivery_item->delivery_status)!!} @endif</td>
 		
 		</tr>
 		@endforeach
@@ -631,7 +658,11 @@ const swalWithBootstrapButtons = Swal.mixin({
 			let productData = '';
 			let returnstatus = '';
 			let pdsum= 0;
-			if(salesdata.sales_status == 0){  returnstatus = '<span class="badge badge-warning">pending</span>' }
+			if(salesdata.sales_status == 0){  
+				salesstatus = '<span class="badge badge-warning">pending</span>';
+			}else if(salesdata.sales_status == 1){
+				salesstatus = '<span class="badge badge-success">approved</span>';
+			}
 
 			salesdata.product.forEach(function(item, index,arr){
 			let s_qty =  item.pivot.qty;
@@ -660,7 +691,7 @@ const swalWithBootstrapButtons = Swal.mixin({
 	</tr>
 	<tr>
       <td>Approval Status</td>
-	  <td>${returnstatus}</td>
+	  <td>${salesstatus}</td>
 	</tr>
 </table>
 <h5 class="text-center">Product Information</h5>
@@ -695,6 +726,7 @@ const swalWithBootstrapButtons = Swal.mixin({
 	</div> `)
 
 $("#InfoModalLabel").text('Pending Sales Information');
+$(".modal-header").css('background','#F6E58D')
 if(role == 1){
 	$("#InfoModal-footer").html(`<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button onclick="SalesApprove('${salesapproveurl}')" type="button" id="sales_approval" class="btn btn-success">Approve</button>`);
 }else{
@@ -705,7 +737,7 @@ if(role == 1){
 
 
 $("#InfoModal").modal('show');
-			console.log(JSON.parse(response.request.response))
+
 		})
 		.catch(function (error) {
 			console.log(error);
@@ -730,7 +762,11 @@ $("#InfoModal").modal('show');
 			let productData = '';
 			let returnstatus = '';
 			let pdsum= 0;
-			if(returndata.return_status == 0){  returnstatus = '<span class="badge badge-warning">pending</span>' }
+			if(returndata.return_status == 0){  
+				returnstatus = '<span class="badge badge-warning">pending</span>' 
+			}else if(returndata.return_status == 1){
+				returnstatus = '<span class="badge badge-success">approved</span>';
+			}
 
 			returndata.product.forEach(function(item, index,arr){
 			let s_qty =  item.pivot.qty;
@@ -794,6 +830,7 @@ $("#InfoModal").modal('show');
 	</div> `)
 
 $("#InfoModalLabel").text('Pending Return Information');
+$(".modal-header").css('background','#b8e994')
 if(role == 1){
 	$("#InfoModal-footer").html(`<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button onclick="returnApprove('${returnapproveurl}')" type="button" id="sales_approval" class="btn btn-success">Approve</button>`);
 }else{
@@ -804,7 +841,7 @@ if(role == 1){
 
 
     $("#InfoModal").modal('show');
-			console.log(JSON.parse(response.request.response))
+			
 		})
 		.catch(function (error) {
 			console.log(error);
@@ -872,6 +909,25 @@ if(role == 1){
 		.then(function (response) {
 			
 			$("#cash-"+response.request.response).html('<i class="fas fa-check"></i> done').css('background','#44bd32').css('border','none');
+			$(".cash-"+response.request.response).css('background','#b8e994');
+			
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+
+	}
+
+	function MarkAsDelivered(delivery_marked_url){
+		axios.post(delivery_marked_url)
+		.then(function (response) {
+			let feedback = JSON.parse(response.request.response);
+			if(feedback.status == 0){
+				toastr.error(feedback.msg, 'Notifications')
+			}else if(feedback.status == 1){
+			    $("#delivery-"+feedback.id).html('<i class="fas fa-check"></i> done').css('background','#44bd32').css('border','none');
+			    $(".delivery-"+feedback.id).css('background','#b8e994');
+			}
 			
 		})
 		.catch(function (error) {
@@ -891,10 +947,43 @@ if(role == 1){
 	$("#cashes").text(cash_amount);
 	$("#returns").text(return_amount);
 
+
+	function DeliveryConfirmation(delivery_marked_url,customer){
+	swalWithBootstrapButtons.fire({
+  title: 'Are you sure you want to mark as delivered '+customer+' ?',
+  text: "You won't be able to revert this!",
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonText: 'Yes, Mark it!',
+  cancelButtonText: 'Not Now',
+  reverseButtons: true
+}).then((result) => {
+  if (result.value) {
+	MarkAsDelivered(delivery_marked_url)
+    swalWithBootstrapButtons.fire(
+      'Mark As Delivered Successfully!',
+      'Your Data Has Been Stored',
+      'success'
+    )
+  } else if (
+    /* Read more about handling dismissals below */
+    result.dismiss === Swal.DismissReason.cancel
+  ) {
+    swalWithBootstrapButtons.fire(
+      'Denied',
+      'No More Changes On Database :)',
+      'error'
+    )
+  }
+});
+}
+
+
+
 	
 function Confirmation(cash_aprove_url,customer,amount){
 	swalWithBootstrapButtons.fire({
-  title: 'Are you sure? '+customer+' Amount: '+amount+' tk',
+  title: 'Are you sure? '+customer+' Amount: '+amount+'/-',
   text: "You won't be able to revert this!",
   icon: 'warning',
   showCancelButton: true,

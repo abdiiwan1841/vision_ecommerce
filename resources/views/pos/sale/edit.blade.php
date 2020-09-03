@@ -44,7 +44,7 @@
           </div>
 
 
-          <div class="col-lg-6">
+          <div class="col-lg-5">
             <div class="form-group">
               <div id="customer-details"></div>
             </div>
@@ -52,12 +52,12 @@
 
 
 
-           <div class="col-lg-2">
+           <div class="col-lg-3">
           <div class="card">
             
             <div class="card-header">
               
-                <span class="float-left"><b>RESET</b></span> <button type="button" onclick="reset()" id="reset" class="btn btn-success float-right"><i class="fa fa-sync-alt"></i> </button>
+                <span class="float-left"><b>RESET FIELD</b></span> <button type="button" onclick="reset()" id="reset" class="btn btn-success float-right"><i class="fa fa-sync-alt"></i> </button>
               </div>
               
             </div>
@@ -153,8 +153,8 @@
             <td>Sl.</td>
             <td>Name</td>
             <td>Image</td>
-            <td>Price</td>
             <td>Qty</td>
+            <td>Price</td>
             <td>Free</td>
             <td>Total</td>
             <td>Action</td>
@@ -654,7 +654,7 @@ $( "#product" ).change(function() {
 
         $.get(baseuel+"/api/productinfo/"+product_id, function(data, status){
           if(status === 'success'){
-              $("#selected-product-info").html('<table class="table table-sm table-hover table-dark"><tr><td> <b>'+data[0].product_name+'</b></td></tr><tr><td><img class="img-responsive img-thumbnail" src="'+baseuel+'/public/uploads/products/tiny/'+data[0].image+'" /></td></tr><tr><td>Trade Price: '+data[0].tp+'</td></tr><tr><tr><td>General Price: '+data[0].current_price+'</td></tr><tr><td>Current Stock : '+data[1]+'</td></tr></table>');
+              $("#selected-product-info").html('<table class="table table-sm table-hover table-dark"><tr><td> <b>'+data[0].product_name+'</b></td></tr><tr><td><img class="img-responsive img-thumbnail" src="'+baseuel+'/public/uploads/products/tiny/'+data[0].image+'" /></td></tr><tr><td>Trade Price: '+data[0].tp+'</td></tr><tr><tr><td>Ecommerce Price: '+data[0].current_price+'</td></tr><tr><td>Current Stock : '+data[1]+'</td></tr></table>');
 
             
             $("#selected-product-info").show();
@@ -721,7 +721,7 @@ $("#sales_date").change(function(){
   if(od.length === 0){
     $("#sales_date").addClass('is-invalid');
     $(".date_err").addClass('invalid-feedback');
-    $(".date_err").text('Qty Field is Required');
+    $(".date_err").text('Date Field is Required');
   }else{
     $("#sales_date").removeClass('is-invalid');
     $(".date_err").removeClass('invalid-feedback');
@@ -812,10 +812,10 @@ function displayCart() {
       + "<td>" + j++ + "</td>"
       + "<td>" + cartArray[i].o_name + "</td>"
       + "<td><img style='width: 50px;' src='"+baseuel+"/public/uploads/products/tiny/"+cartArray[i].image+"' class='img-thumbnail' /></td>"
-      + "<td>" + cartArray[i].price + " Tk.</td>"
       + "<td>"+ cartArray[i].count +"</td>"
+      + "<td>" + cartArray[i].price + "</td>"
       + "<td>"+ cartArray[i].free +"</td>"
-      + "<td>" + Math.round(cartArray[i].total) + " Tk</td>" 
+      + "<td>" + Math.round(cartArray[i].total) + "</td>" 
       + "<td><button class='delete-item btn btn-sm badge-danger' data-name=" + cartArray[i].name + ">X</button></td>"
       +  "</tr>";
   }

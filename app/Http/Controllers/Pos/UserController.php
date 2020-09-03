@@ -101,7 +101,8 @@ class UserController extends Controller
         $products = Product::all();
         $customer = User::findOrFail($id);
         $divisions = Division::all();
-        return view('pos.user.edit',compact('divisions','customer','products'));
+        $pricedata =  $customer->pricedata;
+        return view('pos.user.edit',compact('divisions','customer','products','pricedata'));
     }
 
     /**
@@ -123,7 +124,7 @@ class UserController extends Controller
             'area' => 'required',
             'address' => 'required|max:500',
         ]);
-
+        
         $user = User::findOrFail($id);
         $user->name = $request->name;
         $user->proprietor = $request->proprietor;
@@ -133,6 +134,11 @@ class UserController extends Controller
         $user->district_id = $request->district;
         $user->area_id = $request->area;
         $user->address = $request->address;
+        if(strlen($request->pricedata) < 6){
+            $user->pricedata = null;
+        }else{
+            $user->pricedata = $request->pricedata;
+        }
         $user->user_type = 'pos';
         if($request->has('company')){
          $user->company = $request->company;

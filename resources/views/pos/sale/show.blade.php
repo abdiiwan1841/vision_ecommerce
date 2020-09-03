@@ -27,14 +27,13 @@
               <div class="col-lg-4">
                 @if($sale->sales_status == 0)
                 @if(Auth::user()->role->id == 1)
-                <form action="{{route('sale.approve',$sale->id)}}" method="POST" >
-                  @csrf
-                  <button onclick="return confirm('Are You Sure You Want To This Approve Order')" type="submit" class="btn btn-warning btn-sm mb-3 float-right" style="margin-right: 5px;">
+               
+                  <button onclick="SalesApproval('{{route('sale.approve',$sale->id)}}')" type="submit" class="btn btn-warning btn-sm mb-3 float-right" style="margin-right: 5px;">
                     <i class="fas fa-check"></i> APPROVE THIS ORDER ?
                   </button>
-                </form>
+               
 
-                <form action="{{route('sale.destroy',$sale->id)}}" method="POST" >
+                <form id="delete-from-{{$sale->id}}" action="{{route('sale.destroy',$sale->id)}}" method="POST" >
                   @csrf
                   @method('DELETE')
                   <button onclick="deleteItem({{$sale->id}})" type="button" class="btn btn-danger btn-sm mb-5" style="margin-right: 5px;">
@@ -104,20 +103,9 @@
 
                     <tr>
                       <th>Delivery Staus</th>
-                      <td> @if($sale->delivery_status == 0)
-                        @if(Auth::user()->role->id == 4 && $sale->sales_status ==1) 
-                        <form action="{{route('sale.delivery',$sale->id)}}" method="POST" >
-                        @csrf
-                        <button type="submit" onclick="return confirm('Are you Sure You Want To Mark This Sales Invoice As Delivered')" class="btn  btn-danger flot-right">Mark As Delivered</button>
-                        </form>
-                        @else
-                        <span class="badge badge-warning">pending</span>
-                        @endif
-          
-                        @else
-                        <span class="badge badge-success">Delivered</span>
-          
-                        @endif</td>
+                      <td> 
+                        {!! FashiShippingStatus($sale->delivery_status) !!}
+                      </td>
                     </tr>
                     @if($sale->delivery_status == 1)
                     <tr>
@@ -230,7 +218,7 @@
 
                   <form action="{{route('sale.invoice',$sale->id)}}" method="POST" >
                     @csrf
-                    <button type="submit" class="btn btn-primary float-right" style="margin-right: 5px;">
+                    <button onclick="" type="submit" class="btn btn-primary float-right" style="margin-right: 5px;">
                       <i class="fas fa-download"></i> Generate PDF
                     </button>
                     </form>
@@ -259,13 +247,78 @@
     @endsection
 
 
-    @push('js')
-    <script>
+@push('js')
+<script src="{{asset('public/assets/js/axios.min.js')}}"></script>
+
+<script>
+function SalesApprove(sales_approve_url){
+		axios.post(sales_approve_url)
+		.then(function (response) {
+			let feedback = JSON.parse(response.request.response);
+			if(feedback.status == 0){
+				toastr.error(feedback.msg, 'Notifications')
+			}else if(feedback.status == 1){
+				
+        toastr.success(feedback.msg, 'Notifications')
+
+        location.reload();
+			
+			}
+
+
+			
+		})
+		.catch(function (error) {
+			console.log(error);
+			
+		});
+	}
+
+
+
+
+
+  function SalesApproval(sales_approve_url){
+      const swalWithBootstrapButtons = Swal.mixin({
+         customClass: {
+             confirmButton: 'btn btn-success mr-3',
+             cancelButton: 'btn btn-danger'
+         },
+         buttonsStyling: false
+         })
+
+ swalWithBootstrapButtons.fire({
+title: 'Are you sure you want to Confirm this order?',
+text: "You won't be able to revert this!",
+icon: 'warning',
+showCancelButton: true,
+confirmButtonText: 'Yes, Approve it!'
+}).then((result) => {
+         if (result.value) {
+          SalesApprove(sales_approve_url);
+            
+         } else if (
+             /* Read more about handling dismissals below */
+             result.dismiss === Swal.DismissReason.cancel
+         ) {
+             swalWithBootstrapButtons.fire(
+             'Denied',
+             'Your Data  is safe :)',
+             'error'
+             )
+         }
+         });
+     }
+
+
+
+
+
     function deleteItem(id){
       const swalWithBootstrapButtons = Swal.mixin({
          customClass: {
-             confirmButton: 'btn btn-success btn-sm',
-             cancelButton: 'btn btn-danger btn-sm'
+             confirmButton: 'btn btn-success',
+             cancelButton: 'btn btn-danger'
          },
          buttonsStyling: true
          })

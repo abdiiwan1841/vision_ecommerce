@@ -114,32 +114,15 @@
                 <small class="form-error">{{ $message }}</small>
                 @enderror
             </div>
+
+            <input type="hidden" id="pricedata" name="pricedata">
             
 
         </div>
 
 
         <div class="col-lg-8">
-          <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-              <thead class="table-dark">
-                <tr>
-                  <td>Sl.</td>
-                  <td>Name</td>
-                  <td>Price</td>
-                  <td>Action</td>
-                </tr>
-              </thead>
-           
-              <tbody class="show-cart">
-      
-              </tbody>
-              
-            </table>
-          </div>
 
-
-            <hr>
             <h5>Specify Some Product Price For  "{{$customer->name}}" </h5>
             <br>
             <div class="row">
@@ -186,11 +169,34 @@
                         
                       </div>
 
+
+
+                      <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                          <thead class="table-dark">
+                            <tr>
+                              <td>Sl.</td>
+                              <td>Name</td>
+                              <td>Price</td>
+                              <td>Action</td>
+                            </tr>
+                          </thead>
+                       
+                          <tbody class="show-cart">
+                  
+                          </tbody>
+                          
+                        </table>
+                      </div>
+            
+            
+                        <hr>
+
                       
                
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-success">Update</button>
+                <button onclick="UserUpdate()" type="submit" class="btn btn-success">Update</button>
             </div>
         </div>
     
@@ -212,22 +218,45 @@
 @push('js')
 <script>
 
+var user_id = {{$customer->id}};
 
+function UserUpdate(){
+    sessionStorage.clear();
+}
+
+
+@if($pricedata === null)
+  sessionStorage.clear();
+@else
+var pdata = {!!$pricedata!!}
+
+if(sessionStorage.priceCart == undefined ){
+    sessionStorage.setItem('priceCart',pdata);
+    sessionStorage.setItem('user_id',user_id);
+  }else if(sessionStorage.user_id != user_id){
+      sessionStorage.clear();
+      location.reload(true);
+  }
+
+
+@endif
+if(sessionStorage.priceCart != undefined){
+$("#pricedata").val(JSON.stringify(sessionStorage.priceCart));
+}
 function displayCart() {
   pd_output = '';
-  var cartArray = shoppingCart.listCart();
+  var cartArray = priceCart.listCart();
   var j =1;
   for(var i in cartArray) {
     pd_output += "<tr>"
       + "<td>" + j++ + "</td>"
       + "<td>" + cartArray[i].o_name + "</td>"
-      + "<td>" + cartArray[i].price + " Tk</td>"
+      + "<td>" + cartArray[i].price + "</td>"
       + "<td><button class='delete-item btn btn-sm badge-danger' data-name=" + cartArray[i].name + ">X</button></td>"
       +  "</tr>";
   }
   $('.show-cart').html(pd_output);
   
-
 }
 
 $('#division').select2({
@@ -355,7 +384,7 @@ var district_id = $("#district").val();
         }
         });
 
-
+function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
 
     // Toaster
   //Toater Alert 
@@ -379,7 +408,7 @@ var district_id = $("#district").val();
 
 
 
-var shoppingCart = (function() {
+var priceCart = (function() {
     // =============================
     // Private methods and propeties
     // =============================
@@ -396,13 +425,13 @@ var shoppingCart = (function() {
     
     // Save cart
     function saveCart() {
-      localStorage.setItem('shoppingCart', JSON.stringify(cart));
+      sessionStorage.setItem('priceCart', JSON.stringify(cart));
     }
 
   function loadCart() {
-    cart = JSON.parse(localStorage.getItem('shoppingCart'));
+    cart = JSON.parse(sessionStorage.getItem('priceCart'));
   }
-  if (localStorage.getItem("shoppingCart") != null) {
+  if (sessionStorage.getItem("priceCart") != null) {
     loadCart();
   }
     
@@ -435,7 +464,7 @@ var shoppingCart = (function() {
         if(cart[item].name === name) {
           Toast.fire({
             icon: 'error',
-            title: '"'+o_name+'" Already Added To cart'
+            title: '"'+o_name+'" Already Added'
           });
 
           return;
@@ -444,19 +473,14 @@ var shoppingCart = (function() {
 
 
 
-        $('#pd-'+id).html('<i class="icon_check"></i>').css('background','#44bd32');
           var item = new Item(o_name,name, price,id);
           cart.push(item);
           saveCart();
           Toast.fire({
             icon: 'success',
-            title: 'Successfully Added To cart'
+            title: 'Successfully Added'
           });
       
-
-
-
-
 
 
 
@@ -498,8 +522,6 @@ var shoppingCart = (function() {
             icon: 'success',
             title: '<strong style="color: red">'+cart[item].name+'</strong> &nbsp; Removed Successfully'
           });
-          $('#pd-'+cart[item].id).html('<i class="icon_cart_alt"></i>');
-          $('#pd-'+cart[item].id).css('background','#12CBC4');
           cart.splice(item, 1);
           
           break;
@@ -570,16 +592,54 @@ var shoppingCart = (function() {
    $('.cart-hover').show().delay(5000).fadeOut();
    var id = $("#product option:selected").val();
    var o_name = $("#product option:selected").text();
-   var nameSlulg =  o_name.replace(/\s/g, '');
+   var name =  o_name.replace(/\s/g, '');
    var price = $("#price").val();
 
-    shoppingCart.addItemToCart(o_name,name, price,id);
+   
+  var err = [];
+
+   if(price.length === 0){
+    $("#price").addClass('is-invalid');
+    $(".price_err").addClass('invalid-feedback').text('Price Field is Required');
+    err.push('price');
+  }else if(price < 1){
+    $("#price").addClass('is-invalid');
+    $(".price_err").addClass('invalid-feedback').text('Negative Number Not Allowed');
+    err.push('price');
+  }else if(isNumber(price) == false){
+    $("#price").addClass('is-invalid');
+    $(".price_err").addClass('invalid-feedback').text('Field Must Be Numeric');
+    err.push('price');
+  }else{
+    $("#price").removeClass('is-invalid');
+  }
+
+
+
+
+
+  if(id.length === 0){
+    $("#product + span").addClass("is-invalid");
+    $(".product_err").removeClass('success_form').addClass('err_form').text('Product Field is Required');
+    err.push('id');
+  }else{
+    $("#product + span").removeClass("is-invalid");
+    $(".product_err").text('');
+  }
+  if(err.length<1){
+
+    priceCart.addItemToCart(o_name,name, price,id);
+    $("#product").val("").trigger("change");;
+    $("#price").val("");
+    $("#pricedata").val(JSON.stringify(sessionStorage.priceCart));
+
     displayCart();
+  }
   });
   
   // Clear items
   $('.clear-cart').click(function() {
-    shoppingCart.clearCart();
+    priceCart.clearCart();
     displayCart();
   });
   
@@ -592,7 +652,8 @@ var shoppingCart = (function() {
   
   $('.show-cart').on("click", ".delete-item", function(event) {
     var name = $(this).data('name')
-    shoppingCart.removeItemFromCartAll(name);
+    priceCart.removeItemFromCartAll(name);
+    $("#pricedata").val(JSON.stringify(sessionStorage.priceCart));
     displayCart();
   })
   

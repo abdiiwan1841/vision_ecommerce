@@ -30,6 +30,7 @@ class CreateUsersTable extends Migration
             $table->string('user_type')->default('ecom');
             $table->string('image')->default('user.jpg');
             $table->boolean('status')->default(1);
+            $table->string('pricedata')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
