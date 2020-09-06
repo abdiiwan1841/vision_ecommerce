@@ -666,10 +666,16 @@ const swalWithBootstrapButtons = Swal.mixin({
 
 			salesdata.product.forEach(function(item, index,arr){
 			let s_qty =  item.pivot.qty;
+			let s_free =  item.pivot.free;
 			let s_price = item.pivot.price;
 			let s_total = s_qty*s_price;
 			pdsum += s_total;
-			productData += '<tr><td>'+item.product_name+'</td><td>'+s_qty+'</td><td>'+s_price+'</td><td>'+Math.round(s_total)+'</td></tr>'
+			if(s_free > 0){
+				productData += '<tr><td>'+item.product_name+'+<span class="bg-danger text-white"> free = '+s_free+' pc </span> </td><td>'+s_qty+'</td><td>'+s_price+'</td><td>'+Math.round(s_total)+'</td></tr>';
+			}else{
+				productData += '<tr><td>'+item.product_name+'</td><td>'+s_qty+'</td><td>'+s_price+'</td><td>'+Math.round(s_total)+'</td></tr>';
+			}
+			
 			})
 
 			$('#salesdata').html(`<table class="table table-sm">
@@ -697,7 +703,7 @@ const swalWithBootstrapButtons = Swal.mixin({
 <h5 class="text-center">Product Information</h5>
 <div class="table-responsive">
 	<table class="table table-sm">
-	 <tr>
+	 <tr style="background: #ddd">
 		<td>Product:</td>
 		<td>Qty</td>
 		<td>Price</td>
@@ -862,7 +868,7 @@ if(role == 1){
 			}else if(feedback.status == 1){
 				
 			$("#return-"+feedback.id).html('<button type="button" class="btn btn-success btn-sm"><i class="fas fa-check"></i> done</button>');
-			$(".return-"+feedback.id).css('background','#f1f2f6');
+			$(".return-"+feedback.id).css('background','#f1f2f6').delay(6000).fadeOut('slow');
 			toastr.success('Return Invoice Approved Successfully', 'Notifications')
 			
 			}
@@ -888,8 +894,8 @@ if(role == 1){
 				toastr.error(feedback.msg, 'Notifications')
 			}else if(feedback.status == 1){
 				
-			$("#sale-"+feedback.id).html('<button type="button" class="btn btn-success btn-sm"><i class="fas fa-check"></i> done</button>');
-			$(".sale-"+feedback.id).css('background','#f1f2f6');
+			$("#sale-"+feedback.id).html('<button type="button" class="btn btn-success btn-sm" disabled><i class="fas fa-check"></i> done</button>');
+			$(".sale-"+feedback.id).css('background','#f1f2f6').delay(5000).fadeOut('slow');
 			toastr.success('Sales Invoice Approved Successfully', 'Notifications')
 			
 			}
@@ -908,8 +914,8 @@ if(role == 1){
 		axios.post(cash_aprove_url)
 		.then(function (response) {
 			
-			$("#cash-"+response.request.response).html('<i class="fas fa-check"></i> done').css('background','#44bd32').css('border','none');
-			$(".cash-"+response.request.response).css('background','#b8e994');
+			$("#cash-"+response.request.response).html('<i class="fas fa-check"></i> done').css('background','#44bd32').css('border','none').attr('disabled',true);
+			$(".cash-"+response.request.response).css('background','#F1F2F6').delay(6000).fadeOut('slow');
 			
 		})
 		.catch(function (error) {
@@ -926,7 +932,7 @@ if(role == 1){
 				toastr.error(feedback.msg, 'Notifications')
 			}else if(feedback.status == 1){
 			    $("#delivery-"+feedback.id).html('<i class="fas fa-check"></i> done').css('background','#44bd32').css('border','none');
-			    $(".delivery-"+feedback.id).css('background','#b8e994');
+			    $(".delivery-"+feedback.id).css('background','#b8e994').delay(5000).fadeOut('slow');;
 			}
 			
 		})

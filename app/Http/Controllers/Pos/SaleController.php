@@ -261,18 +261,25 @@ class SaleController extends Controller
         $sale->approved_by = Auth::user()->id;
         $sale->save();
 
+        
+
+        //For Sent Product To Sms Product 
+        $pdinfo = "";
+        foreach($sale->product as $pd){
+            if($pd->pivot->free > 0){
+            $pdinfo .= $pd->product_name." = ".$pd->pivot->qty."+ free=".$pd->pivot->free.",";
+           } else{
+            $pdinfo .= $pd->product_name." = ".$pd->pivot->qty.",";
+           }
+        }
+        
+        
         //check if the invoice is not edited then send sms
         if($sale->edited != 1){
-        //For Sent Product To Sms Product 
-        // $pdinfo = "";
-        // foreach($sale->product as $pd){
-        //     $pdinfo .= $pd->product_name." = ".$pd->pivot->qty.",";
-        // }
-
 
         // $url = "http://66.45.237.70/api.php";
         // $number="01724136687,01958454158";
-        // $text="New Invoice Approved By ".Auth::user()->name.", Date: ".$sale->sales_at->format('d-m-Y')." Customer: ".$sale->user->name.",  ".$sale->user->address." Amount= ".$sale->amount.". Check Details On Site, Thanks";
+        // $text="New Invoice, Date: ".$sale->sales_at->format('d-m-Y')." Customer: ".$sale->user->name.",  ".$sale->user->address." Product:  ".$pdinfo.". Check Details On Site, Thanks";
         // $data= array(
         // 'username'=>"shajibazher",
         // 'password'=>"UtUs6B8WVqjmm72",
@@ -287,12 +294,16 @@ class SaleController extends Controller
         // $smsresult = curl_exec($ch);
         // $p = explode("|",$smsresult);
         // $sendstatus = $p[0];
+        
+        
         // if($sendstatus == 1101){
         //     Toastr::success('Invoice Approved Successfully An sms has been sent to '.$number, 'success');
         // }else{
         //     Toastr::success('Invoice Approved Successfully', 'success');
         //     Toastr::error(VisionSmsResponse($sendstatus), 'error');
         // }
+        
+        
 
         }
         //endcheck if invoice is edited

@@ -47,7 +47,6 @@
                         <th scope="col">Date</th>
                         <th scope="col">Customer</th>
                         <th scope="col">Address</th>
-                        <th scope="col">Phone</th>
                         <th scope="col">Amount</th>
                       </tr>
                       
@@ -63,7 +62,6 @@
                         <td>{{$item['date']}}</td>
                         <td>{{$item['customer']}}</td>
                         <td style="width: 100px">{{$item['address']}}</td>
-                        <td>{{$item['phone']}}</td>
                         <td><b>{{$item['amount']}}</b></td>
                       </tr>
                       @endforeach

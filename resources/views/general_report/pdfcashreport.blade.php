@@ -46,7 +46,6 @@
                           <td >Date</td>
                           <td class="align-middle">Customer</td>
                           <td class="align-middle">Address</td>
-                          <td class="align-middle">Phone</td>
                           <td class="align-middle">Amount</td>
                           <td class="align-middle">Ref</td>
                           <td class="align-middle">Source</td>
@@ -64,7 +63,6 @@
                           <td class="align-middle" >{{$item['date']}}</td>
                           <td  class="align-middle" >{{ $userinfo->name}}</td>
                           <td style="width: 80px"  class="align-middle" >{{ $userinfo->address}}</td>
-                          <td  class="align-middle" >{{ $userinfo->phone}}</td>
                           <td  class="align-middle" ><b>{{$item['amount']}}</b></td>
                           <td  class="align-middle">{{$item['reference']}}</td>
                           <td  class="align-middle">{{$item['source']}}</td>
