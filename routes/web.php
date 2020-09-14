@@ -123,6 +123,10 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], f
     Route::get('inventory/dashboard/cashdetails/{id}', 'adminController@inv_pendingcash')->name('invdashboard.cashdetails');
 
 
+    Route::get('report/marketingreport', 'ReportController@MarketingReport')->name('report.marketingreport');
+    Route::post('report/marketingreport', 'ReportController@ShowMarketingReport')->name('report.showmarketingreport');
+
+
 
     Route::get('report/pos/salesreport', 'ReportController@SalesReport')->name('report.possalesreport');
     Route::post('report/pos/salesreport', 'ReportController@SalesReportResult')->name('report.possalesresult');
@@ -181,6 +185,8 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], f
     Route::post('pos/returnproduct/{id}/invoice', 'Pos\ReturnproductController@invoice')->name('returnproduct.invoice');
     Route::get('inventory/dashboard/viewreturns/{id}', 'Pos\ReturnproductController@show')->name('viewreturns.show');
     Route::resource('pos/cash', 'Pos\CashController');
+    Route::resource('marketingreport','MarketingReportController');
+    Route::post('marketingreport/datewiseview','MarketingReportController@datewiseview')->name('marketingreport.datewiseview');
 });
 
 
@@ -213,13 +219,13 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','admin']], functi
     Route::get('generaloption','GeneralOptionController@index')->name('generaloption.index');
     Route::get('generaloption/{id}/edit','GeneralOptionController@edit')->name('generaloption.edit');
     Route::put('generaloption/{id}','GeneralOptionController@update')->name('generaloption.update');
+    Route::resource('emp_type','EmployeeTypeController');
+    Route::resource('employee','EmployeeController');
     
 });
 
 
 //Access For Only Super Admin
 Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','superadmin']], function(){
-    Route::resource('emp_type','EmployeeTypeController');
-    Route::resource('employee','EmployeeController');
     Route::resource('admininfo','adminController');
 });

@@ -126,22 +126,7 @@
                 <small class="form-error">{{ $message }}</small>
                 @enderror
             </div>
-            <div class="form-group">
-              <label for="password">password<span>*</span></label>
-              <input type="password" id="password" placeholder="Enter Password" class="form-control @error('password') is-invalid @enderror" name="password" required>
-              @error('password')
-              <small class="form-error">{{ $message }}</small>
-              @enderror
-          </div>
-          <div class="form-group">
-            <label for="password-confirm">Confirm Password<span>*</span></label>
-            <input type="password" id="password-confirm" placeholder="Confirm your Password" class="form-control @error('password_confirmation') is-invalid @enderror" name="password_confirmation" required>
 
-            @error('password_confirmation')
-            <small class="form-error">{{ $message }}</small>
-            @enderror
-           
-        </div>
 
             
 

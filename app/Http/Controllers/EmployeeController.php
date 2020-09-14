@@ -6,7 +6,7 @@ use App\Employee;
 use App\EmployeeType;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
-use Illuminate\Support\Facades\Hash;
+
 
 class EmployeeController extends Controller
 {
@@ -48,7 +48,6 @@ class EmployeeController extends Controller
             'joining_date' => 'required',
             'salary' => 'required|integer',
             'employee_type_id' => 'required|integer',
-            'password' => 'required|confirmed|min:8|max:14',
         ]);
 
         $employee = new Employee;
@@ -62,7 +61,6 @@ class EmployeeController extends Controller
         $employee->nid = $request->nid;
         endif;
         $employee->employee_type_id = $request->employee_type_id;
-        $employee->password = Hash::make($request->password);
         $employee->save();
         Toastr::success('Employee  Created Successfully', 'success');
         return redirect()->route('employee.index');

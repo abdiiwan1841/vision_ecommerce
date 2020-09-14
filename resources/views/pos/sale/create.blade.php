@@ -138,13 +138,7 @@
       <div class="p_detail_wrapper table-responsive">
         <h3 class="text-center">SALES INVOICE</h3>
         <h5 class="date"></h5> <br>
-        <div class="row">
-            <div class="col-lg-6">
-                <div id="customer-info">
-
-            </div>
-         </div>
-    </div> <br><br>
+      <br><br>
     <div class="table-responsive">
       <table class="table table-bordered table-striped">
         <thead class="table-dark">
@@ -219,7 +213,7 @@
 
 
 <script>
-
+var baseurl = '{{url('/')}}';
 
 
   //Toater Alert 
@@ -236,7 +230,6 @@
 })
 
 function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
-var baseurl = '{{url('/')}}';
 var salestoreurl = '{{route('sale.store')}}';
 function displayCart() {
   var discount_amount = $(".discount").val();
@@ -264,12 +257,6 @@ function displayCart() {
   $('.total-cart').html(salesCart.totalCart());
 
   $('.date').html('Sales Date: '+sessionStorage.sales_date);
-  $.get(baseurl+"/api/userinfo/"+sessionStorage.user_id, function(data, status){
-      if(status === 'success'){
-        $("#customer-info").html("<b>Name :</b>"+data.name+"</br><b>Address :</b>  "+data.address+"<br><b>Phone :</b> "+data.phone+"<br><b>Email :</b> "+data.email);
-        
-      }
-  });
   $('.net-amount').text(Math.round(netamount));
   $('.discount').text( Math.round(disc));
   $('.carrying_and_loading').text(carrying_and_loading);

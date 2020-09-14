@@ -253,13 +253,17 @@
             
            
         
-            {{-- <li class="{{Request::is('admin/emp_type*') ? 'active' : '' }}">
-                <a href="{{ route('emp_type.index') }}"><i class="fas fa-user-alt"></i>  Employee Type</a>
+            <li class="{{Request::is('admin/emp_type*') ? 'active' : '' }}">
+                <a href="{{ route('emp_type.index') }}"><i class="fas fa-user-tag"></i>  Employee Type</a>
             </li>
             
             <li class="{{Request::is('admin/employee*') ? 'active' : '' }}">
-                <a href="{{ route('employee.index') }}"><i class="fas fa-user-alt"></i>  Employee</a>
-            </li> --}}
+                <a href="{{ route('employee.index') }}"><i class="fas fa-users"></i>  Employee's</a>
+            </li>
+
+            <li class="{{Request::is('admin/marketingreport*') ? 'active' : '' }}">
+                <a href="{{ route('marketingreport.index') }}"><i class="fas fa-bullhorn"></i>Marketing Sales Report</a>
+            </li>
            
             @if(Auth::user()->role->id == 1)
         
@@ -310,6 +314,9 @@
 
                 <li class="{{Request::is('admin/report/supplierdue*') ? 'active' : '' }}">
                     <a href="{{ route('report.supplierdue') }}"><i class="fa fa-layer-group"></i>Supplier Due Report</a>
+                </li> 
+                <li class="{{Request::is('admin/report/marketingreport*') ? 'active' : '' }}">
+                    <a href="{{ route('report.marketingreport') }}"><i class="fa fa-layer-group"></i>Marketing Report</a>
                 </li>     
                 
             </ul>

@@ -18,6 +18,7 @@ use App\Returnproduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Prevdue;
 
 class ApiInformationController extends Controller
 {
@@ -133,9 +134,10 @@ class ApiInformationController extends Controller
 
 
     public function invdueinfo($id){
+        $prevdue = Prevdue::where('user_id',$id)->sum('amount');
         $sales = Sale::where('user_id',$id)->sum('amount');
         $cashes = Cash::where('user_id',$id)->where('status',1)->sum('amount');
         $returns = Returnproduct::where('user_id',$id)->sum('amount');
-        return $sales-($cashes+$returns);
+        return ($sales+$prevdue)-($cashes+$returns);
     }
 }

@@ -403,7 +403,7 @@
 		@endphp
 		<tr style="background: #f6e58d" class="sale-{{$pending_sales_item->id}}">
 		<td  class="align-middle"><strong>{{$key+1}}</strong></td>
-		<td  class="align-middle"><a onclick="PendingSalesInfo('{{route('pendingsaleinfo.api',$pending_sales_item->id)}}','{{route('sale.approve',$pending_sales_item->id)}}')" style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_sales_item->provided_by}}  at {{$pending_sales_item->created_at->format('d-M-Y g:i a')}}   - Click Here For Details"  class="btn btn-link" href="javascript:void(0)"> <small>{{$pending_sales_item->sales_at->format('d-M-Y g:i a')}} </small> <br> <strong>{{$pending_sales_item->user->name}}</strong> </a></td>
+		<td  class="align-middle"><a onclick="PendingSalesInfo('{{route('pendingsaleinfo.api',$pending_sales_item->id)}}','{{route('sale.approve',$pending_sales_item->id)}}',{{$pending_sales_item->user_id}})" style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_sales_item->provided_by}}  at {{$pending_sales_item->created_at->format('d-M-Y g:i a')}}   - Click Here For Details"  class="btn btn-link" href="javascript:void(0)"> <small>{{$pending_sales_item->sales_at->format('d-M-Y g:i a')}} </small> <br> <strong>{{$pending_sales_item->user->name}}</strong> </a></td>
 		<th  class="align-middle" id="sale-{{$pending_sales_item->id}}">{!!FashiSalesStatus($pending_sales_item->sales_status)!!}</th>
 		
 		</tr>
@@ -638,7 +638,7 @@
 @push('js')
 <script src="{{asset('public/assets/js/axios.min.js')}}"></script>
 <script>
-
+var baseurl = '{{url('/')}}';
 const swalWithBootstrapButtons = Swal.mixin({
   customClass: {
     confirmButton: 'btn btn-success',
@@ -648,13 +648,20 @@ const swalWithBootstrapButtons = Swal.mixin({
 });
 
 	var role = {{Auth::user()->role->id}};
-	function PendingSalesInfo(salesinfourl,salesapproveurl){
+	function PendingSalesInfo(salesinfourl,salesapproveurl,customerid){
 		
+		function getSalesInfo() {
+			return axios.get(salesinfourl);
+		}
+		function getDueInfo() {
+			return axios.get(baseurl+"/api/invdueinfo/"+customerid);
+		}
 
-		axios.get(salesinfourl)
+
+        axios.all([getSalesInfo(),getDueInfo()])
 		.then(function (response) {
 
-			let salesdata = JSON.parse(response.request.response);
+			let salesdata = JSON.parse(response[0].request.response);
 			let productData = '';
 			let returnstatus = '';
 			let pdsum= 0;
@@ -671,7 +678,7 @@ const swalWithBootstrapButtons = Swal.mixin({
 			let s_total = s_qty*s_price;
 			pdsum += s_total;
 			if(s_free > 0){
-				productData += '<tr><td>'+item.product_name+'+<span class="bg-danger text-white"> free = '+s_free+' pc </span> </td><td>'+s_qty+'</td><td>'+s_price+'</td><td>'+Math.round(s_total)+'</td></tr>';
+				productData += '<tr><td>'+item.product_name+'<span style="color: #eb3b5a">+ free = '+s_free+' pc </span> </td><td>'+s_qty+'</td><td>'+s_price+'</td><td>'+Math.round(s_total)+'</td></tr>';
 			}else{
 				productData += '<tr><td>'+item.product_name+'</td><td>'+s_qty+'</td><td>'+s_price+'</td><td>'+Math.round(s_total)+'</td></tr>';
 			}
@@ -698,6 +705,10 @@ const swalWithBootstrapButtons = Swal.mixin({
 	<tr>
       <td>Approval Status</td>
 	  <td>${salesstatus}</td>
+	</tr>
+	<tr>
+      <td>Current Due</td>
+	  <th><h5 style="color: #eb3b5a;">`+response[1].request.response+`</h5> </th>
 	</tr>
 </table>
 <h5 class="text-center">Product Information</h5>
@@ -890,13 +901,65 @@ if(role == 1){
 		axios.post(sales_approve_url)
 		.then(function (response) {
 			let feedback = JSON.parse(response.request.response);
-			if(feedback.status == 0){
-				toastr.error(feedback.msg, 'Notifications')
-			}else if(feedback.status == 1){
+			if(feedback.status == 1101){
 				
-			$("#sale-"+feedback.id).html('<button type="button" class="btn btn-success btn-sm" disabled><i class="fas fa-check"></i> done</button>');
-			$(".sale-"+feedback.id).css('background','#f1f2f6').delay(5000).fadeOut('slow');
-			toastr.success('Sales Invoice Approved Successfully', 'Notifications')
+				$(".sale-"+feedback.id).html(`<td>#</td> 
+			<td>
+				<table class="table table-sm">
+				<tr>
+					<td>Customer</td>
+					<td>`+feedback.customer+`<td>
+				</tr>
+				<tr>
+					<td>Amount</td>
+					<td>`+feedback.amount+`<td>
+				</tr>
+				<tr>
+					<td>Message Status</td>
+					<td><span class="badge badge-success">success</span><td>
+				</tr>
+				<tr>
+					<td>Message Number</td>
+					<td>`+feedback.number+`<td>
+				</tr>
+				<tr>
+					<td>Message Body</td>
+					<td><small>`+feedback.message+`</small><td>
+				</tr>
+			</table>
+			</td>
+	
+	<td><button type="button" class="btn btn-success btn-sm" disabled=""><i class="fas fa-check"></i> done</button></td>`).css('background','#f1f2f6').delay(5000).fadeOut('slow');
+	toastr.success(feedback.msg, 'Notifications')
+
+
+			}else{
+				
+	      toastr.error(feedback.msg, 'Notifications');
+				$(".sale-"+feedback.id).html(`<td>#</td> 
+			<td>
+				<table class="table table-sm">
+				<tr>
+					<td>Customer</td>
+					<td>`+feedback.customer+`<td>
+				</tr>
+				<tr>
+					<td>Amount</td>
+					<td>`+feedback.amount+`<td>
+				</tr>
+				<tr>
+					<td>Message Status</td>
+					<td><span class="badge badge-danger">failed</span><td>
+				</tr>
+				<tr>
+					<td>Error Code</td>
+					<td>`+feedback.error_code+`<td>
+				</tr>
+
+			</table>
+			</td>
+	
+	<td><button type="button" class="btn btn-success btn-sm" disabled=""><i class="fas fa-check"></i> done</button></td>`).css('background','#f1f2f6').delay(5000).fadeOut('slow');			
 			
 			}
 			$("#InfoModal").modal('hide');

@@ -4,12 +4,14 @@ namespace App;
 
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Employee  extends Authenticatable
 {
     use Notifiable;
+    use SoftDeletes;
     
     protected $fillable = [
         'name','email','phone','password','address','joining_date','salary','nid','employee_type_id'

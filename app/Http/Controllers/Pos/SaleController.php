@@ -251,6 +251,7 @@ class SaleController extends Controller
     }
 
     public function approve(Request $request,$id){
+        $sendstatus = 1101;
         $sale = Sale::with('product')->findOrFail($id);
         if(Auth::user()->role->id != 1){
            return ['id'=> $sale->id,'status' => $sale->sales_status,'msg' => 'You Are Not Authorized' ];
@@ -274,12 +275,17 @@ class SaleController extends Controller
         }
         
         
-        //check if the invoice is not edited then send sms
-        if($sale->edited != 1){
-
         // $url = "http://66.45.237.70/api.php";
-        // $number="01724136687,01958454158";
-        // $text="New Invoice, Date: ".$sale->sales_at->format('d-m-Y')." Customer: ".$sale->user->name.",  ".$sale->user->address." Product:  ".$pdinfo.". Check Details On Site, Thanks";
+        $number="01700817934";
+
+        //check if the invoice is not edited then send sms
+        if($sale->edited == 1){
+            $text="A Approved Invoice is Edited  Date: ".$sale->sales_at->format('d-m-Y')." Customer: ".$sale->user->name.",  ".$sale->user->address." Product:  ".$pdinfo.". Please disregard previous invoice and deliver This Product ASAP, Thanks";
+         }else{
+            $text="New Invoice,Approved By ".Auth::user()->name.", Date: ".$sale->sales_at->format('d-m-Y')." Customer: ".$sale->user->name.",  ".$sale->user->address." Product:  ".$pdinfo.". Please Deliver This Product ASAP, Thanks";
+         }
+        //endcheck if invoice is edited
+
         // $data= array(
         // 'username'=>"shajibazher",
         // 'password'=>"UtUs6B8WVqjmm72",
@@ -296,19 +302,13 @@ class SaleController extends Controller
         // $sendstatus = $p[0];
         
         
-        // if($sendstatus == 1101){
-        //     Toastr::success('Invoice Approved Successfully An sms has been sent to '.$number, 'success');
-        // }else{
-        //     Toastr::success('Invoice Approved Successfully', 'success');
-        //     Toastr::error(VisionSmsResponse($sendstatus), 'error');
-        // }
-        
-        
-
+        if($sendstatus == 1101){
+            return ['id'=> $sale->id,'status' => $sendstatus,'msg' => 'Sales Invoice Approved Successfully An sms has been sent to '.$number,'customer' => $sale->user->name,'amount' => $sale->amount,'message' => $text,'number' => $number ];
+        }else{
+            return ['id'=> $sale->id,'status' => $sendstatus,'msg' => 'Sales Invoice Approved Successfully','error_code' => VisionSmsResponse($sendstatus)];
         }
-        //endcheck if invoice is edited
         
-        return ['id'=> $sale->id,'status' => $sale->sales_status,'msg' => 'Sales Invoice Approved Successfully' ];
+    
         }
     }
 

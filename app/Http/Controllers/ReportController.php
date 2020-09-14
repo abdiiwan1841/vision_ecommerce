@@ -10,11 +10,13 @@ use App\Order;
 use App\Payment;
 use App\Prevdue;
 use App\Division;
+use App\Employee;
 use App\Purchase;
 use App\Supplier;
 use Carbon\Carbon;
 use App\Supplierdue;
 use App\GeneralOption;
+use App\MarketingReport;
 use App\Returnproduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -951,6 +953,23 @@ class ReportController extends Controller
        
        $pdf = PDF::loadView('general_report.pdfsupplierreport',compact('datewise_sorted_data','request','suppliers','balance','current_supplier','general_opt_value'));
        return $pdf->download('suppleriduereport.pdf');
+    }
+
+    public function MarketingReport(){
+        $employees = Employee::get();
+        $general_opt = GeneralOption::first();
+        $general_opt_value = json_decode($general_opt->options, true);
+        return view('general_report.marketingreport',compact('general_opt_value','employees'));
+    }
+
+    public function ShowMarketingReport(Request $request){
+        $marketingreport = MarketingReport::where('employee_id',$request->employee)->orderBy('at','ASC')->get();
+        $employee = Employee::findOrFail($request->employee);
+        $general_opt = GeneralOption::first();
+        $general_opt_value = json_decode($general_opt->options, true);
+        $pdf = PDF::loadView('general_report.showmarketingreport',compact('marketingreport','general_opt_value','employee','request'));
+
+        return $pdf->download($employee->name.' Sales Report'.$request->start.'to '.$request->end.'.pdf');
     }
 
 
