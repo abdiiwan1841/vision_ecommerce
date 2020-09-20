@@ -16,10 +16,12 @@ use App\Supplier;
 use Carbon\Carbon;
 use App\Supplierdue;
 use App\GeneralOption;
-use App\MarketingReport;
 use App\Returnproduct;
+use App\MarketingReport;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ReportController extends Controller
 {
@@ -317,7 +319,9 @@ class ReportController extends Controller
         $balance = ($previous_sales+$previous_prevdue) - ($previous_returns + $previous_cashes);
 
         $pdf = PDF::loadView('pos.report.pdfuserstatement',compact('datewise_sorted_data','request','users','balance','current_user','general_opt_value'));
-        return $pdf->download('invoice.pdf');
+
+        Storage::put('public/statements/'.Str::slug($current_user->name).'-from-'.$request->start.'-to-'.$request->end.'.pdf', $pdf->output());
+        return $pdf->download('Satements Of '.$current_user->name.' from '.$request->start.' to '.$request->end.'.pdf');
 
 
     }
@@ -473,7 +477,9 @@ class ReportController extends Controller
 
 
         $pdf = PDF::loadView('pos.report.pdfdetailstatements',compact('datewise_sorted_data','request','users','balance','current_user','general_opt_value'));
-        return $pdf->download('invoice.pdf');
+
+        Storage::put('public/detailstatements/'.Str::slug($current_user->name).'-from-'.$request->start.'-to-'.$request->end.'.pdf', $pdf->output());
+        return $pdf->download('Satements Of '.$current_user->name.' from '.$request->start.' to '.$request->end.'.pdf');
 
 
     }

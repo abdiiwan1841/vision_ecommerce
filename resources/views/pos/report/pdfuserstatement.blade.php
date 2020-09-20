@@ -42,10 +42,12 @@
                             <td>Customer Name : </td>
                             <td>{{$current_user->name}}</td>
                           </tr>
+                          @if($current_user->inventory_email != null)
                           <tr>
                             <td>Email : </td>
                             <td>{{$current_user->inventory_email}}</td>
                           </tr>
+                          @endif
                           <tr>
                             <td>Phone : </td>
                             <td>{{$current_user->phone}}</td>
@@ -63,7 +65,7 @@
                     <p style="text-align: center;margin-bottom: 10px;font-weight: bold">From {{date("d-M-Y", strtotime($request->start) )}} To {{date("d-M-Y", strtotime($request->end) )}}</p>
                   <table class="table  table-bordered table-sm">
                     <tbody>
-                      <tr style="background: #dddddd">
+                      <tr class="thead-dark">
                         <th scope="col">Date</th>
                         <th scope="col">Bill Number</th>
                         <th scope="col">Particular</th>

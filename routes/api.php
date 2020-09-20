@@ -33,3 +33,5 @@ Route::get('priceinfo/{id}', 'Api\ApiInformationController@priceInfo')->name('pr
 Route::get('pendingsales/{id}', 'Api\ApiInformationController@pendingSalesInfo')->name('pendingsaleinfo.api');
 Route::get('pendingreturns/{id}', 'Api\ApiInformationController@pendingReturnInfo')->name('pendingreturninfo.api');
 Route::get('invdueinfo/{id}', 'Api\ApiInformationController@invdueinfo');
+Route::get('pendingdeliveryinfo/{id}', 'Api\ApiInformationController@pendingDeliveryInfo')->name('pendingdeliveryinfo.api');
+Route::get('deliveryman', 'Api\ApiInformationController@deliveryman')->name('deliveryman.api');

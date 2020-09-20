@@ -103,6 +103,6 @@ class MarketingReportController extends Controller
             'end' => 'required|date',
         ]);
         $marketingreport = MarketingReport::whereBetween('at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('at', 'asc')->get();
-        return view('marketingreport.index',compact('marketingreport'));
+        return view('marketingreport.datewise',compact('marketingreport','request'));
     }
 }

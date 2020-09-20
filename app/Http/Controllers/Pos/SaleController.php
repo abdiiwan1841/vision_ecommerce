@@ -10,11 +10,13 @@ use App\Charge;
 use App\Product;
 use Carbon\Carbon;
 use App\GeneralOption;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class SaleController extends Controller
 {
@@ -30,7 +32,6 @@ class SaleController extends Controller
             'start' => 'required|date',
             'end' => 'required|date',
         ]);
-
 
         $sales = Sale::withTrashed('user','prouduct')->whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('sales_at', 'asc')->get();
         return view('pos.sale.salesresult',compact('sales','request'));
@@ -247,7 +248,8 @@ class SaleController extends Controller
 
 
         $pdf = PDF::loadView('pos.sale.invoice',compact('sale','current_user','general_opt_value','signature'));
-        return $pdf->download('invoice.pdf');
+        Storage::put('public/invoices/'.Str::slug($current_user->name).'-date-'.$sale->sales_at->format('d-m-Y').'.pdf', $pdf->output());
+        return $pdf->download($current_user->name.' date: '.$sale->sales_at.'.pdf');
     }
 
     public function approve(Request $request,$id){
@@ -312,17 +314,19 @@ class SaleController extends Controller
         }
     }
 
-    public function delivery($id){
-        $sale = Sale::findOrFail($id);
-        if(Auth::user()->role->id != 4){
-            return ['id'=> $sale->id,'status' => $sale->delivery_status,'msg' => 'You Are Not Authorized' ];
-        }else{
+    public function delivery(Request $request,$id){
+
+        return $request;
+        // $sale = Sale::findOrFail($id);
+        // if(Auth::user()->role->id != 4){
+        //     return ['id'=> $sale->id,'status' => $sale->delivery_status,'msg' => 'You Are Not Authorized' ];
+        // }else{
         
-        $sale->timestamps = false;
-        $sale->delivery_status = 1;
-        $sale->delivered_by = Auth::user()->id;
-        $sale->save();
-        return ['id'=> $sale->id,'status' => $sale->delivery_status,'msg' => 'Invoice Mark as Delivered' ];
-        }
+        // $sale->timestamps = false;
+        // $sale->delivery_status = 1;
+        // $sale->delivered_by = Auth::user()->id;
+        // $sale->save();
+        // return ['id'=> $sale->id,'status' => $sale->delivery_status,'msg' => 'Invoice Mark as Delivered' ];
+        // }
     }
 }

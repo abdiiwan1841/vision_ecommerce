@@ -598,7 +598,7 @@
 		<td  class="align-middle"><strong>{{$key+1}}</strong></td>
 		<td  class="align-middle"><a style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_delivery_item->provided_by}}  at {{$pending_delivery_item->created_at->format('d-M-Y g:i a')}}   - Click Here For Details"  class="btn btn-link" href="{{route('viewsales.show',$pending_delivery_item->id)}}"> <small>{{$pending_delivery_item->sales_at->format('d-M-Y g:i a')}} </small> <br> <strong>{{$pending_delivery_item->user->name}} </strong> <br> <small>Delivery Status:   </small> </a></td>
 		<td class="align-middle"> @if(Auth::user()->role->id == 4) 
-		<button onclick="DeliveryConfirmation('{{route('sale.delivery',$pending_delivery_item->id)}}','{{$pending_delivery_item->user->name}}')" id="delivery-{{$pending_delivery_item->id}}"  type="button" class="btn btn-sm btn-danger">Mark</button>  @else  {!!FashiShippingStatus($pending_delivery_item->delivery_status)!!} @endif</td>
+		<button onclick="DeliveryModalPopup('{{route('pendingdeliveryinfo.api',$pending_delivery_item->id)}}','{{route('sale.delivery',$pending_delivery_item->id)}}')" id="delivery-{{$pending_delivery_item->id}}"  type="button" class="btn btn-sm btn-danger">Mark</button>  @else  {!!FashiShippingStatus($pending_delivery_item->delivery_status)!!} @endif</td>
 		
 		</tr>
 		@endforeach
@@ -1016,38 +1016,155 @@ if(role == 1){
 	$("#cashes").text(cash_amount);
 	$("#returns").text(return_amount);
 
-
-	function DeliveryConfirmation(delivery_marked_url,customer){
-	swalWithBootstrapButtons.fire({
-  title: 'Are you sure you want to mark as delivered '+customer+' ?',
-  text: "You won't be able to revert this!",
-  icon: 'warning',
-  showCancelButton: true,
-  confirmButtonText: 'Yes, Mark it!',
-  cancelButtonText: 'Not Now',
-  reverseButtons: true
-}).then((result) => {
-  if (result.value) {
-	MarkAsDelivered(delivery_marked_url)
-    swalWithBootstrapButtons.fire(
-      'Mark As Delivered Successfully!',
-      'Your Data Has Been Stored',
-      'success'
-    )
-  } else if (
-    /* Read more about handling dismissals below */
-    result.dismiss === Swal.DismissReason.cancel
-  ) {
-    swalWithBootstrapButtons.fire(
-      'Denied',
-      'No More Changes On Database :)',
-      'error'
-    )
-  }
-});
+function getDeliveryStatus(status){
+	if(status === 0){
+		return '<span class="badge badge-warning">pending</span>';
+	}else if(status === 1){
+		return '<span class="badge badge-success">Delivered</span>';
+	}else if(status === 2){
+		return '<span class="badge badge-danger">Canceled</span>';
+	}
 }
 
 
+function DeliveryModalPopup(deliveryinfourl,confirmation_url){
+	function getSalesInfo() {
+			return axios.get(deliveryinfourl);
+	}
+	function getDeliveryman() {
+		return axios.get(baseurl+"/api/deliveryman");
+	}
+
+
+        axios.all([getSalesInfo(),getDeliveryman()])
+		.then(response => {
+			console.log(response[0]);
+			let deliverymanData = "";
+			response[1].data.forEach(function(deliveryman){
+				deliverymanData += "<option value="+deliveryman.id+">"+deliveryman.name+"</option>";
+			})
+
+			$('#InfoModalLabel').text('Delivery Form');	
+	$("#salesdata").html(`
+	<table class="table table-sm">
+		<tr>
+			<th>Order ID:</th>
+			<th> #${response[0].data.id}</th>
+		</tr>
+		<tr>
+			<th>Invoice Date:</th>
+			<th> ${new Date(response[0].data.sales_at)}</th>
+		</tr>
+		<tr>
+			<th>Customer:</th>
+			<th>${response[0].data.user.name}</th>
+		</tr>
+		<tr>
+			<th>Delivery Status:</th>
+			<th>${getDeliveryStatus(response[0].data.delivery_status)}</th>
+		</tr>
+	</table>
+	<form action="javascript:void(0)" id="delivery_form">
+	<div class="from-group mb-3">
+		<div class="custom-control custom-radio custom-control-inline">
+  <input type="radio" id="courier" name="deliverymode" class="custom-control-input" value="courier" checked="checked">
+  <label class="custom-control-label" for="courier">Courier/Transport</label>
+</div>
+		<div class="custom-control custom-radio custom-control-inline">
+  <input type="radio" id="office" value="office" name="deliverymode" class="custom-control-input">
+  <label class="custom-control-label" for="office">Office Delivery</label>
+</div>
+
+<hr>
+	</div>
+	<div id="courier-info">
+	<div class="form-group">
+		<label for="courier_name">Courier/ Transport Name</label>
+		<input type="text" class="form-control" id="courier_name" name="courier_name" placeholder="Enter Courier Name">
+	</div>
+	
+	<div class="form-group">
+		<label for="cn_number">CN Number</label>
+		<input type="text" class="form-control" id="cn_number" name="cn_number" placeholder="Enter CN Number">
+	</div>
+	<div class="form-group">
+		<label for="booking_amount">Booking Charge</label>
+		<input type="text" class="form-control" id="booking_amount" name="booking_amount" placeholder="Enter Booking Amount">
+	</div>
+	<div class="form-group">
+		<label for="transportation_expense">Transportation Expense</label>
+		<input type="text" class="form-control" id="transportation_expense" name="transportation_expense" placeholder="Enter Transportation Expense">
+	</div>
+	<div class="form-group">
+	<div class="row">
+		<div class="col-4"><b>Is Condition</b></div>
+		<div class="col-8">   <div class="onoffswitch">
+			<input type="checkbox" name="is_condition" class="onoffswitch-checkbox" id="is_condition" value="1">
+			<label class="onoffswitch-label" for="is_condition">
+				<span class="onoffswitch-inner"></span>
+				<span class="onoffswitch-switch"></span>
+			</label>
+		</div></div>
+	</div>
+
+	</div>
+
+	<div class="form-group" id="condition_field" style="display: none">
+		<label for="condition_amount">Condition Amount</label>
+		<input type="text" class="form-control" id="condition_amount" name="condition_amount" placeholder="Enter Condition Amount">
+	</div>
+	</div>
+	<div class="form-group">
+		<label for="delivered_by">Delivered By</label>
+		<select class="form-control" name="delivered_by" id="delivered_by">
+         ${deliverymanData}
+        </select>
+	</div>
+	<div class="float-right mt-3">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button type="button" id="send_form" onclick="sendDeliveryForm('`+confirmation_url+`')" class="btn btn-success">Mark As Delivered</button>
+	</div>
+	</form>
+
+	`);
+
+
+
+	$("input[name='deliverymode']").change(function(){
+		if(this.value === "office"){
+			$("#courier-info").hide('slow');
+		}else{
+			$("#courier-info").show('slow');
+		}
+	});
+	$("#is_condition").change(function(){
+			$("#condition_field").toggle('slow');
+	
+	});
+
+
+		})
+
+
+
+	$('#InfoModal').modal('show');
+}
+
+function sendDeliveryForm(delivery_marked_url){
+	$('#send_form').html('<i class="fas fa-spinner fa-spin"></i> Please Wait...').attr('disabled',true);
+	let data = $("#delivery_form").serialize();
+	console.log(delivery_marked_url);
+	axios.post(delivery_marked_url,data)
+		.then(function (response) {
+			let feedback = JSON.parse(response.request.response);
+			console.log(response)
+			$('#send_form').html('<i class="fas fa-check"></i> Done').attr('disabled',false);
+			
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+
+}
 
 	
 function Confirmation(cash_aprove_url,customer,amount){

@@ -6,8 +6,10 @@ use App\Area;
 use App\Cash;
 use App\Sale;
 use App\User;
+use App\Admin;
 use App\Order;
 use App\Company;
+use App\Prevdue;
 use App\Product;
 use App\District;
 use App\Purchase;
@@ -18,7 +20,6 @@ use App\Returnproduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Prevdue;
 
 class ApiInformationController extends Controller
 {
@@ -69,6 +70,14 @@ class ApiInformationController extends Controller
     public function pendingSalesInfo($id){
         return Sale::with('product','user')->findOrFail($id);
     }
+
+
+    
+    public function pendingDeliveryInfo($id){
+        return Sale::with('product','user')->findOrFail($id);
+    }
+
+    
 
 
     public function pendingReturnInfo($id){
@@ -139,5 +148,9 @@ class ApiInformationController extends Controller
         $cashes = Cash::where('user_id',$id)->where('status',1)->sum('amount');
         $returns = Returnproduct::where('user_id',$id)->sum('amount');
         return ($sales+$prevdue)-($cashes+$returns);
+    }
+
+    public function deliveryman(){
+        return Admin::where('role_id',4)->get();
     }
 }

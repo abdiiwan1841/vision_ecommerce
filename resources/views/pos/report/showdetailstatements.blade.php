@@ -6,7 +6,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                Customer  Statement
+                Customer  Statement With Product Details
             </div>
             <div class="card-body">
               <div class="row">

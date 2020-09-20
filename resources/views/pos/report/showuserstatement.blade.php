@@ -69,8 +69,8 @@
                   <div class="row">
                     <div class="col-lg-6">`
                       <div class="customer-table">
-                        <p>Customer Details</p>
-                        <table class="table">
+                        <h5>Customer Details</h5>
+                        <table class="table table-sm table-bordered table-hover">
                           <tr>
                             <td>Customer Name : </td>
                             <td>{{$current_user->name}}</td>
@@ -94,9 +94,9 @@
 
                   <div class="statement_table table-responsive">
                     <h5 class="text-center mb-5">From {{date("d-M-Y", strtotime($request->start) )}} To {{date("d-M-Y", strtotime($request->end) )}}</h5>
-                  <table class="table table-striped table-hover table-bordered">
+                  <table class="table table-sm table-hover table-bordered">
                     <thead>
-                      <tr>
+                      <tr class="thead-dark">
                         <th scope="col">Date</th>
                         <th scope="col">Bill</th>
                         <th scope="col">Particular</th>
@@ -165,7 +165,7 @@
                     </div>
                   </div>
                 <div class="col-lg-6">
-                  <table class="table table-striped table-bordered">
+                  <table class="table table-sm table-hover table-bordered">
                     <tr>
                       <td>Previous Balance: </td>  
                     <td>{{$balance}}</td>  
@@ -213,6 +213,11 @@
 
 @push('css')
 <link rel="stylesheet" href="{{asset('public/assets/css/flatpicker.min.css')}}">
+<style>
+.table-bordered td, .table-bordered th{
+  border-color: #000 !important;
+}
+</style>
 @endpush
 
 @push('js')
