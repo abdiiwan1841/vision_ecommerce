@@ -25,7 +25,8 @@ class CreateSalesTable extends Migration
             $table->integer('approved_by')->nullable();
             $table->integer('delivery_status')->default(0);
             $table->boolean('edited')->default(0);
-            $table->integer('delivered_by')->nullable();
+            $table->integer('delivery_marked_by')->nullable();
+            $table->text('deliveryinfo')->nullable();
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -125,10 +125,10 @@ class SaleController extends Controller
         }else{
             $signature = Admin::where('id',$sale->approved_by)->select('name','signature')->first();
         }
-        if(empty($sale->delivered_by)){
+        if(empty($sale->delivery_marked_by)){
             $delivered_by = null;
         }else{
-            $delivered_by = Admin::where('id',$sale->delivered_by)->select('name')->first();
+            $delivered_by = Admin::where('id',$sale->delivery_marked_by)->select('name')->first();
         }
         
         return view('pos.sale.show',compact('sale','signature','delivered_by'));
@@ -316,17 +316,35 @@ class SaleController extends Controller
 
     public function delivery(Request $request,$id){
 
-        return $request;
-        // $sale = Sale::findOrFail($id);
-        // if(Auth::user()->role->id != 4){
-        //     return ['id'=> $sale->id,'status' => $sale->delivery_status,'msg' => 'You Are Not Authorized' ];
-        // }else{
-        
-        // $sale->timestamps = false;
-        // $sale->delivery_status = 1;
-        // $sale->delivered_by = Auth::user()->id;
-        // $sale->save();
-        // return ['id'=> $sale->id,'status' => $sale->delivery_status,'msg' => 'Invoice Mark as Delivered' ];
-        // }
+        if($request->deliverymode === "courier"){
+            $this->validate($request,[
+                'courier_name' => 'required',
+                'booking_amount' => 'required',
+                'cn_number' => 'required',
+                'delivered_by' => 'required',
+                'deliverymode' => 'required',
+                'transportation_expense' => 'required',
+            ]);
+        }else{
+            $this->validate($request,[
+                'delivered_by' => 'required',
+            ]);
+        }
+
+        if($request->has('is_condition')){
+            $is_condition = 1;
+        }else{
+            $is_condition = 0;
+        }
+
+        $deliveryinfo = ["deliverymode" => $request->deliverymode,"is_condition" =>$is_condition, "courier_name" => $request->courier_name,"booking_amount" => $request->booking_amount,"cn_number" => $request->cn_number,"condition_amount" => $request->required, "delivered_by" => $request->delivered_by, "deliverymode" => $request->deliverymode, "transportation_expense" => $request->transportation_expense];
+
+        $sale = Sale::findOrFail($id);
+        $sale->timestamps = false;
+        $sale->delivery_status = 1;
+        $sale->deliveryinfo = $deliveryinfo;
+        $sale->delivery_marked_by =  Auth::user()->id;
+        $sale->save();
+        return ['id'=> $sale->id,'status' => $sale->delivery_status,'msg' => $sale->user->name.'  Mark as Delivered' ];
     }
 }

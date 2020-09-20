@@ -328,27 +328,96 @@
 
 	  <hr>
 
-	    <h5>Last Ten Delivery </h5>
+	    <h5>Last 10 Delivery </h5>
 				@if(count($last_ten_dlv) > 0)
 				  
 				<table class="table table-sm table-bordered" style="font-size: 14px;">
 				  <thead class="thead-light">
 					<tr>
-					  <th class="align-middle">ID</th>
-					  <th class="align-middle">Invoice Date</th>
-					  <th class="align-middle">Customer</th>
-					  <th class="align-middle">Delivery Status</th>
+					 <th>Sl</th>
+					  <th class="align-middle">Delivery Information</th>
 					</tr>
 				  </thead>
 				  <tbody>
 					
-					@foreach ($last_ten_dlv as $last_ten_item)
+					@foreach ($last_ten_dlv as $key => $last_ten_item)
+
+					@if($last_ten_item->deliveryinfo != null)
+					@php
+						$d_info = json_decode($last_ten_item->deliveryinfo,true);
+					@endphp
+					@endif
+
 	
-					<tr @if($last_ten_item->sales_status == 2) style="background: #f8a5c2" @endif>
-					<td class="align-middle">#{{$last_ten_item->id}}</td>
-					<td  class="align-middle"><a data-toggle="tooltip" data-placement="top" title="Service Provided by {{$last_ten_item->provided_by}}  at {{$last_ten_item->created_at->format('d-M-Y g:i a')}}    Click Here For Details"  class="btn btn-link" href="{{route('viewsales.show',$last_ten_item->id)}}">{{$last_ten_item->sales_at->format('d-F-Y')}} </a></td>
-					<td class="align-middle">{{$last_ten_item->user->name}}</td>
-					<td class="align-middle">{!!FashiShippingStatus($last_ten_item->delivery_status)!!}</td>
+					<tr>
+					<th class="align-middle">{{$key+1}}</th>
+
+					<td class="align-middle">
+					<table class="table mb-3">
+						<tr>
+							<td>Sales ID</td>
+							<td>#{{$last_ten_item->id}}</td>
+						</tr>
+						<tr>
+							<td>Date</td>
+							<td><a data-toggle="tooltip" data-placement="top" title="Service Provided by {{$last_ten_item->provided_by}}  at {{$last_ten_item->created_at->format('d-m-Y')}}    Click Here For Details"  class="btn btn-link" href="{{route('viewsales.show',$last_ten_item->id)}}">{{$last_ten_item->sales_at->format('d-m-Y')}} </a></td>
+						</tr>
+						<tr>
+							<td>Delivery Status:</td>
+							<td>{!!FashiShippingStatus($last_ten_item->delivery_status)!!}</td>
+						</tr>
+						<tr>
+							<td>Customer</td>
+							<td>{{$last_ten_item->user->name}}</td>
+						</tr>
+						
+						@if($last_ten_item->deliveryinfo != null)
+						@php
+							$d_info = json_decode($last_ten_item->deliveryinfo,true);
+						@endphp
+
+						@if($d_info['is_condition'] === true)
+						<tr>
+							<td>Is Condition</td>
+							<td><span class="badge badge-success">true</span></td>
+						</tr>
+						<tr>
+							<td>Condition Amount</td>
+							<td>{{$d_info['condition_amount']}}</td>
+						</tr>
+						@endif
+
+						<tr>
+							<td>Delivery Mode</td>
+						   <td>{!!delivereyMode($d_info['deliverymode'])!!}</td>
+						</tr>
+						@if($d_info['deliverymode'] === 'courier')
+						<tr>
+							<td>Courier/Transport</td>
+						   <td>{{$d_info['courier_name']}}</td>
+						</tr>
+						<tr>
+							<td>Booking Charge</td>
+						   <td>{{$d_info['booking_amount']}}</td>
+						</tr>
+						<tr>
+							<td>CN Number</td>
+						   <td>{{$d_info['cn_number']}}</td>
+						</tr>
+						<tr>
+							<td>Delivered By </td>
+						   <td>{{App\Admin::find($d_info['delivered_by'])->name}}</td>
+						</tr>
+
+						<tr>
+							<td>Transportation Expense </td>
+						   <td>{{$d_info['transportation_expense']}}</td>
+						</tr>
+						@endif
+
+
+						@endif
+					</table></td>
 
 					
 					</tr>
@@ -574,7 +643,7 @@
 	<!-- Card Start -->
 	<div class="card mt-3">
 		<div class="card-header bg-warning">
-			<strong>Invoice Pending For Delivery</strong> <br><small>N.B: Only a deliverman user can mark this as delivered</small>
+			<strong>Invoice Pending For Delivery</strong>
 		</div>
 	<div class="card-body">
 
@@ -585,7 +654,6 @@
 		<tr>
 		  <th class="align-middle">Sl</th>
 		  <th class="align-middle">Pending List</th>
-		  <th class="align-middle">Status</th>
 		</tr>
 	  </thead>
 	  <tbody>
@@ -596,9 +664,26 @@
 		@endphp
 		<tr class="delivery-{{$pending_delivery_item->id}}">
 		<td  class="align-middle"><strong>{{$key+1}}</strong></td>
-		<td  class="align-middle"><a style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_delivery_item->provided_by}}  at {{$pending_delivery_item->created_at->format('d-M-Y g:i a')}}   - Click Here For Details"  class="btn btn-link" href="{{route('viewsales.show',$pending_delivery_item->id)}}"> <small>{{$pending_delivery_item->sales_at->format('d-M-Y g:i a')}} </small> <br> <strong>{{$pending_delivery_item->user->name}} </strong> <br> <small>Delivery Status:   </small> </a></td>
-		<td class="align-middle"> @if(Auth::user()->role->id == 4) 
-		<button onclick="DeliveryModalPopup('{{route('pendingdeliveryinfo.api',$pending_delivery_item->id)}}','{{route('sale.delivery',$pending_delivery_item->id)}}')" id="delivery-{{$pending_delivery_item->id}}"  type="button" class="btn btn-sm btn-danger">Mark</button>  @else  {!!FashiShippingStatus($pending_delivery_item->delivery_status)!!} @endif</td>
+		<td  class="align-middle">
+			<table class="table">
+				<tr>
+					<td>Date:</td>
+					<td>{{$pending_delivery_item->sales_at->format('d-M-Y')}}</td>
+				</tr>
+				<tr>
+					<td>Customer:</td>
+					<td>{{$pending_delivery_item->user->name}}</td>
+				</tr>
+				<tr>
+					<td>Status:</td>
+					<td>{!!FashiShippingStatus($pending_delivery_item->delivery_status)!!}</td>
+				</tr>
+				
+			</table>
+			<button onclick="DeliveryModalPopup('{{route('pendingdeliveryinfo.api',$pending_delivery_item->id)}}','{{route('sale.delivery',$pending_delivery_item->id)}}')" id="delivery-{{$pending_delivery_item->id}}"  type="button" class="btn btn-sm btn-dark btn-block">Mark As Deliverd</button>
+		
+		</td>
+
 		
 		</tr>
 		@endforeach
@@ -987,23 +1072,7 @@ if(role == 1){
 
 	}
 
-	function MarkAsDelivered(delivery_marked_url){
-		axios.post(delivery_marked_url)
-		.then(function (response) {
-			let feedback = JSON.parse(response.request.response);
-			if(feedback.status == 0){
-				toastr.error(feedback.msg, 'Notifications')
-			}else if(feedback.status == 1){
-			    $("#delivery-"+feedback.id).html('<i class="fas fa-check"></i> done').css('background','#44bd32').css('border','none');
-			    $(".delivery-"+feedback.id).css('background','#b8e994').delay(5000).fadeOut('slow');;
-			}
-			
-		})
-		.catch(function (error) {
-			console.log(error);
-		});
 
-	}
 
 
 
@@ -1028,6 +1097,7 @@ function getDeliveryStatus(status){
 
 
 function DeliveryModalPopup(deliveryinfourl,confirmation_url){
+	$("#delivery_form").trigger("reset");
 	function getSalesInfo() {
 			return axios.get(deliveryinfourl);
 	}
@@ -1065,14 +1135,17 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 		</tr>
 	</table>
 	<form action="javascript:void(0)" id="delivery_form">
+
 	<div class="from-group mb-3">
 		<div class="custom-control custom-radio custom-control-inline">
   <input type="radio" id="courier" name="deliverymode" class="custom-control-input" value="courier" checked="checked">
   <label class="custom-control-label" for="courier">Courier/Transport</label>
+
 </div>
 		<div class="custom-control custom-radio custom-control-inline">
   <input type="radio" id="office" value="office" name="deliverymode" class="custom-control-input">
   <label class="custom-control-label" for="office">Office Delivery</label>
+
 </div>
 
 <hr>
@@ -1081,19 +1154,23 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 	<div class="form-group">
 		<label for="courier_name">Courier/ Transport Name</label>
 		<input type="text" class="form-control" id="courier_name" name="courier_name" placeholder="Enter Courier Name">
+		<span class="text-danger courier_name_err"></span>
 	</div>
 	
 	<div class="form-group">
 		<label for="cn_number">CN Number</label>
 		<input type="text" class="form-control" id="cn_number" name="cn_number" placeholder="Enter CN Number">
+		<span class="text-danger cn_number_err"></span>
 	</div>
 	<div class="form-group">
 		<label for="booking_amount">Booking Charge</label>
 		<input type="text" class="form-control" id="booking_amount" name="booking_amount" placeholder="Enter Booking Amount">
+		<span class="text-danger booking_amount_err"></span>
 	</div>
 	<div class="form-group">
 		<label for="transportation_expense">Transportation Expense</label>
 		<input type="text" class="form-control" id="transportation_expense" name="transportation_expense" placeholder="Enter Transportation Expense">
+		<span class="text-danger transportation_expense_err"></span>
 	</div>
 	<div class="form-group">
 	<div class="row">
@@ -1112,6 +1189,7 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 	<div class="form-group" id="condition_field" style="display: none">
 		<label for="condition_amount">Condition Amount</label>
 		<input type="text" class="form-control" id="condition_amount" name="condition_amount" placeholder="Enter Condition Amount">
+		<span class="text-danger condition_amounte_err"></span>
 	</div>
 	</div>
 	<div class="form-group">
@@ -1119,6 +1197,7 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 		<select class="form-control" name="delivered_by" id="delivered_by">
          ${deliverymanData}
         </select>
+		<span class="text-danger delivered_by_err"></span>
 	</div>
 	<div class="float-right mt-3">
 	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button type="button" id="send_form" onclick="sendDeliveryForm('`+confirmation_url+`')" class="btn btn-success">Mark As Delivered</button>
@@ -1135,6 +1214,7 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 		}else{
 			$("#courier-info").show('slow');
 		}
+		
 	});
 	$("#is_condition").change(function(){
 			$("#condition_field").toggle('slow');
@@ -1144,24 +1224,47 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 
 		})
 
-
-
+	$("#InfoModal-footer").html('');
 	$('#InfoModal').modal('show');
+	
 }
 
 function sendDeliveryForm(delivery_marked_url){
+	$(".text-danger").hide().text("");
+	$(".red-border").removeClass("red-border");
 	$('#send_form').html('<i class="fas fa-spinner fa-spin"></i> Please Wait...').attr('disabled',true);
 	let data = $("#delivery_form").serialize();
 	console.log(delivery_marked_url);
 	axios.post(delivery_marked_url,data)
-		.then(function (response) {
-			let feedback = JSON.parse(response.request.response);
-			console.log(response)
-			$('#send_form').html('<i class="fas fa-check"></i> Done').attr('disabled',false);
-			
+		.then(res => {  
+		   
+		  $('#InfoModal').modal('hide');
+		  
+		  let feedback = JSON.parse(res.request.response);
+			if(feedback.status == 0){
+				toastr.error(feedback.msg, 'Notifications')
+			}else if(feedback.status == 1){
+
+			    $(".delivery-"+feedback.id).html(`<td>#</td>
+	<td><table class="table"> <tr><td>${feedback.msg}</td> <td><button type="button" class="btn btn-success btn-sm" disabled=""><i class="fas fa-check"></i> done</button></td></tr></table></td>`).delay(5000).fadeOut('slow');
+			toastr.success('Delivery Information Saved Successfully', 'Notifications')
+			}
+			console.log(feedback); 
+		
 		})
-		.catch(function (error) {
-			console.log(error);
+			
+		.catch(err => {
+			let errors = err.response.data.errors;
+			console.log(errors);
+			Object.keys(errors).forEach(function(value){
+				$("#"+value+"").addClass("red-border");
+				$("."+value+"_err").text(errors[value][0]);
+			});
+
+			$('#send_form').html('submit').attr('disabled',false);
+			$(".text-danger").show();
+			
+
 		});
 
 }

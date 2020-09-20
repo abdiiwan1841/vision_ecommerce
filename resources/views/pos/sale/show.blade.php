@@ -88,30 +88,68 @@
                   <P>Other Infotmation</P>
                   <table class="table table-bordered">
                     <tr>
-                      <th>Customer Division: </th>
+                      <td>Customer Division: </td>
                       <td>{{$sale->user->division->name}}</td>
                     </tr>
                     <tr>
-                      <th>Customer District: </th>
+                      <td>Customer District: </td>
                       <td>{{$sale->user->district->name}}</td>
                     </tr>
 
                     <tr>
-                      <th>Customer Area: </th>
+                      <td>Customer Area: </td>
                       <td>{{$sale->user->area->name}}</td>
                     </tr>
 
                     <tr>
-                      <th>Delivery Staus</th>
+                      <td>Delivery Staus</td>
                       <td> 
                         {!! FashiShippingStatus($sale->delivery_status) !!}
                       </td>
                     </tr>
                     @if($sale->delivery_status == 1)
                     <tr>
-                      <th>Delivered By</th>
-                    <td>{{$delivered_by->name }}</td>
+                      <td>Delivery Confirmed By </td>
+                    <td>{{$delivered_by->name}}</td>
                     </tr>
+
+              @if($sale->deliveryinfo != null)
+						@php
+							$d_info = json_decode($sale->deliveryinfo,true);
+            @endphp
+             <tr>
+              <td>Delivered By </td>
+            <td>{{App\Admin::find($d_info['delivered_by'])->name}}</td>
+            </tr>
+
+						<tr>
+							<td>Delivery Mode</td>
+						   <td><span class="badge badge-warning">{{$d_info['deliverymode']}}</span></td>
+						</tr>
+						@if($d_info['deliverymode'] === 'courier')
+						<tr>
+							<td>Courier/Transport</td>
+						   <td>{{$d_info['courier_name']}}</td>
+						</tr>
+						<tr>
+							<td>Booking Charge</td>
+						   <td>{{$d_info['booking_amount']}}</td>
+						</tr>
+						<tr>
+							<td>CN Number</td>
+						   <td>{{$d_info['cn_number']}}</td>
+						</tr>
+
+						<tr>
+							<td>Transportation Expense </td>
+						   <td>{{$d_info['transportation_expense']}}</td>
+						</tr>
+						@endif
+
+
+						@endif
+
+
                     @endif
 
                   </table>

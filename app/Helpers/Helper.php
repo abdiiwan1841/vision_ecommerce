@@ -70,6 +70,15 @@ function InvCashStatus($argument){
     return $status;
 }
 
+function delivereyMode($arg){
+    if($arg === 'courier'){
+        return '<span class="badge badge-danger"> via courier/transport</span>';
+    }elseif($arg === 'office'){
+        return '<span class="badge badge-warning">office delivery</span>';
+    }else{
+        return '<span class="badge badge-info">undefined</span>';
+    }
+}
 function VisionSmsResponse($response){
     if($response == 1101){
         return "success";
