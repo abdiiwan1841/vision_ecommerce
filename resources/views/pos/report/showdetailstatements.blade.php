@@ -161,7 +161,7 @@
                           
                           @endphp
 
-                            <small>{{Str::limit($pd->product_name,12)}} ({{$pd_price}} x {{$pd_qty}}) = {{ $pd_subtotal}} </small> <br>
+                            <small>{{Str::limit($pd->product_name,12)}} ({{$pd_qty}} x {{$pd_price}}) = {{ $pd_subtotal}} </small> <br>
 
                           
                           @endforeach

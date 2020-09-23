@@ -17,6 +17,7 @@ class CreateDamagesTable extends Migration
             $table->id();
             $table->dateTime('damaged_at');
             $table->text('reason')->nullable();
+            $table->string('damaged_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -455,11 +455,7 @@ $('.add-to-cart').click(function(event) {
       var current_stock = data[1];
       var product_size = data[0].size.name;
     if(err.length<1){
-      if(current_stock < 1){
-        alert('Out Of Stock');
-      }else if(current_stock < qnty){
-        alert('Out Of Stock');
-      }else{
+
     damageCart.addItemToCart(nameSlulg, qnty,id,o_name,image,product_size);
     $(".is-valid").removeClass('is-valid');
     
@@ -481,7 +477,7 @@ $('.add-to-cart').click(function(event) {
     $(".product_err").text('');
     $("#qty").val("");
     $("#selected-product-info").hide();
-    }
+  
   }
 
   }

@@ -95,6 +95,11 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::get('inventory/dashboard/viewsales/{id}', 'Pos\SaleController@show')->name('viewsales.show');
     Route::post('pos/sale/delivery/{id}', 'Pos\SaleController@delivery')->name('sale.delivery');
 
+    //Sales Invoice
+    Route::resource('pos/sale', 'Pos\SaleController');
+    Route::post('pos/saleresult','Pos\SaleController@result')->name('sale.result');
+    Route::post('pos/sale/{id}/invoice', 'Pos\SaleController@invoice')->name('sale.invoice');
+
 });
 
 
@@ -118,7 +123,6 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], f
     Route::resource('pos/prevdue', 'Pos\PrevdueController');
     Route::post('transfertoecom/{id}','ProductController@transfertoecom')->name('product.transfertoecom');
     Route::post('transfertoinventory/{id}','ProductController@transfertoinventory')->name('product.transfertoinventory');
-    Route::resource('pos/sale', 'Pos\SaleController');
     Route::resource('purchase', 'PurchaseController');
     Route::get('inventory/dashboard/cashdetails/{id}', 'adminController@inv_pendingcash')->name('invdashboard.cashdetails');
 
@@ -168,8 +172,6 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], f
     Route::get('ecom/charge', 'ChargeController@index')->name('charge.index');
     Route::get('ecom/charge/{id}/edit', 'ChargeController@edit')->name('charge.edit');
     Route::put('ecom/charge/{id}', 'ChargeController@update')->name('charge.update');
-    Route::post('pos/saleresult','Pos\SaleController@result')->name('sale.result');
-    Route::post('pos/sale/{id}/invoice', 'Pos\SaleController@invoice')->name('sale.invoice');
     Route::post('order/cash/{id}', 'OrderController@cashSubmit')->name('order.cashsubmit');
     Route::put('order/approval/{id}', 'OrderController@approval')->name('order.approval');
     Route::put('order/shipping/{id}', 'OrderController@shipped')->name('order.shipped');

@@ -53,6 +53,7 @@ class DamageController extends Controller
         $damage = new Damage;
         $damage->damaged_at = $request->damage_date." ".Carbon::now()->toTimeString();
         $damage->reason = $request->reason;
+        $damage->damaged_by = Auth::user()->name;
         $damage->save();
 
         $product_info = [];

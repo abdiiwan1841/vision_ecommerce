@@ -7,6 +7,7 @@ use App\Sale;
 use App\User;
 use App\Admin;
 use App\Charge;
+use App\Company;
 use App\Product;
 use Carbon\Carbon;
 use App\GeneralOption;
@@ -58,6 +59,7 @@ class SaleController extends Controller
             'product' => 'required',
         ]);
 
+        $sendstatus = 1101;
         
         //Amount calculation
         $products = json_decode($request->product);
@@ -89,7 +91,7 @@ class SaleController extends Controller
         
         // $url = "http://66.45.237.70/api.php";
         // $number="01736402322";
-        // $text="New Invoice, Date: ".$sales->sales_at->format('d-m-Y')." ID:# ".$sales->id."  ".$sales->user->name.",  ".$sales->user->address.", Amount: ".$sales->amount." .Please Approve,Thanks";
+        $text="New Invoice, Date: ".$sales->sales_at->format('d-m-Y')." Sales ID:# ".$sales->id." Customer: ".$sales->user->name.",  ".$sales->user->address.", Amount: ".$sales->amount." Prepared By:".Auth::user()->name." .Please Review the Invoice,Thanks";
         // $data= array(
         // 'username'=>"shajibazher",
         // 'password'=>"UtUs6B8WVqjmm72",
@@ -104,12 +106,12 @@ class SaleController extends Controller
         // $smsresult = curl_exec($ch);
         // $p = explode("|",$smsresult);
         // $sendstatus = $p[0];
-        // if($sendstatus == 1101){
-        //     Toastr::success('Sales Invoice Created Successfully An Sms has been Sent to respected Phone Number For order Approval', 'success');
-        // }else{
-        //     Toastr::success('Sales Created Successfully', 'success');
-        //     Toastr::error(VisionSmsResponse($sendstatus), 'error');
-        // }
+        if($sendstatus == 1101){
+            Toastr::success($text, 'success');
+        }else{
+            Toastr::success('Sales Created Successfully', 'success');
+            Toastr::error(VisionSmsResponse($sendstatus), 'error');
+        }
 
         return $sales->id;
     }
@@ -154,6 +156,7 @@ class SaleController extends Controller
             'product' => 'required',
         ]);
 
+        $sendstatus = 1101;
         
         //Amount calculation
         $products = json_decode($request->product);
@@ -207,12 +210,12 @@ class SaleController extends Controller
         // $smsresult = curl_exec($ch);
         // $p = explode("|",$smsresult);
         // $sendstatus = $p[0];
-        // if($sendstatus == 1101){
-        //     Toastr::success('Sales Invoice Updated Successfully An Sms has been Sent to respected Phone Number: '.$number.' For Approval', 'success');
-        // }else{
-        //     Toastr::success('Sales Updated Successfully', 'success');
-        //     Toastr::error(VisionSmsResponse($sendstatus), 'error');
-        // }
+        if($sendstatus == 1101){
+            Toastr::success('Sales Invoice Updated Successfully An Sms has been Sent to respected Phone Number: '.$number.' For Approval', 'success');
+        }else{
+            Toastr::success('Sales Updated Successfully', 'success');
+            Toastr::error(VisionSmsResponse($sendstatus), 'error');
+        }
         return $sale->id;
     }
 
@@ -319,17 +322,20 @@ class SaleController extends Controller
         if($request->deliverymode === "courier"){
             $this->validate($request,[
                 'courier_name' => 'required',
-                'booking_amount' => 'required',
+                'booking_amount' => 'required|integer',
                 'cn_number' => 'required',
                 'delivered_by' => 'required',
                 'deliverymode' => 'required',
-                'transportation_expense' => 'required',
+                'transportation_expense' => 'required|integer',
             ]);
         }else{
             $this->validate($request,[
                 'delivered_by' => 'required',
             ]);
         }
+        $text = "";
+        $sendstatus = 1101;
+        $number = "01700817934";
 
         if($request->has('is_condition')){
             $is_condition = 1;
@@ -337,7 +343,7 @@ class SaleController extends Controller
             $is_condition = 0;
         }
 
-        $deliveryinfo = ["deliverymode" => $request->deliverymode,"is_condition" =>$is_condition, "courier_name" => $request->courier_name,"booking_amount" => $request->booking_amount,"cn_number" => $request->cn_number,"condition_amount" => $request->required, "delivered_by" => $request->delivered_by, "deliverymode" => $request->deliverymode, "transportation_expense" => $request->transportation_expense];
+        $deliveryinfo = ["deliverymode" => $request->deliverymode,"is_condition" =>$is_condition, "courier_name" => $request->courier_name,"booking_amount" => $request->booking_amount,"cn_number" => $request->cn_number,"condition_amount" => $request->condition_amount, "delivered_by" => $request->delivered_by, "transportation_expense" => $request->transportation_expense];
 
         $sale = Sale::findOrFail($id);
         $sale->timestamps = false;
@@ -345,6 +351,65 @@ class SaleController extends Controller
         $sale->deliveryinfo = $deliveryinfo;
         $sale->delivery_marked_by =  Auth::user()->id;
         $sale->save();
-        return ['id'=> $sale->id,'status' => $sale->delivery_status,'msg' => $sale->user->name.'  Mark as Delivered' ];
+
+
+        //Check If User Has Phone Number
+        if($sale->user->phone != null){
+        
+         //For Sent Product To Sms Product 
+         $pdinfo = "";
+         foreach($sale->product as $pd){
+             if($pd->pivot->free > 0){
+             $pdinfo .= $pd->product_name." = ".$pd->pivot->qty."+ free=".$pd->pivot->free.",";
+            } else{
+             $pdinfo .= $pd->product_name." = ".$pd->pivot->qty.",";
+            }
+         }
+
+
+         if($request->deliverymode  === "courier"){
+            if($is_condition){
+                $text = $sale->user->name." greetings from Vision Cosmetics Ltd. Invoice Date:". $sale->sales_at->format('d-M-Y')." Net Amount:".$sale->amount." & your  product has been booked On the ".$request->courier_name. " CN Number : ".$request->cn_number." (condition booking-".$request->condition_amount ."Tk) Product: ".$pdinfo."  If You already got the product please disregard this sms.Thanks";
+            }else{
+                $text = $sale->user->name." greetings from Vision Cosmetics Ltd.Invoice Date:". $sale->sales_at->format('d-M-Y')." Net Amount:".$sale->amount."  & your product has been booked On the ".$request->courier_name. " CN Number : ".$request->cn_number."Product: ".$pdinfo." if You already got the product please disregard this sms Thanks";
+            }
+            
+        }else{
+            $text = $sale->user->name." greetings from Vision Cosmetics Ltd. Your Product Has Been Delivered To You On the ".$request->deliverymode."Invoice Date:".$sale->sales_at->format('d-M-Y')." Net Amount:".$sale->amount."  Product: ".$pdinfo." Thanks";
+        }
+
+
+
+
+        // $url = "http://66.45.237.70/api.php";
+        // $number = $sale->user->phone;
+        
+        //  $data= array(
+        // 'username'=>"shajibazher",
+        // 'password'=>"UtUs6B8WVqjmm72",
+        // 'number'=>"$number",
+        // 'message'=>"$text"
+        // );
+
+        // $ch = curl_init(); // Initialize cURL
+        // curl_setopt($ch, CURLOPT_URL,$url);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $smsresult = curl_exec($ch);
+        // $p = explode("|",$smsresult);
+        // $sendstatus = $p[0];
+
+
+        if($sendstatus == 1101){
+            return ['id'=> $sale->id,'smsstatus' => $sendstatus,'msg' => 'Delivery Information Saved Successfully An sms has been sent to '.$number,'customer' => $sale->user->name,'sms' => $text,'smsnumber' => $number ];
+        }else{
+            return ['id'=> $sale->id,'customer' => $sale->user->name,'smsstatus' => $sendstatus,'msg' => 'Delivery Information Saved Successfully','error_code' => VisionSmsResponse($sendstatus)];
+        }
+
+    }else{
+        return ['id'=> $sale->id,'customer' => $sale->user->name,'smsstatus' => 1002,'msg' => 'Delivery Information Saved Successfully','error_code' => 'Phone Number Is Empty Please Update The Customer Phone Number'];
+    }
+    
+
     }
 }

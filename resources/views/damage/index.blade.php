@@ -23,7 +23,7 @@
 
               @foreach ($damages as $item)
               
-            <p>Id : #{{$item->id}}  Date: {{$item->damaged_at->format('d-M-Y g:i a')}}
+            <p>Id : #{{$item->id}}  Date: {{$item->damaged_at->format('d-M-Y g:i a')}} Damaged By: {{$item->damaged_by}}
                <form action="{{route('damages.destroy',$item->id)}}" method="POST">
               @csrf
               @method('delete')

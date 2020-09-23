@@ -35,6 +35,12 @@
             <a href="{{ route('damages.index') }}"><i class="fas fa-trash-alt"></i>  Damage &amp; Samples</a>
         </li>
 
+        @if(Auth::user()->role->id == 4)
+        <li class="{{Request::is('admin/pos/sale*') ? 'active' : '' }}">
+            <a href="{{ route('sale.index') }}"><i class="fas fa-people-carry"></i>Sales Invoices</a>
+        </li>
+        @endif
+
         @if(Auth::user()->role->id != 4)
       
         @if(Auth::user()->role->id == 1 || Auth::user()->role->id == 2 )
@@ -195,7 +201,7 @@
             <a href="{{ route('prevdue.index') }}"><i class="fas fa-search-dollar"></i> Previous Due</a>
         </li>
         <li class="{{Request::is('admin/pos/sale*') ? 'active' : '' }}">
-            <a href="{{ route('sale.index') }}"><i class="fas fa-people-carry"></i>Sales</a>
+            <a href="{{ route('sale.index') }}"><i class="fas fa-people-carry"></i>Sales Invoices</a>
         </li>
         <li class="{{Request::is('admin/pos/cash*') ? 'active' : '' }}">
             <a href="{{ route('cash.index') }}"><i class="fas fa-hand-holding-usd"></i>Cashes</a>

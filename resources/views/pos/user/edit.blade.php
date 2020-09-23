@@ -51,8 +51,8 @@
             </div>
       
             <div class="form-group">
-                <label for="phone">Phone<span>*</span></label>
-            <input type="text" id="phone" placeholder="Enter Your phone" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{old('phone',$customer->phone)}}" required>
+                <label for="phone">Phone</label>
+            <input type="text" id="phone" placeholder="Enter Your phone" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{old('phone',$customer->phone)}}">
                 @error('phone')
                 <small class="form-error">{{ $message }}</small>
                 @enderror

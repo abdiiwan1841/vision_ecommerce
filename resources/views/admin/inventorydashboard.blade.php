@@ -157,6 +157,269 @@
 
 <div class="row">
 
+	<div class="col-lg-5 mt-5">
+
+		@if(Auth::user()->role->id != 4)
+		<!-- Card Start -->
+		<div class="card">
+			<div class="card-header">
+				<strong>Sales Invoice Pending For Approval</strong>
+			</div>
+		<div class="card-body">
+	
+		@if(count($pending_sales) > 0)
+		  
+		<table class="table table-sm table-bordered" style="font-size: 14px;">
+		  <thead class="thead-light">
+			<tr>
+			  <th class="align-middle">Sl</th>
+			  <th class="align-middle">Pending  List</th>
+			  <th class="align-middle">Status</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			
+			@foreach ($pending_sales as $key => $pending_sales_item)
+			@php
+				$sales_amount = round($pending_sales_item->amount);
+			@endphp
+			<tr style="background: #f6e58d" class="sale-{{$pending_sales_item->id}}">
+			<td  class="align-middle"><strong>{{$key+1}}</strong></td>
+			<td  class="align-middle"><a onclick="PendingSalesInfo('{{route('pendingsaleinfo.api',$pending_sales_item->id)}}','{{route('sale.approve',$pending_sales_item->id)}}',{{$pending_sales_item->user_id}})" style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_sales_item->provided_by}}  at {{$pending_sales_item->created_at->format('d-M-Y g:i a')}}   - Click Here For Details"  class="btn btn-link" href="javascript:void(0)"> <small>{{$pending_sales_item->sales_at->format('d-M-Y g:i a')}} </small> <br> <strong>{{$pending_sales_item->user->name}}</strong> </a></td>
+			<th  class="align-middle" id="sale-{{$pending_sales_item->id}}">{!!FashiSalesStatus($pending_sales_item->sales_status)!!}</th>
+			
+			</tr>
+			@endforeach
+			  
+			
+		  </tbody>
+		  
+		</table>
+	
+		
+	  @else
+	<div class="row">
+		<span class="alert alert-success">No Pending Sales Found</span>
+	</div>
+	  @endif
+	  <hr>
+	</div>
+		</div>
+	<!-- End -->
+	
+	
+	
+	
+	
+		<div class="card mt-3">
+			<div class="card-header bg-dark text-white">
+				<strong>Cash Pending For Approval</strong>
+			</div>
+		<div class="card-body">
+	
+		@if(count($pending_cash) > 0)
+		  
+		<table class="table table-sm" style="font-size: 14px;">
+		  <thead class="thead-light">
+			<tr>
+			  <th class="align-middle">Sl</th>
+			  <th class="align-middle">Pending Cash</th>
+			  <th class="align-middle">Action</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			
+			@foreach ($pending_cash as $key => $pending_cash_item)
+			@php
+				$sales_amount = round($pending_cash_item->amount);
+			@endphp
+			<tr class="cash-{{$pending_cash_item->id}} bglight">
+			<td  class="align-middle"><strong>{{$key+1}}</strong></td>
+			<td  class="align-middle">
+				<table class="table table-sm">
+					<tr>
+						<td>Name:</td>
+						<th>{{$pending_cash_item->user->name}}</th>	
+					</tr>
+					<tr>
+						<td>Addr:</td>
+						<td>{{$pending_cash_item->user->address}}</td>	
+					</tr>
+					<tr>
+						<td>Amount: </td>
+						<th><h4>{{$pending_cash_item->amount}}/-</h4></th>
+					</tr>
+					<tr>
+						<td>Date:</td>
+						<td>{{$pending_cash_item->received_at->format('d-M-Y')}}</td>
+					</tr>
+					
+				</table>
+				
+			
+			
+			</td>
+			<td class="align-middle"> 
+				@if($pending_cash_item->status == 0)
+		
+				@if(Auth::user()->role->id == 1)
+				
+					<button id="cash-{{$pending_cash_item->id}}"  onclick="Confirmation('{{route('cash.approve',$pending_cash_item->id)}}','{{$pending_cash_item->user->name}}','{{$pending_cash_item->amount}}')"  type="button" class="btn btn-sm btn-danger">Approve</button>
+	
+					@else
+	
+					<span class="badge badge-warning">pending</span>
+				@endif
+				@else
+	
+	
+				<span class="badge badge-warning">pending</span>
+				@endif</td>
+				
+			</tr>
+			
+			
+			@endforeach
+			  
+			
+		  </tbody>
+		  
+		</table>
+	
+		
+	  @else
+	<div class="row">
+		<span class="alert alert-success">No Pending Cash Found</span>
+	</div>
+	  @endif
+	  <hr>
+	</div>
+		</div>
+	
+	
+	
+	<!-- End -->
+	
+		<!-- Card Start -->
+		<div class="card mt-3">
+			<div class="card-header" style="background: #b8e994">
+				<strong>Return Invoice Pending For Approval</strong>
+			</div>
+		<div class="card-body">
+	
+		@if(count($pending_returns) > 0)
+		  
+		<table class="table table-sm table-bordered" style="font-size: 14px;">
+		  <thead class="thead-light">
+			<tr>
+			  <th class="align-middle">Sl</th>
+			  <th class="align-middle">Pending  List</th>
+			  <th class="align-middle">Status</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			
+			@foreach ($pending_returns as $key => $pending_returns_item)
+			@php
+				$sales_amount = round($pending_returns_item->amount);
+			@endphp
+			<tr class="return-{{$pending_returns_item->id}}">
+			<td  class="align-middle"><strong>{{$key+1}}</strong></td>
+			<td  class="align-middle"><a onclick="PendingReturnInfo('{{route('pendingreturninfo.api',$pending_returns_item->id)}}','{{route('returnproduct.approve',$pending_returns_item->id)}}')" style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_returns_item->provided_by}}  at {{$pending_returns_item->created_at->format('d-M-Y g:i a')}}   - Click Here For Details"  class="btn btn-link" href="javascript:void(0);"> <small>{{$pending_returns_item->returned_at->format('d-M-Y')}} </small> <br> <strong>{{$pending_returns_item->user->name}}</strong>  </a></td>
+			<th class="align-middle" id="return-{{$pending_returns_item->id}}">{!!InvReturnStatus($pending_returns_item->return_status)!!}</th>
+			
+			</tr>
+			@endforeach
+			  
+			
+		  </tbody>
+		  
+		</table>
+	
+		
+	  @else
+	<div class="row">
+		<span class="alert alert-success">No Pending Returns Found</span>
+	</div>
+	  @endif
+	  <hr>
+	</div>
+		</div>
+	<!-- End -->
+	
+	@endif
+	
+	
+	
+	
+		
+		<!-- Card Start -->
+		<div class="card mt-3">
+			<div class="card-header bg-warning">
+				<strong>Invoice Pending For Delivery</strong>
+			</div>
+		<div class="card-body">
+	
+		@if(count($pending_delivery) > 0)
+		  
+		<table class="table table-sm table-bordered" style="font-size: 14px;">
+		  <thead class="thead-light">
+			<tr>
+			  <th class="align-middle">Sl</th>
+			  <th class="align-middle">Pending List</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			
+			@foreach ($pending_delivery as $key => $pending_delivery_item)
+			@php
+				$sales_amount = round($pending_delivery_item->amount);
+			@endphp
+			<tr class="delivery-{{$pending_delivery_item->id}}">
+			<td  class="align-middle"><strong>{{$key+1}}</strong></td>
+			<td  class="align-middle">
+				<table class="table">
+					<tr>
+						<td>Date:</td>
+						<td>{{$pending_delivery_item->sales_at->format('d-M-Y')}}</td>
+					</tr>
+					<tr>
+						<td>Customer:</td>
+						<td>{{$pending_delivery_item->user->name}}</td>
+					</tr>
+					<tr>
+						<td>Status:</td>
+						<td>{!!FashiShippingStatus($pending_delivery_item->delivery_status)!!}</td>
+					</tr>
+					
+				</table>
+				<button onclick="DeliveryModalPopup('{{route('pendingdeliveryinfo.api',$pending_delivery_item->id)}}','{{route('sale.delivery',$pending_delivery_item->id)}}')" id="delivery-{{$pending_delivery_item->id}}"  type="button" class="btn btn-sm btn-dark btn-block">Click Here To Mark As Deliverd</button>
+			
+			</td>
+	
+			
+			</tr>
+			@endforeach
+			  
+			
+		  </tbody>
+		  
+		</table>
+	
+		
+	  @else
+	<div class="row">
+		<span class="alert alert-success">No Pending Delivery Found</span>
+	</div>
+	  @endif
+	  <hr>
+	</div>
+		</div>
+	<!-- End -->
+	
+	
+	</div>
+
 
 	<div class="col-lg-7 mt-5">
 
@@ -166,7 +429,7 @@
 			</div>
 			<div class="card-body">
 
-				@if(Auth::user()->role->id != 4)
+			
 				<h5>Today's Sale</h5>
 				@if(count($todays_pos_sales) > 0)
 				  
@@ -217,7 +480,8 @@
 		
 			  @endif
 			  <hr>
-
+			
+			  @if(Auth::user()->role->id != 4)
 
 			  <h5>Todays Cash</h5>
 			  @if(count($todays_pos_cash) > 0)
@@ -444,275 +708,7 @@
 
 
 </div>
-<div class="col-lg-5 mt-5">
 
-	@if(Auth::user()->role->id != 4)
-	<!-- Card Start -->
-	<div class="card">
-		<div class="card-header">
-			<strong>Sales Invoice Pending For Approval</strong>
-		</div>
-	<div class="card-body">
-
-	@if(count($pending_sales) > 0)
-	  
-	<table class="table table-sm table-bordered" style="font-size: 14px;">
-	  <thead class="thead-light">
-		<tr>
-		  <th class="align-middle">Sl</th>
-		  <th class="align-middle">Pending  List</th>
-		  <th class="align-middle">Status</th>
-		</tr>
-	  </thead>
-	  <tbody>
-		
-		@foreach ($pending_sales as $key => $pending_sales_item)
-		@php
-			$sales_amount = round($pending_sales_item->amount);
-		@endphp
-		<tr style="background: #f6e58d" class="sale-{{$pending_sales_item->id}}">
-		<td  class="align-middle"><strong>{{$key+1}}</strong></td>
-		<td  class="align-middle"><a onclick="PendingSalesInfo('{{route('pendingsaleinfo.api',$pending_sales_item->id)}}','{{route('sale.approve',$pending_sales_item->id)}}',{{$pending_sales_item->user_id}})" style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_sales_item->provided_by}}  at {{$pending_sales_item->created_at->format('d-M-Y g:i a')}}   - Click Here For Details"  class="btn btn-link" href="javascript:void(0)"> <small>{{$pending_sales_item->sales_at->format('d-M-Y g:i a')}} </small> <br> <strong>{{$pending_sales_item->user->name}}</strong> </a></td>
-		<th  class="align-middle" id="sale-{{$pending_sales_item->id}}">{!!FashiSalesStatus($pending_sales_item->sales_status)!!}</th>
-		
-		</tr>
-		@endforeach
-		  
-		
-	  </tbody>
-	  
-	</table>
-
-	
-  @else
-<div class="row">
-	<span class="alert alert-success">No Pending Sales Found</span>
-</div>
-  @endif
-  <hr>
-</div>
-	</div>
-<!-- End -->
-
-
-
-
-
-	<div class="card mt-3">
-		<div class="card-header bg-dark text-white">
-			<strong>Cash Pending For Approval</strong>
-		</div>
-	<div class="card-body">
-
-	@if(count($pending_cash) > 0)
-	  
-	<table class="table table-sm" style="font-size: 14px;">
-	  <thead class="thead-light">
-		<tr>
-		  <th class="align-middle">Sl</th>
-		  <th class="align-middle">Pending Cash</th>
-		  <th class="align-middle">Action</th>
-		</tr>
-	  </thead>
-	  <tbody>
-		
-		@foreach ($pending_cash as $key => $pending_cash_item)
-		@php
-			$sales_amount = round($pending_cash_item->amount);
-		@endphp
-		<tr class="cash-{{$pending_cash_item->id}} bglight">
-		<td  class="align-middle"><strong>{{$key+1}}</strong></td>
-		<td  class="align-middle">
-			<table class="table table-sm">
-				<tr>
-					<td>Name:</td>
-					<th>{{$pending_cash_item->user->name}}</th>	
-				</tr>
-				<tr>
-					<td>Addr:</td>
-					<td>{{$pending_cash_item->user->address}}</td>	
-				</tr>
-				<tr>
-					<td>Amount: </td>
-					<th><h4>{{$pending_cash_item->amount}}/-</h4></th>
-				</tr>
-				<tr>
-					<td>Date:</td>
-					<td>{{$pending_cash_item->received_at->format('d-M-Y')}}</td>
-				</tr>
-				
-			</table>
-			
-		
-		
-		</td>
-		<td class="align-middle"> 
-			@if($pending_cash_item->status == 0)
-	
-			@if(Auth::user()->role->id == 1)
-			
-				<button id="cash-{{$pending_cash_item->id}}"  onclick="Confirmation('{{route('cash.approve',$pending_cash_item->id)}}','{{$pending_cash_item->user->name}}','{{$pending_cash_item->amount}}')"  type="button" class="btn btn-sm btn-danger">Approve</button>
-
-				@else
-
-				<span class="badge badge-warning">pending</span>
-			@endif
-			@else
-
-
-			<span class="badge badge-warning">pending</span>
-			@endif</td>
-			
-		</tr>
-		
-		
-		@endforeach
-		  
-		
-	  </tbody>
-	  
-	</table>
-
-	
-  @else
-<div class="row">
-	<span class="alert alert-success">No Pending Cash Found</span>
-</div>
-  @endif
-  <hr>
-</div>
-	</div>
-
-
-
-<!-- End -->
-
-	<!-- Card Start -->
-	<div class="card mt-3">
-		<div class="card-header" style="background: #b8e994">
-			<strong>Return Invoice Pending For Approval</strong>
-		</div>
-	<div class="card-body">
-
-	@if(count($pending_returns) > 0)
-	  
-	<table class="table table-sm table-bordered" style="font-size: 14px;">
-	  <thead class="thead-light">
-		<tr>
-		  <th class="align-middle">Sl</th>
-		  <th class="align-middle">Pending  List</th>
-		  <th class="align-middle">Status</th>
-		</tr>
-	  </thead>
-	  <tbody>
-		
-		@foreach ($pending_returns as $key => $pending_returns_item)
-		@php
-			$sales_amount = round($pending_returns_item->amount);
-		@endphp
-		<tr class="return-{{$pending_returns_item->id}}">
-		<td  class="align-middle"><strong>{{$key+1}}</strong></td>
-		<td  class="align-middle"><a onclick="PendingReturnInfo('{{route('pendingreturninfo.api',$pending_returns_item->id)}}','{{route('returnproduct.approve',$pending_returns_item->id)}}')" style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_returns_item->provided_by}}  at {{$pending_returns_item->created_at->format('d-M-Y g:i a')}}   - Click Here For Details"  class="btn btn-link" href="javascript:void(0);"> <small>{{$pending_returns_item->returned_at->format('d-M-Y')}} </small> <br> <strong>{{$pending_returns_item->user->name}}</strong>  </a></td>
-		<th class="align-middle" id="return-{{$pending_returns_item->id}}">{!!InvReturnStatus($pending_returns_item->return_status)!!}</th>
-		
-		</tr>
-		@endforeach
-		  
-		
-	  </tbody>
-	  
-	</table>
-
-	
-  @else
-<div class="row">
-	<span class="alert alert-success">No Pending Returns Found</span>
-</div>
-  @endif
-  <hr>
-</div>
-	</div>
-<!-- End -->
-
-@endif
-
-
-
-
-	
-	<!-- Card Start -->
-	<div class="card mt-3">
-		<div class="card-header bg-warning">
-			<strong>Invoice Pending For Delivery</strong>
-		</div>
-	<div class="card-body">
-
-	@if(count($pending_delivery) > 0)
-	  
-	<table class="table table-sm table-bordered" style="font-size: 14px;">
-	  <thead class="thead-light">
-		<tr>
-		  <th class="align-middle">Sl</th>
-		  <th class="align-middle">Pending List</th>
-		</tr>
-	  </thead>
-	  <tbody>
-		
-		@foreach ($pending_delivery as $key => $pending_delivery_item)
-		@php
-			$sales_amount = round($pending_delivery_item->amount);
-		@endphp
-		<tr class="delivery-{{$pending_delivery_item->id}}">
-		<td  class="align-middle"><strong>{{$key+1}}</strong></td>
-		<td  class="align-middle">
-			<table class="table">
-				<tr>
-					<td>Date:</td>
-					<td>{{$pending_delivery_item->sales_at->format('d-M-Y')}}</td>
-				</tr>
-				<tr>
-					<td>Customer:</td>
-					<td>{{$pending_delivery_item->user->name}}</td>
-				</tr>
-				<tr>
-					<td>Status:</td>
-					<td>{!!FashiShippingStatus($pending_delivery_item->delivery_status)!!}</td>
-				</tr>
-				
-			</table>
-			<button onclick="DeliveryModalPopup('{{route('pendingdeliveryinfo.api',$pending_delivery_item->id)}}','{{route('sale.delivery',$pending_delivery_item->id)}}')" id="delivery-{{$pending_delivery_item->id}}"  type="button" class="btn btn-sm btn-dark btn-block">Mark As Deliverd</button>
-		
-		</td>
-
-		
-		</tr>
-		@endforeach
-		  
-		
-	  </tbody>
-	  
-	</table>
-
-	
-  @else
-<div class="row">
-	<span class="alert alert-success">No Pending Delivery Found</span>
-</div>
-  @endif
-  <hr>
-</div>
-	</div>
-<!-- End -->
-
-
-	
-
-	
-
-
-
-
-</div>
 
 </div>
 
@@ -1108,34 +1104,38 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 
         axios.all([getSalesInfo(),getDeliveryman()])
 		.then(response => {
-			console.log(response[0]);
 			let deliverymanData = "";
 			response[1].data.forEach(function(deliveryman){
 				deliverymanData += "<option value="+deliveryman.id+">"+deliveryman.name+"</option>";
 			})
 
-			$('#InfoModalLabel').text('Delivery Form');	
+	$('#InfoModalLabel').text('Delivery Form');	
 	$("#salesdata").html(`
 	<table class="table table-sm">
 		<tr>
-			<th>Order ID:</th>
-			<th> #${response[0].data.id}</th>
+			<td>Order ID:</td>
+			<td> #${response[0].data.id}</td>
 		</tr>
 		<tr>
-			<th>Invoice Date:</th>
-			<th> ${new Date(response[0].data.sales_at)}</th>
+			<td>Invoice Date:</td>
+			<td> ${new Date(response[0].data.sales_at)}</td>
 		</tr>
 		<tr>
-			<th>Customer:</th>
-			<th>${response[0].data.user.name}</th>
+			<td>Customer:</td>
+			<td>${response[0].data.user.name}</td>
 		</tr>
 		<tr>
-			<th>Delivery Status:</th>
-			<th>${getDeliveryStatus(response[0].data.delivery_status)}</th>
+			<td>Phone:</td>
+			<td>${response[0].data.user.phone}</td>
+		</tr>
+		<tr>
+			<td>Delivery Status:</td>
+			<td>${getDeliveryStatus(response[0].data.delivery_status)}</td>
 		</tr>
 	</table>
 	<form action="javascript:void(0)" id="delivery_form">
-
+	
+	<label><b>Delivery Method</b></label>
 	<div class="from-group mb-3">
 		<div class="custom-control custom-radio custom-control-inline">
   <input type="radio" id="courier" name="deliverymode" class="custom-control-input" value="courier" checked="checked">
@@ -1149,26 +1149,34 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 </div>
 
 <hr>
+
+<div class="form-group">
+		<label for="delivered_by"><b>Delivered By</b></label>
+		<select class="form-control" name="delivered_by" id="delivered_by">
+         ${deliverymanData}
+        </select>
+		<span class="text-danger delivered_by_err"></span>
+	</div>
 	</div>
 	<div id="courier-info">
 	<div class="form-group">
-		<label for="courier_name">Courier/ Transport Name</label>
+		<label for="courier_name"><b>Courier/ Transport Name</b></label>
 		<input type="text" class="form-control" id="courier_name" name="courier_name" placeholder="Enter Courier Name">
 		<span class="text-danger courier_name_err"></span>
 	</div>
 	
 	<div class="form-group">
-		<label for="cn_number">CN Number</label>
+		<label for="cn_number"><b>CN Number</b></label>
 		<input type="text" class="form-control" id="cn_number" name="cn_number" placeholder="Enter CN Number">
 		<span class="text-danger cn_number_err"></span>
 	</div>
 	<div class="form-group">
-		<label for="booking_amount">Booking Charge</label>
+		<label for="booking_amount"><b>Booking Charge</b></label>
 		<input type="text" class="form-control" id="booking_amount" name="booking_amount" placeholder="Enter Booking Amount">
 		<span class="text-danger booking_amount_err"></span>
 	</div>
 	<div class="form-group">
-		<label for="transportation_expense">Transportation Expense</label>
+		<label for="transportation_expense"><b>Transportation Expense</b></label>
 		<input type="text" class="form-control" id="transportation_expense" name="transportation_expense" placeholder="Enter Transportation Expense">
 		<span class="text-danger transportation_expense_err"></span>
 	</div>
@@ -1187,26 +1195,18 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 	</div>
 
 	<div class="form-group" id="condition_field" style="display: none">
-		<label for="condition_amount">Condition Amount</label>
+		<label for="condition_amount"><b>Condition Amount</b></label>
 		<input type="text" class="form-control" id="condition_amount" name="condition_amount" placeholder="Enter Condition Amount">
 		<span class="text-danger condition_amounte_err"></span>
 	</div>
 	</div>
-	<div class="form-group">
-		<label for="delivered_by">Delivered By</label>
-		<select class="form-control" name="delivered_by" id="delivered_by">
-         ${deliverymanData}
-        </select>
-		<span class="text-danger delivered_by_err"></span>
-	</div>
+	
 	<div class="float-right mt-3">
 	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button type="button" id="send_form" onclick="sendDeliveryForm('`+confirmation_url+`')" class="btn btn-success">Mark As Delivered</button>
 	</div>
 	</form>
 
 	`);
-
-
 
 	$("input[name='deliverymode']").change(function(){
 		if(this.value === "office"){
@@ -1217,16 +1217,14 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 		
 	});
 	$("#is_condition").change(function(){
-			$("#condition_field").toggle('slow');
+	$("#condition_field").toggle('slow');
 	
 	});
 
 
-		})
-
+  })
 	$("#InfoModal-footer").html('');
 	$('#InfoModal').modal('show');
-	
 }
 
 function sendDeliveryForm(delivery_marked_url){
@@ -1234,22 +1232,62 @@ function sendDeliveryForm(delivery_marked_url){
 	$(".red-border").removeClass("red-border");
 	$('#send_form').html('<i class="fas fa-spinner fa-spin"></i> Please Wait...').attr('disabled',true);
 	let data = $("#delivery_form").serialize();
-	console.log(delivery_marked_url);
+	
 	axios.post(delivery_marked_url,data)
 		.then(res => {  
-		   
+		
 		  $('#InfoModal').modal('hide');
 		  
 		  let feedback = JSON.parse(res.request.response);
-			if(feedback.status == 0){
-				toastr.error(feedback.msg, 'Notifications')
-			}else if(feedback.status == 1){
+		  console.log(res);
+			if(feedback.smsstatus == 1101){
+		$(".delivery-"+feedback.id).html(`<td>#</td>
+	<td><table class="table">
+	<tr>
+		<td>Notification:</td>
+		<td>${feedback.msg}</td>
+	</tr>
+	<tr>
+		<td>Customer</td>
+		<td>${feedback.customer}</td> 
+	</tr>
+	<tr>
+		<td>sms status:</td>
+		<td><span class="badge badge-success">sent</span></td>
+	</tr>
+	<tr>
+		<td>sms number:</td>
+		<td>${feedback.smsnumber}</td>
+	</tr>
+	<tr>
+		<td>sms Body:</td>
+		<td>${feedback.sms}</td>
+	</tr>
+	</table></td>`);
+	
+	//.delay(5000).fadeOut('slow');
+	toastr.success(feedback.msg, 'Notifications')
+	}else{
 
-			    $(".delivery-"+feedback.id).html(`<td>#</td>
-	<td><table class="table"> <tr><td>${feedback.msg}</td> <td><button type="button" class="btn btn-success btn-sm" disabled=""><i class="fas fa-check"></i> done</button></td></tr></table></td>`).delay(5000).fadeOut('slow');
-			toastr.success('Delivery Information Saved Successfully', 'Notifications')
-			}
-			console.log(feedback); 
+		$(".delivery-"+feedback.id).html(`<td>#</td>
+	<td><table class="table">
+	<tr>
+		<td>Notification: </td>
+		<td>${feedback.msg}</td>
+	</tr>
+	<tr>
+		<td>Customer</td>
+		<td>${feedback.customer}</td> 
+	</tr>
+	<tr>
+		<td>sms status:</td>
+		<td><p class="alert alert-danger">${feedback.error_code}</p></td>
+	</tr>
+	</table></td>`);
+	toastr.error(feedback.error_code, 'Notifications')
+	toastr.success(feedback.msg, 'Notifications')
+	}
+	console.log(feedback); 
 		
 		})
 			
