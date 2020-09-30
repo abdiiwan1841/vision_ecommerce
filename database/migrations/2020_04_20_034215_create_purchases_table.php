@@ -19,6 +19,9 @@ class CreatePurchasesTable extends Migration
             $table->float('discount',10,2);
             $table->float('carrying_and_loading',10,2);
             $table->dateTime('purchased_at');
+            $table->dateTime('mfg')->nullable();
+            $table->dateTime('exp')->nullable();
+            $table->string('bacthno')->nullable();
             $table->float('amount',14,2)->nullable();
             $table->softDeletes();
             $table->timestamps();

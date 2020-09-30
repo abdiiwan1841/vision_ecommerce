@@ -28,9 +28,10 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->string('user_type')->default('ecom');
+            $table->foreignId('section_id')->references('id')->on('sections');
             $table->string('image')->default('user.jpg');
             $table->boolean('status')->default(1);
-            $table->string('pricedata')->nullable();
+            $table->text('pricedata')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

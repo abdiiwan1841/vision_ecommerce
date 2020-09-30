@@ -36,6 +36,24 @@
                       @enderror
                     </div>
                   </div>
+
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <span>Filter</span>
+                    </div>
+                    <div class="form-group">
+                      <select name="section" id="section" class="form-control @error('section') is-invalid @enderror">
+                        <option value="all">All</option>
+                        @foreach ($sections as $item)
+                      <option value="{{$item->id}}">{{$item->name}}</option>
+                        @endforeach
+                      </select>
+                      @error('section')
+                          <small class="form-error">{{ $message }}</small>
+                          @enderror
+                    </div>
+                  </div>
+
                   <div class="col-lg-2">
                     <div style="margin-top: 40px;">
                       <button type="submit" class="btn btn-info">submit</button>

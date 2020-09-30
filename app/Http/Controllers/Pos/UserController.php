@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Pos;
 
 use Session;
 use App\User;
+use App\Product;
+use App\Section;
 use App\District;
 use App\Division;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use App\Product;
 use Illuminate\Support\Facades\Hash;
 
 
@@ -36,7 +37,8 @@ class UserController extends Controller
     {
        
         $divisions = Division::all();
-        return view('pos.user.create',compact('divisions'));
+        $sections = Section::all();
+        return view('pos.user.create',compact('divisions','sections'));
     }
 
     /**
@@ -52,10 +54,11 @@ class UserController extends Controller
             'name' =>  'required|string|max:30',
             'proprietor' =>  'max:30',
             // 'inventory_email' => 'unique:users',
-            //'phone' => 'integer',
+            'phone' => 'required',
             'division' => 'required',
             'district' => 'required',
             'area' => 'required',
+            'section' => 'required|integer',
             'address' => 'required|max:500',
         ]);
 
@@ -68,6 +71,7 @@ class UserController extends Controller
         $user->district_id = $request->district;
         $user->area_id = $request->area;
         $user->address = $request->address;
+        $user->section_id = $request->section;
         $user->password = Hash::make(123456);
         $user->user_type = 'pos';
         if($request->has('company')){
@@ -101,8 +105,9 @@ class UserController extends Controller
         $products = Product::all();
         $customer = User::findOrFail($id);
         $divisions = Division::all();
+        $sections = Section::all();
         $pricedata =  $customer->pricedata;
-        return view('pos.user.edit',compact('divisions','customer','products','pricedata'));
+        return view('pos.user.edit',compact('divisions','customer','products','pricedata','sections'));
     }
 
     /**
@@ -122,6 +127,7 @@ class UserController extends Controller
             'division' => 'required',
             'district' => 'required',
             'area' => 'required',
+            'section' => 'required',
             'address' => 'required|max:500',
         ]);
         
@@ -133,6 +139,7 @@ class UserController extends Controller
         $user->division_id = $request->division;
         $user->district_id = $request->district;
         $user->area_id = $request->area;
+        $user->section_id = $request->section;
         $user->address = $request->address;
         if(strlen($request->pricedata) < 6){
             $user->pricedata = null;

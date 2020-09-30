@@ -21,6 +21,8 @@ class CreatePurchaseProductTable extends Migration
             $table->integer('qty');
             $table->string('price');
             $table->dateTime('purchased_at');
+            $table->dateTime('mfg')->nullable();
+            $table->dateTime('exp')->nullable();
             $table->timestamps();
             $table->foreign('purchase_id')->references('id')->on('purchases')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');

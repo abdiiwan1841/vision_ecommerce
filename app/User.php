@@ -49,6 +49,9 @@ class User extends Authenticatable
     public function area(){
         return $this->belongsTo('App\Area');
     }
+    public function section(){
+        return $this->belongsTo('App\Section');
+    }
 
 
 

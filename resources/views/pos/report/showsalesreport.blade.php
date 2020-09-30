@@ -38,6 +38,23 @@
                             @enderror
                           </div>
                         </div>
+                        <div class="col-lg-3">
+                          <div class="form-group">
+                            <span>Filter</span>
+                          </div>
+                          <div class="form-group">
+                            <select name="section" id="section" class="form-control @error('section') is-invalid @enderror">
+                              <option value="all">All</option>
+                              @foreach ($sections as $item)
+                            <option value="{{$item->id}}" @if($item->id == $request->section) selected @endif >{{$item->name}}</option>
+                              @endforeach
+                            </select>
+                            @error('section')
+                                <small class="form-error">{{ $message }}</small>
+                                @enderror
+                          </div>
+                        </div>
+
                         <div class="col-lg-2">
                           <div style="margin-top: 40px;">
                             <button type="submit" class="btn btn-info">submit</button>
@@ -107,6 +124,7 @@
                       @csrf
                       <input type="hidden" name="start" value="{{$request->start}}">
                       <input type="hidden" name="end" value="{{$request->end}}">
+                      <input type="hidden" name="section" value="{{$request->section}}">
                       <button type="submit" class="btn  btn-lg"><img style="width: 40px;margin-right: 10px" src="{{asset('public/assets/images/pdf2.png')}}"> Download</button>
                       </form>
                     </div>

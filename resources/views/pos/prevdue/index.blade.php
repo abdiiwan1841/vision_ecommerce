@@ -33,7 +33,7 @@
             @php
                 $mytime = Carbon\Carbon::now();
             @endphp
-            <input type="text" class="form-control @error('due_at') is-invalid @enderror" name="due_at" id="due_at" value="{{$mytime->toDateString()}}">
+            <input type="text" class="form-control @error('due_at') is-invalid @enderror" name="due_at" id="due_at" value="{{old('due_at',$mytime->toDateString())}}">
             @error('due_at')
             <small class="form-error">{{ $message }}</small>
             @enderror

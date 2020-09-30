@@ -79,6 +79,14 @@ function delivereyMode($arg){
         return '<span class="badge badge-info">undefined</span>';
     }
 }
+
+function CustomerSection($arg){
+    if($arg === 1){
+        return '<span class="badge badge-warning">WholeSale</span>';
+    }else{
+        return '<span class="badge badge-danger">Cosmetics</span>';
+    }
+}
 function VisionSmsResponse($response){
     if($response == 1101){
         return "success";

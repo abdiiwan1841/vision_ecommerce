@@ -27,10 +27,9 @@
           <tr>
             <th scope="col">#</th>
             <th scope="col">Name</th>
-            <th scope="col">Email</th>
             <th scope="col">Phone</th>
-            <th scope="col">Area</th>
             <th scope="col">Address</th>
+            <th scope="col">Section</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -38,16 +37,12 @@
     
           @foreach ($customers as $key =>  $customer)
               
-          
-
-
             <tr>
             <td>{{$key+1}}</td>
               <td>{{$customer->name}}</td>
-              <td>{{$customer->inventory_email}}</td>
               <td>{{$customer->phone}}</td>
-              <td>{{$customer->area->name}}</td>
               <td>{{$customer->address}}</td>
+              <td>{!!CustomerSection($customer->section_id)!!}</td>
                 
             <td style="width: 100px;">
             <a href="{{route('customers.edit',$customer['id'])}}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>

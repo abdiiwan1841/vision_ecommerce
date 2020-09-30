@@ -64,6 +64,21 @@
                 <small class="form-error">{{ $message }}</small>
                 @enderror
             </div>
+
+             
+            <div class="form-group">
+                <label for="section">Customer Section<span>*</span></label>
+                <select name="section" id="section" class="form-control @error('section') is-invalid @enderror" required>
+                    <option value="">--Select Section--</option>
+                    @foreach ($sections as $item)
+                        <option value="{{$item->id}}">{{$item->name}}</option>
+                    @endforeach
+                    
+                </select>
+                @error('section')
+                <small class="form-error">{{ $message }}</small>
+                @enderror
+            </div>
       
 
         </div>
@@ -159,6 +174,8 @@ $('#area').select2({
     theme: "bootstrap",
     placeholder: "Select a Area",
 });
+
+
 
 
      var base_url = '{{url('/')}}';

@@ -193,10 +193,13 @@
             <a href="#pos" data-toggle="collapse" aria-expanded="{{Request::is('admin/pos*') ? 'true' : '' }}" class="dropdown-toggle"> <i class="fas fa-truck-moving"></i> INVENTORY SECTION</a>
             <ul class="collapse list-unstyled {{Request::is('admin/pos*') ? 'active collapse show' : '' }}" id="pos">
             
-                        
-        <li class="{{Request::is('admin/pos/customers*') ? 'active' : '' }}">
-            <a href="{{ route('customers.index') }}"><i class="fas fa-user-friends"></i> Inventory Customer</a>
+          
+
+
+        <li class="{{Request::is('admin/pos/customers') ? 'active' : '' }}">
+            <a href="{{ route('customers.index') }}"><i class="fas fa-user-friends"></i>Customers</a>
         </li>
+
         <li class="{{Request::is('admin/pos/prevdue*') ? 'active' : '' }}">
             <a href="{{ route('prevdue.index') }}"><i class="fas fa-search-dollar"></i> Previous Due</a>
         </li>

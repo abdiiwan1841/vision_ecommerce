@@ -35,8 +35,7 @@
               </div>
 
 
-   
-
+  
 
                   <div class="statement_table table-responsive">
                     <p style="text-align: center;margin-bottom: 10px;font-weight: bold">From {{date("d-M-Y", strtotime($request->start) )}} To {{date("d-M-Y", strtotime($request->end) )}}</p>

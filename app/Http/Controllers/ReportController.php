@@ -9,6 +9,7 @@ use App\User;
 use App\Order;
 use App\Payment;
 use App\Prevdue;
+use App\Section;
 use App\Division;
 use App\Employee;
 use App\Purchase;
@@ -704,26 +705,25 @@ class ReportController extends Controller
     }
 
     public function cashreport(){
-        return view('general_report.cashreport');
+        $sections = Section::all();
+        return view('general_report.cashreport',compact('sections'));
     }
 
     public function showcashreport(Request $request){
         $this->validate($request,[
             'start' => 'required|date',
             'end' => 'required|date',
+            'section' => 'required',
         ]);
-       
 
-        $ecomcashes = Order::where('payment_status',1)->whereBetween('paymented_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('paymented_at', 'ASC')->get();
-
-        $poscashes = Cash::where('status',1)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
-
-    
-
-        $ecomcashinfo = [];
-        foreach($ecomcashes as $cash){
-            $ecomcashinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$cash->paymented_at)->format('d-m-Y'),'user_id' => $cash->user_id, 'id' => $cash->id, 'amount' => $cash->amount,'reference' => $cash->references,'source' => 'ecommerce'];
+        $sections = Section::all();
+        if($request->section === 'all'){
+            $poscashes = Cash::where('status',1)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
+        }else{
+            $users = User::where('section_id',$request->section)->select('id')->get();
+            $poscashes = Cash::whereIn('user_id',$users)->where('status',1)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
         }
+       
 
         $poscashinfo = [];
         foreach($poscashes as $cash){
@@ -731,7 +731,7 @@ class ReportController extends Controller
         }
 
 
-        $merge_data =  array_merge($ecomcashinfo,$poscashinfo);
+        $merge_data =  $poscashinfo;
         
         $datewise_sorted_data = [];
         foreach($merge_data as $merge){
@@ -739,11 +739,7 @@ class ReportController extends Controller
         }
         usort($datewise_sorted_data,  array($this, "date_sort"));
 
-
-
-
-
-        return view('general_report.showcashreport',compact('datewise_sorted_data','request'));
+        return view('general_report.showcashreport',compact('datewise_sorted_data','request','sections'));
 
     }
 
@@ -751,22 +747,21 @@ class ReportController extends Controller
         $this->validate($request,[
             'start' => 'required|date',
             'end' => 'required|date',
+            'section' => 'required',
         ]);
         $general_opt = GeneralOption::first();
         $general_opt_value = json_decode($general_opt->options, true);
 
        
-
-        $ecomcashes = Order::where('payment_status',1)->whereBetween('paymented_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('paymented_at', 'ASC')->get();
-
-        $poscashes = Cash::where('status',1)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
+        $sections = Section::all();
+        if($request->section === 'all'){
+            $poscashes = Cash::where('status',1)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
+        }else{
+            $users = User::where('section_id',$request->section)->select('id')->get();
+            $poscashes = Cash::whereIn('user_id',$users)->where('status',1)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
+        }
 
     
-
-        $ecomcashinfo = [];
-        foreach($ecomcashes as $cash){
-            $ecomcashinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$cash->paymented_at)->format('d-m-Y'),'user_id' => $cash->user_id, 'id' => $cash->id, 'amount' => $cash->amount,'reference' => $cash->references,'source' => 'ecommerce'];
-        }
 
         $poscashinfo = [];
         foreach($poscashes as $cash){
@@ -774,7 +769,7 @@ class ReportController extends Controller
         }
 
 
-        $merge_data =  array_merge($ecomcashinfo,$poscashinfo);
+        $merge_data =  $poscashinfo;
         
         $datewise_sorted_data = [];
         foreach($merge_data as $merge){
@@ -791,14 +786,22 @@ class ReportController extends Controller
 
 
     public function SalesReport(){
-        return view('pos.report.salesreport');
+        $sections = Section::all();
+        return view('pos.report.salesreport',compact('sections'));
     }
     public function SalesReportResult(Request $request){
         $this->validate($request,[
             'start' => 'required|date',
             'end' => 'required|date',
+            'section' => 'required',
         ]);
+        $sections = Section::all();
+        if($request->section === 'all'){
         $sales = Sale::whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('sales_at', 'ASC')->get();
+        }else{
+            $users = User::where('section_id',$request->section)->select('id')->get();
+            $sales = Sale::whereIn('user_id',$users)->whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('sales_at', 'ASC')->get();
+        }
 
         $datewise_sorted_data = [];
         foreach($sales as $sale){
@@ -806,18 +809,24 @@ class ReportController extends Controller
         }
         usort($datewise_sorted_data,  array($this, "date_sort"));
 
-        return view('pos.report.showsalesreport',compact('datewise_sorted_data','request'));
+        return view('pos.report.showsalesreport',compact('datewise_sorted_data','request','sections'));
     }
 
     public function pdfSalesReport(Request $request){
         $this->validate($request,[
             'start' => 'required|date',
             'end' => 'required|date',
+            'section' => 'required',
         ]);
         $general_opt = GeneralOption::first();
         $general_opt_value = json_decode($general_opt->options, true);
 
-        $sales = Sale::whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('sales_at', 'ASC')->get();
+        if($request->section === 'all'){
+            $sales = Sale::whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('sales_at', 'ASC')->get();
+        }else{
+            $users = User::where('section_id',$request->section)->select('id')->get();
+            $sales = Sale::whereIn('user_id',$users)->whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('sales_at', 'ASC')->get();
+        }
 
         $datewise_sorted_data = [];
         foreach($sales as $sale){

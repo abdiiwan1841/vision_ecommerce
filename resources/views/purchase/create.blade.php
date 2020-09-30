@@ -14,13 +14,13 @@
           </div>
           <hr>
            <div class="row">
-
+            @php
+            $mytime = Carbon\Carbon::now();
+        @endphp
             <div class="col-lg-4">
               <div class="form-group">
                 <label for="purchase_date">Date</label>
-                @php
-                    $mytime = Carbon\Carbon::now();
-                @endphp
+               
                 <input type="text" class="form-control" name="purchase_date" id="purchase_date" value="{{$mytime->toDateString()}}" readonly>
                 <div class="date_err"></div>
               </div>
@@ -44,7 +44,7 @@
           </div>
 
 
-          <div class="col-lg-6">
+          <div class="col-lg-5">
             <div class="form-group">
               <div id="customer-details"></div>
             </div>
@@ -52,12 +52,12 @@
 
 
 
-           <div class="col-lg-2">
+           <div class="col-lg-3">
           <div class="card">
             
             <div class="card-header">
               
-                <span class="float-left"><b>RESET</b></span> <button type="button" onclick="reset()" id="reset" class="btn btn-success float-right"><i class="fa fa-sync-alt"></i> </button>
+                <span class="float-left"><b>RESET FIELD</b></span> <button type="button" onclick="reset()" id="reset" class="btn btn-success float-right"><i class="fa fa-sync-alt"></i> </button>
               </div>
               
             </div>
@@ -69,7 +69,7 @@
           </div>
        
             <div class="row">
-            <div class="col-lg-4 col-md-3">
+            <div class="col-lg-6 col-md-6">
               <div class="form-group">
                 <label for="product">Product</label>
                 <select data-placeholder="-select product-" class="js-example-responsive" name="product" id="product" class="form-control">
@@ -83,10 +83,13 @@
                 <div class="product_err err_form"></div>
                
               </div>
+             
+
+            </div>
+            <div class="col-lg-6">
               <div class="form-group">
                 <span class="text-center" id="selected-product-info"></span>
               </div>
-
             </div>
 
 
@@ -96,7 +99,7 @@
                   
                   <div class="form-group">
                     <label for="price">Price</label>
-                    <input type="number" class="form-control" name="price" id="price">
+                    <input type="number" class="form-control" name="price" placeholder="Enter Price" id="price">
                     <div class="price_err"></div>
                   </div>
                   
@@ -106,11 +109,37 @@
                 <div class="col-lg-2 col-md-2">
                   <div class="form-group">
                     <label for="qty">Quantity</label>
-                    <input type="number" class="form-control" name="qty" id="qty">
+                    <input type="number" class="form-control" placeholder="Enter Qty" name="qty" id="qty">
                     <div class="qty_err"></div>
                   </div>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label for="mfg">MFG</label>
+                 
+                  <input type="text" class="form-control" name="mfg" id="mfg" placeholder="Select MFG Date" readonly>
+                  <div class="mfg_err"></div>
+                </div>
+              </div>
+
+              <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label for="exp">EXP</label>
+                 
+                  <input type="text" class="form-control" name="exp" id="exp" placeholder="Select EXP Date" readonly>
+                  <div class="exp_err"></div>
+                </div>
+              </div>
+
+              <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                  <label for="batch">Batch No.</label>
+                 
+                  <input type="text" class="form-control" name="batch" id="batch" placeholder="Enter batch Number">
+                  <div class="batch_err"></div>
+                </div>
+              </div>
+                <div class="col-lg-2 col-md-2">
                   <div style="margin-top: 31px">
                     <button type="button"  class="btn btn-primary  add-to-cart">ADD <i class="fa fa-plus"></i></button>
                   </div>
@@ -131,13 +160,7 @@
       <div class="p_detail_wrapper table-responsive">
         <h3 class="text-center">PURCHASE INVOICE</h3>
         <h5 class="date"></h5> <br>
-        <div class="row">
-            <div class="col-lg-6">
-                <div id="customer-info">
-
-            </div>
-         </div>
-    </div> <br><br>
+   <br><br>
     <div class="table-responsive">
       <table class="table table-bordered table-striped">
         <thead class="table-dark">
@@ -148,6 +171,8 @@
             <td>Price</td>
             <td>Size</td>
             <td>Qty</td>
+            <td>Mfg</td>
+            <td>Exp</td>
             <td>Total</td>
             <td>Action</td>
           </tr>
@@ -216,7 +241,7 @@ var baseuel = '{{url('/')}}';
   function reset(){
     sessionStorage.clear();
     $("#reset").html('<div class="fa-1x"><i class="fas fa-spinner fa-spin"></i></div>');
-    location.reload();
+    location.reload(true);
   }
 
   $('#product').select2({
@@ -293,7 +318,7 @@ var purchaseCart = (function() {
   cart = [];
   
   // Constructor
-  function Item(name, price, count, id,o_name,image,product_size) {
+  function Item(name, price, count, id,o_name,image,product_size,mfg,exp) {
     this.name = name;
     this.price = price;
     this.count = count;
@@ -301,6 +326,8 @@ var purchaseCart = (function() {
     this.o_name    = o_name;
     this.image    = image;
     this.product_size = product_size;
+    this.mfg = mfg;
+    this.exp = exp;
     
   }
   
@@ -324,7 +351,7 @@ var purchaseCart = (function() {
   var obj = {};
   
   // Add to cart
-  obj.addItemToCart = function(name, price, count, id,o_name,image,product_size) {
+  obj.addItemToCart = function(name, price, count, id,o_name,image,product_size,mfg,exp) {
     for(var item in cart) {
       if(cart[item].name === name) {
        Swal.fire({
@@ -335,7 +362,7 @@ var purchaseCart = (function() {
         return;
       }
     }
-    var item = new Item(name, price, count, id,o_name,image,product_size);
+    var item = new Item(name, price, count, id,o_name,image,product_size,mfg,exp);
     cart.push(item);
     saveCart();
   }
@@ -454,6 +481,8 @@ $('.add-to-cart').click(function(event) {
   
   var id = $("#product option:selected").val();
   var purchase_date = $("#purchase_date").val();
+  var mfg = $("#mfg").val();
+  var exp = $("#exp").val();
   var supplier_id = $("#supplier option:selected").val();
   var qnty = $("#qty").val();
   var o_name = $("#product option:selected").text();
@@ -487,6 +516,24 @@ $('.add-to-cart').click(function(event) {
   }else{
     $("#purchase_date").removeClass('is-invalid');
   }
+  if(mfg.length === 0){
+    $("#mfg").addClass('is-invalid');
+    $(".mfg_err").addClass('invalid-feedback').text('MFG  Date Field is Required');
+    err.push('mfg_date');
+  }else{
+    $("#mfg").removeClass('is-invalid');
+  }
+
+
+  if(exp.length === 0){
+    $("#exp").addClass('is-invalid');
+    $(".exp_err").addClass('invalid-feedback').text('EXP  Date Field is Required');
+    err.push('exp_date');
+  }else{
+    $("#exp").removeClass('is-invalid');
+  }
+
+
   if(price.length === 0){
     $("#price").addClass('is-invalid');
     $(".price_err").addClass('invalid-feedback').text('Price Field is Required');
@@ -525,7 +572,7 @@ $('.add-to-cart').click(function(event) {
       var product_size = data[0].size.name;
       
     if(err.length<1){
-    purchaseCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size);
+    purchaseCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size,mfg,exp);
     $(".is-valid").removeClass('is-valid');
     
     //Cart session has data
@@ -548,6 +595,8 @@ $('.add-to-cart').click(function(event) {
     $(".product_err").text('');
     $("#price").val("");
     $("#qty").val("");
+    $("#mfg").val("");
+    $("#exp").val("");
     $("#selected-product-info").hide();
   }
 
@@ -573,7 +622,7 @@ $( "#product" ).change(function() {
 
         $.get(baseuel+"/api/productinfo/"+product_id, function(data, status){
           if(status === 'success'){
-              $("#selected-product-info").html('<table class="table table-sm table-hover table-dark"><tr><td> <b>'+data[0].product_name+'</b></td></tr><tr><td><img class="img-responsive img-thumbnail" src="'+baseuel+'/public/uploads/products/tiny/'+data[0].image+'" /></td></tr><tr><td> Price: '+data[0].current_price+'</td></tr><tr><td>Current Stock : '+data[1]+'</td></tr></table>');
+              $("#selected-product-info").html('<table class="table table-sm table-hover"><tr><td> <b>'+data[0].product_name+'</b></td></tr><tr><td><img class="img-responsive img-thumbnail" src="'+baseuel+'/public/uploads/products/tiny/'+data[0].image+'" /></td></tr><tr><td> Price: '+data[0].current_price+'</td></tr><tr><td>Current Stock : '+data[1]+'</td></tr></table>');
 
             $("#selected-product-info").show();
 
@@ -727,10 +776,12 @@ function displayCart() {
       + "<td>" + j++ + "</td>"
       + "<td>" + cartArray[i].o_name + "</td>"
       + "<td><img style='width: 50px;' src='"+baseuel+"/public/uploads/products/tiny/"+cartArray[i].image+"' class='img-thumbnail' /></td>"
-      + "<td>" + cartArray[i].price + " Tk</td>"
+      + "<td>" + cartArray[i].price + "</td>"
       + "<td>" + cartArray[i].product_size + "</td>"
       + "<td>"+ cartArray[i].count +"</td>"
-      + "<td>" + Math.round(cartArray[i].total) + " Tk</td>" 
+      + "<td>"+ cartArray[i].mfg +"</td>"
+      + "<td>"+ cartArray[i].exp +"</td>"
+      + "<td>" + Math.round(cartArray[i].total) + "</td>" 
       + "<td><button class='delete-item btn btn-sm badge-danger' data-name=" + cartArray[i].name + ">X</button></td>"
       +  "</tr>";
   }
@@ -738,13 +789,6 @@ function displayCart() {
   $('.total-cart').html(purchaseCart.totalCart());
 
   $('.date').html('Purchase  Date: '+sessionStorage.purchase_date);
-  $.get("{{url('/')}}/api/supplierinfo/"+sessionStorage.supplier_id, function(data, status){
-      if(status === 'success'){
-        $("#customer-info").html("<b>Name :</b>"+data.name+"</br><b>Address :</b>  "+data.address+"<br><b>Phone :</b> "+data.phone+"<br><b>Email :</b> "+data.email);
-        
-      }
-  });
-  //$('#customer-info').html('<h5>Customer Name: Md Shajib Azher</h5><h5>Email : mdshajibazher@gmail.com</h5><h5>Phone :01700554455</h5><h5>Address :Dhaka</h5>');
   $('.net-amount').text(Math.round(netamount));
   
   $('.discount').text( Math.round(disc));
@@ -854,6 +898,8 @@ function confirm_sales(){
 <script src="{{asset('public/assets/js/flatpicker.min.js')}}"></script>
 <script>
   $("#purchase_date").flatpickr({dateFormat: 'Y-m-d', allowInput: true});
+  $("#mfg").flatpickr({dateFormat: 'Y-m-d', allowInput: true});
+  $("#exp").flatpickr({dateFormat: 'Y-m-d', allowInput: true});
 </script>
 
 @endpush

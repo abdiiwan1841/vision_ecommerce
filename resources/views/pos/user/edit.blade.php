@@ -64,6 +64,19 @@
                 <small class="form-error">{{ $message }}</small>
                 @enderror
             </div>
+            <div class="form-group">
+              <label for="section">Customer Section<span>*</span></label>
+              <select name="section" id="section" class="form-control @error('section') is-invalid @enderror" required>
+                  <option value="">--Select Section--</option>
+                  @foreach ($sections as $item)
+                      <option value="{{$item->id}}" @if($item->id == $customer->section_id ) selected @endif >{{$item->name}}</option>
+                  @endforeach
+                  
+              </select>
+              @error('section')
+              <small class="form-error">{{ $message }}</small>
+              @enderror
+          </div>
       
 
         </div>
