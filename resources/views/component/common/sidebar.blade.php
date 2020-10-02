@@ -35,6 +35,10 @@
             <a href="{{ route('damages.index') }}"><i class="fas fa-trash-alt"></i>  Damage &amp; Samples</a>
         </li>
 
+        <li class="{{Request::is('admin/expense*') ? 'active' : '' }}">
+            <a href="{{ route('expense.index') }}"><i class="fas fa-rupee-sign"></i>  Expense</a>
+        </li>
+
         @if(Auth::user()->role->id == 4)
         <li class="{{Request::is('admin/pos/sale*') ? 'active' : '' }}">
             <a href="{{ route('sale.index') }}"><i class="fas fa-people-carry"></i>Sales Invoices</a>

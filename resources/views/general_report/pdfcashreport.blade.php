@@ -48,7 +48,6 @@
                           <td class="align-middle">Address</td>
                           <td class="align-middle">Amount</td>
                           <td class="align-middle">Ref</td>
-                          <td class="align-middle">Source</td>
                         </tr>
                         @php
                         $sum = 0;
@@ -65,7 +64,6 @@
                           <td style="width: 80px"  class="align-middle" >{{ $userinfo->address}}</td>
                           <td  class="align-middle" ><b>{{$item['amount']}}</b></td>
                           <td  class="align-middle">{{$item['reference']}}</td>
-                          <td  class="align-middle">{{$item['source']}}</td>
                         </tr>
                         @endforeach
                         <tr>
@@ -74,8 +72,6 @@
                           <td></td>
                           <td> <b>Total Amount:</b> </td>
                         <td><b>{{$sum}}</b></td>
-                          <td></td>
-                          <td></td>
                         </tr>
       
       
@@ -86,20 +82,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

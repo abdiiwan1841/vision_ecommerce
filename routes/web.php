@@ -92,6 +92,9 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::get('stock/freehistory/{id}', 'StockController@freehistory')->name('stock.freehistory');
     Route::get('stock', 'StockController@index')->name('stock.index');
     Route::resource('damages','DamageController');
+    Route::resource('expense','ExpenseController');
+    Route::get('last10expense','ExpenseController@last10')->name('expense.last10');
+
     Route::get('inventory/dashboard/viewsales/{id}', 'Pos\SaleController@show')->name('viewsales.show');
     Route::post('pos/sale/delivery/{id}', 'Pos\SaleController@delivery')->name('sale.delivery');
 
