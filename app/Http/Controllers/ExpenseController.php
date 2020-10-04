@@ -111,4 +111,19 @@ class ExpenseController extends Controller
     public function last10(){
         return  new ExpenseCollection(Expense::take(10)->orderBy('id','DESC')->get());
     }
+
+    public function datewise(Request $request){
+        $this->validate($request,[
+            'start' => 'required|date',
+            'end' => 'required|date',
+        ]);
+        $expenses = Expense::whereBetween('expense_date', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('expense_date', 'asc')->get();
+        return view('expense.datewise',compact('expenses','request'));
+    }
+
+    public function datewiseGetMethod($start,$end){
+        // $request = ['start' => $start, 'end' => $end];
+        $expenses = new ExpenseCollection(Expense::whereBetween('expense_date', [$start." 00:00:00", $end." 23:59:59"])->orderBy('expense_date', 'asc')->get());
+        return $expenses;
+    }
 }

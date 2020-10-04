@@ -38,7 +38,7 @@
                 
             </div>
             <div class="card-body">
-                <form action="{{--route('expense.datewiseview')--}}" method="POST">
+                <form action="{{route('expense.datewise')}}" method="POST">
                     @csrf
                       <div class="row mb-3 justify-content-center">
                         <div class="col-lg-1">
@@ -174,7 +174,6 @@ function last10Expense(){
   let  data = res.data.data;
   let  expensedata = "";
   data.forEach(function(data,key){
-    const EXPENSEDATE = new Date(data.expense_date);
     expensedata += `<tr>
                       <td>${key+1}</td>
                       <td>${data.expense_date}</td>
@@ -226,6 +225,10 @@ function EditExpense(id){
 $("#expense_date").flatpickr({dateFormat: 'Y-m-d'});
 $("#expenseModal").modal('show');
     })
+
+    .catch(err => {
+  console.log(err);
+  });
 
 
 

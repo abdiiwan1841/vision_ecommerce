@@ -94,6 +94,8 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::resource('damages','DamageController');
     Route::resource('expense','ExpenseController');
     Route::get('last10expense','ExpenseController@last10')->name('expense.last10');
+    Route::post('expense/datewise','ExpenseController@datewise')->name('expense.datewise');
+    Route::get('expense/datewise/{start}/{end}','ExpenseController@datewiseGetMethod')->name('expense.datewisegetmethod');
 
     Route::get('inventory/dashboard/viewsales/{id}', 'Pos\SaleController@show')->name('viewsales.show');
     Route::post('pos/sale/delivery/{id}', 'Pos\SaleController@delivery')->name('sale.delivery');

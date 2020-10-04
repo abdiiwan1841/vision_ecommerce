@@ -35,3 +35,4 @@ Route::get('pendingreturns/{id}', 'Api\ApiInformationController@pendingReturnInf
 Route::get('invdueinfo/{id}', 'Api\ApiInformationController@invdueinfo');
 Route::get('pendingdeliveryinfo/{id}', 'Api\ApiInformationController@pendingDeliveryInfo')->name('pendingdeliveryinfo.api');
 Route::get('deliveryman', 'Api\ApiInformationController@deliveryman')->name('deliveryman.api');
+Route::get('dynamicproduct/{limit}', 'Api\ApiInformationController@dynamicProduct');

@@ -89,6 +89,33 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
 
 
       <div class="row">
+
+        
+<div class="col-lg-12">
+
+  <div class="product-list banner-section spad">
+    <div class="container-fluid">
+      <div class="section-title">
+        <h2>Our Products</h2>
+      </div>
+    <div class="row" id="dynamic-product">
+      
+  
+      </div>
+      <div style="width: 100%;text-align: center" >
+      <a class="btn site-btn" id="moreproduct" href="javascript:void(0)" onclick="IncrementProduct()">Load More Products</a>
+      </div>
+      
+       
+      </div>
+  
+    </div>
+  
+  
+  </div>
+
+
+
         <div class="col-lg-6">
 
           @if($g_opt_value['product_types'] == 1) 
@@ -102,7 +129,7 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
                
                   @foreach ($subcategories as $subcat)
                   
-                  <div class="col-lg-6">
+                  <div class="col-6">
                   <a href="{{route('shoppage.subcategory',$subcat->id)}}">
                       <div class="single-banner">
                       <img class="img_leaf_shape" src="{{asset('public/uploads/product_type/frontend/'.$subcat->image)}}" alt="{{$subcat->subcategory_name}}">
@@ -163,7 +190,7 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
           
             @foreach ($new_products as $single_product)
 
-            <div class="col-lg-6 col-sm-6">
+            <div class="col-6">
                 <div class="product-item">
                   
                     <div class="pi-pic">
@@ -227,7 +254,7 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
             
               @foreach ($random_product as $single_product)
    
-              <div class="col-lg-5 col-sm-6">
+              <div class="col-6">
                   <div class="product-item">
                       <div class="pi-pic">
                       <img src="{{asset('public/uploads/products/thumb/'.$single_product->image)}}" alt="{{$single_product->product_name}}">
@@ -281,75 +308,6 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
 </div>
 
 
-<div class="col-lg-12">
-
-<div class="product-list banner-section spad">
-  <div class="container-fluid">
-    <div class="section-title">
-      <h2>Our Products</h2>
-    </div>
-  <div class="row">
-    
-      @foreach ($products as $single_product)
-
-      <div class="col-lg-2 col-sm-6">
-          <div class="product-item">
-            
-              <div class="pi-pic">
-              <img src="{{asset('public/uploads/products/thumb/'.$single_product->image)}}" alt="{{$single_product->product_name}}">
-                 
-                
-
-                  @if($single_product->in_stock == 0)
-                  <div class="stock-out">Stock Out</div>
-                  @endif
-
-                  <div class="icon">
-                    <span class="badge badge-pink">{{$single_product->brand->brand_name}}</span> 
-                </div>
-             
-      
-                  <ul>
-
-                 
-                  <li class="w-icon active homepd"><a id="pd-{{$single_product->id}}" data-instock="{{$single_product->in_stock}}" data-name="{{$single_product->product_name}}" data-image="{{asset('public/uploads/products/tiny/'.$single_product->image)}}" data-id="{{$single_product->id}}" data-price="@if($single_product->discount_price == NULL) {{ $single_product->price}} @else {{ $single_product->discount_price}} @endif" href="#" class="add-to-cart"><i class=" icon_cart_alt"></i></a></li>
-           
-
-
-
-                      <li class="quick-view homepd"><a href="{{route('singleproduct.index',$single_product->id)}}">+ View Details</a></li>
-                      
-                  </ul>
-                </div>
-           
-              <div class="pi-text">
-                <div class="catagory-name"><span style="color: {{$colors[rand(0,9)]}}">{{$single_product->subcategory->subcategory_name}}</span> - Size:  {{$single_product->size->name}} </div>
-                  <a href="{{route('singleproduct.index',$single_product->id)}}">
-                      <h5>{{$single_product->product_name}}</h5>
-                  </a>
-                  <div class="product-price">
-                    @if($single_product->discount_price == NULL)
-                    Tk.{{$single_product->price}}
-                    @else Tk.{{$single_product->discount_price}}
-                    <span>Tk.{{$single_product->price}}</span>
-                    @endif
-                  </div>
-              </div>
-          </div>
-          </div>
-      @endforeach
-    </div>
-    <div style="width: 100%;text-align: center" >
-    <a class="btn site-btn" href="{{route('shoppage.index')}}">More Products</a>
-    </div>
-    
-     
-    </div>
-
-  </div>
-
-
-</div>
 
 
 
@@ -366,7 +324,7 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
             <div class="row">
                 @foreach ($collections as $cat)
                 
-                <div class="col-lg-4">
+                <div class="col-12 col-lg-4 col-md-4">
                 <a href="{{route('collection.view',$cat->id)}}">
                     <div class="single-banner">
                     <img src="{{asset('public/uploads/category/frontend/'.$cat->image)}}" alt="">
@@ -389,9 +347,77 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
 @endsection
 
 @push('js')
+
+<script src="{{asset('public/assets/js/axios.min.js')}}"></script>
 <script src="{{asset('public/assets/frontend/js/owl-2-filter.js')}}"></script>
 <script>
+var url = "{{url('/')}}";
+var limit = 12;
+PopulateDynamicProduct(limit);
 
+
+
+function IncrementProduct(){
+  $("#moreproduct").html('<i class="fa-2x fa fa-spinner fa-spin"></i> Loading.....');
+  limit = limit+6;
+  PopulateDynamicProduct(limit);
+}
+
+function PopulateDynamicProduct(limit){
+axios.get(url+'/api/dynamicproduct/'+limit)
+  .then(res => {
+    let  pddata = res.data.dynamic_products;
+    let  total_products = res.data.total_products;
+      let  concatproductdata = "";
+      pddata.forEach(function(data,key){
+        let pd_price = "";
+        let in_stock = "";
+        if(data.in_stock == false){
+           in_stock = '<div class="stock-out">Stock Out</div>';
+        }
+        if(data.discount_price === null){
+          pd_price = `<div class="product-price">Tk.${data.current_price}</div>`;
+        }else{
+          pd_price = `<div class="product-price">Tk.${data.current_price}<span>${data.price}</span></div>`;
+        }
+        concatproductdata += `<div class="col-6 col-md-2 col-lg-2">
+          <div class="product-item">
+              <div class="pi-pic">
+              <img src="${url}/public/uploads/products/thumb/${data.image}" alt="${data.product_name}">
+              ${in_stock}
+                  <div class="icon">
+                    <span class="badge badge-pink">${data.brand.brand_name}</span> 
+                </div>
+                  <ul>
+                  <li class="w-icon active homepd"><a id="pd-${data.id}" href="javascript:void(0)"  class="add-to-cart" onclick="addToCart(${data.id},'${data.product_name}','${url}/public/uploads/products/tiny/${data.image}',${data.current_price},${data.in_stock})"><i class=" icon_cart_alt"></i></a></li>
+                      <li class="quick-view homepd"><a href="${url}/product/${data.id}">+ Details</a></li>
+                  </ul>
+                </div>
+              <div class="pi-text">
+                <div class="catagory-name"><span style="color: purple">${data.subcategory.subcategory_name}</span> - Size:  ${data.size.name} </div>
+                  <a href="http://localhost/vision_ecommerce/product/${data.id}">
+                      <h5>${data.product_name}</h5>
+                  </a>
+                  ${pd_price}
+              </div>
+          </div>
+          </div>`;
+    });
+    $("#dynamic-product").html(concatproductdata);
+    if(limit > total_products){
+      $("#moreproduct").hide();
+    }else{
+      $("#moreproduct").html('Load More Product');
+    }
+    
+  })
+
+  .catch(res => {  
+    console.log(res);
+  })
+
+}
+    
 
     /*------------------
         Product Slider
@@ -510,5 +536,5 @@ $item.addClass( 'active' ).siblings().removeClass( 'active' );
   }
 
 </script>
-<script src="{{asset('public/assets/frontend/js/cart.js')}}"></script>
+<script src="{{asset('public/assets/frontend/js/homepagecart.js')}}"></script>
 @endpush

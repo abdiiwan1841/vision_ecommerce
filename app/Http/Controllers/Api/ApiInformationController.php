@@ -153,4 +153,10 @@ class ApiInformationController extends Controller
     public function deliveryman(){
         return Admin::where('role_id',4)->get();
     }
+
+    public function dynamicProduct($limit=10){
+        $total_products = Product::where('type','ecom')->count('id');
+        $dynamic_products = Product::with('brand','category','size','subcategory')->where('type','ecom')->orderBy('id','desc')->take($limit)->get();
+        return ['total_products' => $total_products,'dynamic_products' => $dynamic_products];
+    }
 }

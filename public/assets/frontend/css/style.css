@@ -199,6 +199,9 @@ ol {
 	padding: 13px 45px 11px;
 	cursor: pointer;
 }
+.site-btn:hover{
+	color: #fff;
+}
 
 /* Preloder */
 
@@ -1239,7 +1242,7 @@ ol {
 }
 
 .product-item .pi-pic ul li.w-icon.active a {
-	background: #12CBC4;
+	background: #000000;
 	color: #ffffff;
 }
 
@@ -4252,6 +4255,19 @@ ol {
 /* Small Device: 320px */
 
 @media only screen and (max-width: 479px) {
+	.product-item .pi-pic ul{
+		bottom: 0px;
+	}
+	.product-item .pi-pic ul li a{
+		padding: 8px 13px;
+	}
+	.single-banner .inner-text h5{
+		font-size: 13px;
+	}
+	.single-banner.brand{
+		padding: 48px;
+	}
+
 	.instagram-photo .insta-item {
 		width: 100%;
 	}
