@@ -326,6 +326,7 @@ class SaleController extends Controller
                 'cn_number' => 'required',
                 'delivered_by' => 'required',
                 'deliverymode' => 'required',
+                'delivery_date' => 'required|date',
                 'transportation_expense' => 'required|integer',
             ]);
         }else{
@@ -343,7 +344,7 @@ class SaleController extends Controller
             $is_condition = 0;
         }
 
-        $deliveryinfo = ["deliverymode" => $request->deliverymode,"is_condition" =>$is_condition, "courier_name" => $request->courier_name,"booking_amount" => $request->booking_amount,"cn_number" => $request->cn_number,"condition_amount" => $request->condition_amount, "delivered_by" => $request->delivered_by, "transportation_expense" => $request->transportation_expense];
+        $deliveryinfo = ["delivery_date" => $request->delivery_date,"deliverymode" => $request->deliverymode,"is_condition" =>$is_condition, "courier_name" => $request->courier_name,"booking_amount" => $request->booking_amount,"cn_number" => $request->cn_number,"condition_amount" => $request->condition_amount, "delivered_by" => $request->delivered_by, "transportation_expense" => $request->transportation_expense];
 
         $sale = Sale::findOrFail($id);
         $sale->timestamps = false;

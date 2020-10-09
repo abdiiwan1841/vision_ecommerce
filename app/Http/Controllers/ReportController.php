@@ -32,6 +32,9 @@ class ReportController extends Controller
     public function date_sort($a, $b) {
         return strtotime($a['date']) - strtotime($b['date']);
     }
+    public function date_sort_desc($a, $b) {
+        return  strtotime($b['date']) - strtotime($a['date']);
+    }
 
 
 
@@ -985,6 +988,65 @@ class ReportController extends Controller
         $pdf = PDF::loadView('general_report.showmarketingreport',compact('marketingreport','general_opt_value','employee','request'));
 
         return $pdf->download($employee->name.' Sales Report'.$request->start.'to '.$request->end.'.pdf');
+    }
+
+
+
+    public function DeliveryReport(){
+        return view('pos.report.deliveryreport');
+    }
+    public function ShowDeliveryReport(Request $request){
+        $this->validate($request,[
+            'start' => 'required|date',
+            'end' => 'required|date',
+            'filter' => 'required',
+        ]);
+        if($request->filter === 'all'){
+        $sales = Sale::whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->get();
+        }else{
+            $sales = Sale::where('delivery_status',$request->filter)->whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->get();
+        }
+
+        $datewise_sorted_data = [];
+        foreach($sales as $sale){
+            if($sale->deliveryinfo != null){
+                $d_info = json_decode($sale->deliveryinfo);
+            }else{
+                $d_info = $sale->deliveryinfo;
+            }
+            $datewise_sorted_data[] = ['date' => $sale->sales_at->format('d-m-Y'),'customer' => $sale->user->name,'address' =>$sale->user->address,'phone' =>$sale->user->phone ,'id' => $sale->id, 'status' => $sale->delivery_status,'delivery_info'=> $d_info];
+        }
+        usort($datewise_sorted_data,  array($this, "date_sort_desc"));
+        return view('pos.report.showdeliveryreport',compact('datewise_sorted_data','request'));
+    }
+
+    public function pdfDeliveryReport(Request $request){
+        $this->validate($request,[
+            'start' => 'required|date',
+            'end' => 'required|date',
+            'filter' => 'required',
+        ]);
+        $general_opt = GeneralOption::first();
+        $general_opt_value = json_decode($general_opt->options, true);
+        if($request->filter === 'all'){
+        $sales = Sale::whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->get();
+        }else{
+            $sales = Sale::where('delivery_status',$request->filter)->whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->get();
+        }
+
+        $datewise_sorted_data = [];
+        foreach($sales as $sale){
+            if($sale->deliveryinfo != null){
+                $d_info = json_decode($sale->deliveryinfo);
+            }else{
+                $d_info = $sale->deliveryinfo;
+            }
+            $datewise_sorted_data[] = ['date' => $sale->sales_at->format('d-m-Y'),'customer' => $sale->user->name,'address' =>$sale->user->address,'phone' =>$sale->user->phone ,'id' => $sale->id, 'status' => $sale->delivery_status,'delivery_info'=> $d_info];
+        }
+        usort($datewise_sorted_data,  array($this, "date_sort_desc"));
+
+        $pdf = PDF::loadView('pos.report.pdfdeliveryreport',compact('datewise_sorted_data','request','general_opt_value'));
+        return $pdf->download('DeliveryReport'.$request->start.'to '.$request->end.'.pdf');
     }
 
 

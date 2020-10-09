@@ -141,6 +141,12 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], f
     Route::post('report/pos/salesreport', 'ReportController@SalesReportResult')->name('report.possalesresult');
     Route::post('report/pos/salesreport/pdf', 'ReportController@pdfSalesReport')->name('report.pdfpossalesresult');
 
+
+
+    Route::get('report/pos/deliveryreport', 'ReportController@DeliveryReport')->name('report.posdeliveryreport');
+    Route::post('report/pos/deliveryreport', 'ReportController@ShowDeliveryReport')->name('report.posdeliveryresult');
+    Route::post('report/pos/deliveryreport/pdf', 'ReportController@pdfDeliveryReport')->name('report.pdfposdeliveryresult');
+
     Route::get('report/supplierdue', 'ReportController@supplierdue')->name('report.supplierdue');
     Route::post('report/supplierdue', 'ReportController@showsupplierdue')->name('report.showsupplierdue');
     Route::post('report/supplierdue/pdf', 'ReportController@pdfsupplierdue')->name('report.pdfsupplierdue');

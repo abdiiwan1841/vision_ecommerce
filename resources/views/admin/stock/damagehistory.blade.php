@@ -79,7 +79,6 @@
 <script src="{{asset('public/assets/js/dataTables.bootstrap4.min.js')}}"></script>
 <script>
 $('#jq_datatables').DataTable({
-  "order": [ [1, 'asc'] ],
     "fnRowCallback" : function(nRow, aData, iDisplayIndex){
                 $("td:first", nRow).html(iDisplayIndex +1);
                return nRow;

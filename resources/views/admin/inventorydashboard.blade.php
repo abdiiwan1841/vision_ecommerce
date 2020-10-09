@@ -714,10 +714,13 @@
 
 
 @endsection
-
+@push('css')
+<link rel="stylesheet" href="{{asset('public/assets/css/flatpicker.min.css')}}">
+@endpush
 
 @push('js')
 <script src="{{asset('public/assets/js/axios.min.js')}}"></script>
+<script src="{{asset('public/assets/js/flatpicker.min.js')}}"></script>
 <script>
 var baseurl = '{{url('/')}}';
 const swalWithBootstrapButtons = Swal.mixin({
@@ -1149,6 +1152,12 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 </div>
 
 <hr>
+<div class="form-group">
+		<label for="delivery_date"><b>Delivery Date</b></label>
+		<input type="text" class="form-control" id="delivery_date" name="delivery_date" placeholder="Enter  Delivery Date">
+		<span class="text-danger delivery_date_err"></span>
+	</div>
+
 
 <div class="form-group">
 		<label for="delivered_by"><b>Delivered By</b></label>
@@ -1159,6 +1168,8 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 	</div>
 	</div>
 	<div id="courier-info">
+
+	
 	<div class="form-group">
 		<label for="courier_name"><b>Courier/ Transport Name</b></label>
 		<input type="text" class="form-control" id="courier_name" name="courier_name" placeholder="Enter Courier Name">
@@ -1207,6 +1218,8 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 	</form>
 
 	`);
+
+	$("#delivery_date").flatpickr({dateFormat: 'Y-m-d'});
 
 	$("input[name='deliverymode']").change(function(){
 		if(this.value === "office"){

@@ -395,7 +395,7 @@ axios.get(url+'/api/dynamicproduct/'+limit)
                 </div>
               <div class="pi-text">
                 <div class="catagory-name"><span style="color: purple">${data.subcategory.subcategory_name}</span> - Size:  ${data.size.name} </div>
-                  <a href="http://localhost/vision_ecommerce/product/${data.id}">
+                  <a href="${url}/product/${data.id}">
                       <h5>${data.product_name}</h5>
                   </a>
                   ${pd_price}

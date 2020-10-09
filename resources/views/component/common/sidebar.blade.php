@@ -294,11 +294,11 @@
         
         
                 <li class="{{Request::is('admin/report/pos/posuserstatement') ? 'active' : '' }}">
-                    <a href="{{ route('report.posuserstatement') }}"><i class="fa fa-layer-group"></i> Inventory customer Statement</a>
+                    <a href="{{ route('report.posuserstatement') }}"><i class="fa fa-layer-group"></i> customer Statement</a>
                 </li>
         
                 <li class="{{Request::is('admin/report/pos/posdeatailstatement') ? 'active' : '' }}">
-                    <a href="{{ route('report.posdetailstatement') }}"><i class="fa fa-layer-group"></i> Inventory customer Detail Statement</a>
+                    <a href="{{ route('report.posdetailstatement') }}"><i class="fa fa-layer-group"></i> customer Detail Statement</a>
                 </li>
         
                 
@@ -322,8 +322,13 @@
                 </li>
 
                 <li class="{{Request::is('admin/report/pos/salesreport*') ? 'active' : '' }}">
-                    <a href="{{ route('report.possalesreport') }}"><i class="fa fa-layer-group"></i>Inventory Sales Report According To Date</a>
+                    <a href="{{ route('report.possalesreport') }}"><i class="fa fa-layer-group"></i>Sales Report</a>
                 </li>
+
+                <li class="{{Request::is('admin/report/pos/deliveryreport*') ? 'active' : '' }}">
+                    <a href="{{ route('report.posdeliveryreport') }}"><i class="fa fa-layer-group"></i>Delivery Report</a>
+                </li>
+
 
                 <li class="{{Request::is('admin/report/supplierdue*') ? 'active' : '' }}">
                     <a href="{{ route('report.supplierdue') }}"><i class="fa fa-layer-group"></i>Supplier Due Report</a>
