@@ -17,7 +17,7 @@
                         <span>Customer : </span>
                       </div>
                       <div class="form-group">
-                        <select data-placeholder="Select a User" name="user" id="user" class="form-control @error('user') is-invalid @enderror">
+                        <select data-placeholder="Select a Customer" name="user" id="user" class="form-control @error('user') is-invalid @enderror">
                           <option></option>
                           @foreach ($users as $user)
                             <option value="{{$user->id}}" @if (old('user') == $user->id) selected  @endif>{{$user->name}}</option>

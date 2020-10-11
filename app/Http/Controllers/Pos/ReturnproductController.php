@@ -18,11 +18,11 @@ use Illuminate\Support\Facades\Auth;
 
 class ReturnproductController extends Controller
 {
-       /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct(){
+        $this->middleware('auth:admin');
+    }
+
+    
     public function index()
     {
         $returns = Returnproduct::withTrashed('user','prouduct')->take(10)->orderBy('id', 'desc')->get();

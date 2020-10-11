@@ -10,6 +10,11 @@ use Brian2694\Toastr\Facades\Toastr;
 
 class MarketingReportController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth:admin');
+    }
+
+    
     public function index(){
         $marketingreport = MarketingReport::take(10)->orderBy('id','DESC')->get();
         return view('marketingreport.index',compact('marketingreport'));

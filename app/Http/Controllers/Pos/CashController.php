@@ -16,7 +16,10 @@ use Illuminate\Support\Facades\Auth;
 
 class CashController extends Controller
 {
-
+    public function __construct(){
+        $this->middleware('auth:admin');
+    }
+    
     public function index()
     {
         $cashes = Cash::take(10)->orderBy('id', 'desc')->get();

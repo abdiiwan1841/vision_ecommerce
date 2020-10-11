@@ -13,11 +13,11 @@ use App\Http\Requests\SubcategoryStoreRequest;
 
 class SubcategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct(){
+        $this->middleware('auth:admin');
+    }
+
+    
     public function index()
     {
         $subcategories = Subcategory::paginate(10);

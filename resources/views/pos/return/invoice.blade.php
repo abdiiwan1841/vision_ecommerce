@@ -9,7 +9,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="ASOjne3KXoYfj3Bf24x8FUsRK920YOgbS7CcIRxa">
 
-    <title>ecommerce</title>
+    <title>Return Invoice</title>
 
     <!-- Bootstrap css -->
     <link href="{{asset('public/assets/css/bootstrap.css')}}" rel="stylesheet"/>
@@ -61,7 +61,7 @@
       <div style="width: 40%;display: inline-block;">
         @if($general_opt_value['inv_diff_invoice_heading'] == 1)
         <p style="font-weight: bold">{{$general_opt_value['inv_invoice_heading']}}</p>
-        <p>{{$general_opt_value['inv_invoice_address']}} <br> <b>Email :</b>  {{$general_opt_value['inv_invoice_email']}}</p>
+        <p>{{$general_opt_value['inv_invoice_address']}} <br> <b>Email :</b>  {{$general_opt_value['inv_invoice_email']}} <br> <b>Phone :</b>  {{$general_opt_value['inv_invoice_phone']}}</p>
         @else
         <p style="font-weight: bold">{{$CompanyInfo->company_name}}</p>
         <p>{{$CompanyInfo->address}} <br> <b>Email :</b>  {{$CompanyInfo->email}} <br> <b>Phone:</b>  {{$CompanyInfo->phone}}</p>

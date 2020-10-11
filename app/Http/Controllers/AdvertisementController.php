@@ -11,6 +11,10 @@ use Intervention\Image\Facades\Image;
 
 class AdvertisementController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth:admin');
+    }
+    
     public function index(){
         $adv = Advertisement::first();
         return view('advertisement.index',compact('adv'));

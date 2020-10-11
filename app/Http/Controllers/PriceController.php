@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class PriceController extends Controller
 {
+
+    public function __construct(){
+        $this->middleware('auth:admin');
+    }
+
+    
     public function index(){
         $products = Product::orderBy('product_name', 'ASC')->get();
         return view('price.index',compact('products'));

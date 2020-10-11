@@ -9,7 +9,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="ASOjne3KXoYfj3Bf24x8FUsRK920YOgbS7CcIRxa">
 
-    <title>ecommerce</title>
+    <title>Sales Invoice</title>
 
     <!-- Bootstrap css -->
     <link href="{{asset('public/assets/css/bootstrap.css')}}" rel="stylesheet"/>
@@ -62,7 +62,7 @@
       </div>
       <div style="width: 20%;display: inline-block;margin-top: 15px">
         @php
-            $url = "https://api.qrserver.com/v1/create-qr-code/?data=".$CompanyInfo->company_name." Customer: ".$current_user->name." Phone: ".$current_user->phone." Amount: ".$sale->amount."&size=130x130";
+            $url = "https://api.qrserver.com/v1/create-qr-code/?data=Customer: ".$current_user->name." Phone: ".$current_user->phone." Amount: ".$sale->amount."&size=130x130";
         @endphp
         @if($url)
         <img src="{{$url}}" alt="">
@@ -77,7 +77,7 @@
         @if($general_opt_value['inv_diff_invoice_heading'] == 1)
       
         <p style="font-weight: bold">{{$general_opt_value['inv_invoice_heading']}}</p>
-        <p>{{$general_opt_value['inv_invoice_address']}} <br> <b>Email :</b>  {{$general_opt_value['inv_invoice_email']}}</p>
+        <p>{{$general_opt_value['inv_invoice_address']}} <br> <b>Email :</b>  {{$general_opt_value['inv_invoice_email']}} <br> <b>Phone :</b>  {{$general_opt_value['inv_invoice_phone']}}</p>
       
         @else
         <p style="font-weight: bold">{{$CompanyInfo->company_name}}</p>

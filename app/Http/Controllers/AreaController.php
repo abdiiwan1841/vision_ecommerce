@@ -9,11 +9,11 @@ use Brian2694\Toastr\Facades\Toastr;
 
 class AreaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct(){
+        $this->middleware('auth:admin');
+    }
+
+    
     public function index()
     {   $districts = District::all();
         $areas = Area::with('district')->get();

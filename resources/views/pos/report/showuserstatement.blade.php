@@ -213,11 +213,6 @@
 
 @push('css')
 <link rel="stylesheet" href="{{asset('public/assets/css/flatpicker.min.css')}}">
-<style>
-.table-bordered td, .table-bordered th{
-  border-color: #000 !important;
-}
-</style>
 @endpush
 
 @push('js')

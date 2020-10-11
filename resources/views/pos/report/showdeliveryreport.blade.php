@@ -45,9 +45,9 @@
                           <div class="form-group">
                             <select name="filter" id="filter" class="form-control @error('filter') is-invalid @enderror">
                               <option value="all" @if($request['filter'] === 'all') selected @endif>All</option>
-                              <option value="0" @if($request['filter'] == 0) selected @endif>Pending</option>
+                              <option value="0" @if($request['filter'] === '0') selected @endif>Pending</option>
                            
-                              <option value="1" @if($request['filter'] == 1) selected @endif>Delivered</option>
+                              <option value="1" @if($request['filter'] === '1') selected @endif>Delivered</option>
                             </select>
                             @error('filter')
                                 <small class="form-error">{{ $message }}</small>

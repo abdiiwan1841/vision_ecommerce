@@ -1,18 +1,34 @@
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="{{$CompanyInfo->company_name}}">
+    <meta name="description" content="{{$CompanyInfo->company_name}} Online Shopping in Bangladesh.Quiality Cosmetics & Healthcare Products">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">  
+    <meta property="og:url" content="{{$_SERVER['SERVER_NAME']}}" />
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{$CompanyInfo->company_name}}-{{$_SERVER['SERVER_NAME']}}" />
+    <meta property="og:description" content="{{$CompanyInfo->company_name}} Online Shopping in Bangladesh.Quiality Cosmetics & Healthcare Products" />
+    <meta property="og:image" content="{{asset('public/assets/frontend/img/visionmart-og.png')}}">
+    {{-- <meta name="facebook-domain-verification" content="5mgt112i9b2vokfjobr5pltfrikbe3" /> --}}
+
+
 
      <!-- Favicon-->
      <link rel="shortcut icon" href="{{asset('public/uploads/favicon/cropped/'.$CompanyInfo->favicon)}}">
 
 
     <title>@yield('title') - {{$CompanyInfo->company_name}}</title>
+
+        <!-- Google Tag Manager -->
+{{-- <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-MKF28ZN');</script> --}}
+    <!-- End Google Tag Manager -->
 
 
     <!-- Google Font -->
@@ -34,6 +50,12 @@
 </head>
 
 <body>
+    <!-- Google Tag Manager (noscript) -->
+{{-- <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MKF28ZN"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript> --}}
+    <!-- End Google Tag Manager (noscript) -->
+
+
     @if($g_opt_value['pageloader'] == 1) 
     <!-- Page Preloder -->
     <div id="preloder">

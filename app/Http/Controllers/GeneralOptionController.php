@@ -11,6 +11,11 @@ use Intervention\Image\Facades\Image;
 
 class GeneralOptionController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth:admin');
+    }
+    
+
     public function index()
     {
         $g_opt = GeneralOption::first();
@@ -37,6 +42,7 @@ class GeneralOptionController extends Controller
             'pd_collection_noi' => 'required|digits_between:1,2',
             'inv_invoice_heading' => 'required|max: 30',
             'inv_invoice_email' => 'required|max: 30',
+            'inv_invoice_phone' => 'required|max:15',
             'inv_invoice_address' => 'required|max: 100',
         ]);
         $g_opt = GeneralOption::first();
@@ -138,7 +144,7 @@ class GeneralOptionController extends Controller
         
     
 
-        $option_arr += ['pageloader' => $pageloader,'slider'=> $slider,'product_types'=> $product_types,'product_types_counter' => $product_types_counter,'pd_type_noi' => $request->pd_type_noi,'brands' => $brands,'brands_counter'=> $brands_counter,'pd_brands_noi' => $request->pd_brands_noi,'new_pd' => $new_pd,'new_pd_noi' => $request->new_pd_noi,'hot_pd' => $hot_pd,'hot_pd_noi' => $request->hot_pd_noi,'pd_collection' => $pd_collection,'collection_counter' => $collection_counter,'pd_collection_noi' => $request->pd_collection_noi,'before_footer_infobox' => $before_footer_infobox,'inv_diff_invoice_heading' => $inv_diff_invoice_heading,'inv_invoice_heading' => $request->inv_invoice_heading,'auto_signature_inv' => $auto_signature_inv,'inv_invoice_email' => $request->inv_invoice_email,'inv_invoice_address' => $request->inv_invoice_address,'inv_invoice_logo' =>  $image_name];
+        $option_arr += ['pageloader' => $pageloader,'slider'=> $slider,'product_types'=> $product_types,'product_types_counter' => $product_types_counter,'pd_type_noi' => $request->pd_type_noi,'brands' => $brands,'brands_counter'=> $brands_counter,'pd_brands_noi' => $request->pd_brands_noi,'new_pd' => $new_pd,'new_pd_noi' => $request->new_pd_noi,'hot_pd' => $hot_pd,'hot_pd_noi' => $request->hot_pd_noi,'pd_collection' => $pd_collection,'collection_counter' => $collection_counter,'pd_collection_noi' => $request->pd_collection_noi,'before_footer_infobox' => $before_footer_infobox,'inv_diff_invoice_heading' => $inv_diff_invoice_heading,'inv_invoice_heading' => $request->inv_invoice_heading,'auto_signature_inv' => $auto_signature_inv,'inv_invoice_email' => $request->inv_invoice_email,'inv_invoice_address' => $request->inv_invoice_address,'inv_invoice_logo' =>  $image_name,'inv_invoice_phone'=> $request->inv_invoice_phone];
 
         $g_opt = GeneralOption::findOrFail($id);
         $g_opt->options = $option_arr;

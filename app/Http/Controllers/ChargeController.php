@@ -9,6 +9,10 @@ use App\Http\Requests\ChargeUpdateRequest;
 
 class ChargeController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth:admin');
+    }
+    
     public function index(){
         $charges = Charge::first();
         return view('admin.charge.index',compact('charges'));

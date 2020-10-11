@@ -22,6 +22,10 @@ use Illuminate\Support\Facades\Storage;
 class SaleController extends Controller
 {
 
+    public function __construct(){
+        $this->middleware('auth:admin');
+    }
+    
     public function index()
     {
         $sales = Sale::withTrashed('user','prouduct')->take(10)->orderBy('id', 'desc')->get();

@@ -57,8 +57,7 @@ Route::post('shop/cart/checkout/{id}','Frontend\CheckoutPageController@oldcustom
 Route::get('shop/cart/checkout/confirmation/{id}','Frontend\OrderController@confirmation')->name('order.confirmation');
 Route::get('shop/cart/checkout/invoice/{id}','Frontend\OrderInvoiceController@show')->name('orderinvoice.show');
 Route::get('shop/cart/charges','Frontend\CartpageController@charge')->name('cartpage.charge');
-Route::post('cartsession', 'CartSessionController@PushCartSession')->name('session.push');
-Route::get('cartsession', 'CartSessionController@getCartSession')->name('session.getdata');
+
 
 Auth::routes();
 
@@ -91,6 +90,7 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::get('stock/damagehistory/{id}', 'StockController@damagehistory')->name('stock.damagehistory');
     Route::get('stock/freehistory/{id}', 'StockController@freehistory')->name('stock.freehistory');
     Route::get('stock', 'StockController@index')->name('stock.index');
+    Route::post('stock/export', 'StockController@export')->name('stock.export');
     Route::resource('damages','DamageController');
     Route::resource('expense','ExpenseController');
     Route::get('last10expense','ExpenseController@last10')->name('expense.last10');
@@ -115,6 +115,7 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], f
     Route::resource('pos/customers', 'Pos\UserController');
     Route::get('ecom/customers', 'Ecom\UserController@index')->name('ecomcustomer.index');
     Route::resource('product_section/products', 'ProductController');
+    Route::post('product_section/products/export', 'ProductController@export')->name('product.export');
     Route::post('removegalleryimage/{id}', 'ProductController@removegalleryimage')->name('products.removegalleryimage');
     Route::resource('product_section/sizes', 'SizeController');
     Route::resource('product_section/categories', 'CategoryController');
@@ -157,6 +158,7 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], f
     Route::post('report/pos/divisiowisenreport/result/pdf', 'ReportController@pdfDivisionReportResult')->name('report.pdfdivisionreportresult');
     Route::get('report/stockreport', 'StockController@stockreport')->name('stockreport.report');
     Route::post('report/stockreport', 'StockController@stockreportshow')->name('stockreport.show');
+    Route::post('report/stockreport/pdf', 'StockController@stockreportpdf')->name('stockreport.pdf');
     Route::get('report/ecom/ecomuserstatement', 'ReportController@ecomUserStatement')->name('report.ecomuserstatement');
     Route::post('report/ecom/ecomuserstatement', 'ReportController@showEcomUserstatement')->name('report.showecomuserstatement');
     Route::post('report/ecom/ecomuserstatement/pdf', 'ReportController@pdfEcomUserstatement')->name('report.pdfcomuserstatement');

@@ -196,6 +196,10 @@
                 <td>Invoice Email</td>
             <td><input type="email" class="form-control" id="inv_invoice_email" name="inv_invoice_email"  value="{{$g_opt_value['inv_invoice_email']}}"></td>
               </tr>
+              <tr class="diff_inv_input">
+                <td>Invoice Phone</td>
+            <td><input type="text" class="form-control" id="inv_invoice_phone" name="inv_invoice_phone"  value="{{$g_opt_value['inv_invoice_phone']}}"></td>
+              </tr>
 
               <tr class="diff_inv_input">
                 <td>Invoice Address</td>

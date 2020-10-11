@@ -96,6 +96,15 @@
 
                 </tbody>
               </table>
+              <div class="mt-5 float-right">
+                <form action="{{route('stockreport.pdf')}}" method="POST">
+                  @csrf
+                    <input type="hidden" name="start" value="{{$request->start}}">
+                    <input type="hidden" name="end" value="{{$request->end}}">
+                    <button type="submit" class="btn btn-danger">Export As Pdf</button>
+                </form>
+              </div>
+              
 
             </div>
         </div>
@@ -122,13 +131,7 @@
 <script>
 $("#start").flatpickr({dateFormat: 'Y-m-d'});
 $("#end").flatpickr({dateFormat: 'Y-m-d'});
-$('#jq_datatables').DataTable({
-  "order": [ [1, 'asc'] ],
-    "fnRowCallback" : function(nRow, aData, iDisplayIndex){
-                $("td:first", nRow).html(iDisplayIndex +1);
-               return nRow;
-    },
-});
+$('#jq_datatables').DataTable();
 </script>
 
 @endpush

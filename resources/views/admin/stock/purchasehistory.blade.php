@@ -81,12 +81,7 @@
 <script src="{{asset('public/assets/js/datatables.min.js')}}"></script>
 <script src="{{asset('public/assets/js/dataTables.bootstrap4.min.js')}}"></script>
 <script>
-$('#jq_datatables').DataTable({
-    "fnRowCallback" : function(nRow, aData, iDisplayIndex){
-                $("td:first", nRow).html(iDisplayIndex +1);
-               return nRow;
-    },
-});
+$('#jq_datatables').DataTable();
 </script>
 @endpush
 

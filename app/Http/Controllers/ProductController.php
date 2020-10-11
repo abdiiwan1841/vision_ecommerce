@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use PDF;
 use Session;
 use App\Size;
 use App\Tags;
@@ -9,6 +10,7 @@ use App\Product;
 use App\Category;
 use Carbon\Carbon;
 use App\Subcategory;
+use App\GeneralOption;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
@@ -21,14 +23,9 @@ use Symfony\Component\Console\Input\Input;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
- 
-
+    public function __construct(){
+        $this->middleware('auth:admin');
+    }
 
     public function index()
     {
@@ -340,5 +337,13 @@ class ProductController extends Controller
         Toastr::success('Successfully ! Product Transfer To Ecommerce Module', 'success');
         return redirect()->back();
 
+    }
+
+    public function export(Request $request){
+        $general_opt = GeneralOption::first();
+        $general_opt_value = json_decode($general_opt->options, true);
+        $products = Product::all();
+        $pdf = PDF::loadView('products.productexport',compact('products','general_opt_value'));
+        return $pdf->download('Product Export.'.now().'.pdf');
     }
 }

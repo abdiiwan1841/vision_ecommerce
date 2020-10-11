@@ -27,7 +27,9 @@ use Illuminate\Support\Facades\Storage;
 class ReportController extends Controller
 {
 
-
+    public function __construct(){
+        $this->middleware('auth:admin');
+    }
 
     public function date_sort($a, $b) {
         return strtotime($a['date']) - strtotime($b['date']);
