@@ -8,15 +8,15 @@
 	<div class="card">
     <div class="card-header">
       <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-4">
           <h5 class="card-title text-left">PRODUCTS</h5>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-8">
         <form action="{{route('product.export')}}" style="display: inline;float:right;margin: 0 5px;" method="POST">
             @csrf
-            <button type="submit" class="btn btn-success btn-sm">Export</button>
+            <button type="submit" class="btn btn-success btn-sm">Export Price List</button>
           </form>
-        <a href="{{route('products.create')}}" class="btn btn-sm btn-info float-right"><i class="fas fa-plus">ADD NEW PRODUCT</i></a>
+        <a href="{{route('products.create')}}" class="btn btn-sm btn-info float-right"><i class="fas fa-plus">ADD NEW</i></a>
         </div>
       </div>
     </div>

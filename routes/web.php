@@ -113,6 +113,7 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
 Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], function(){
     Route::resource('suppliersection/supplierdue', 'SupplierdueController');
     Route::resource('pos/customers', 'Pos\UserController');
+    Route::post('pos/customers/export', 'Pos\UserController@export')->name('user.export');
     Route::get('ecom/customers', 'Ecom\UserController@index')->name('ecomcustomer.index');
     Route::resource('product_section/products', 'ProductController');
     Route::post('product_section/products/export', 'ProductController@export')->name('product.export');

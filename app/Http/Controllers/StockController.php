@@ -214,7 +214,7 @@ class StockController extends Controller
         }
         
     $pdf = PDF::loadView('admin.stock.stockexport',compact('stock','general_opt_value'));
-    return $pdf->download('Stock Report.pdf');
+    return $pdf->download('Stock Report'.time().'.pdf');
     }
 
 

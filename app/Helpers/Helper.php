@@ -81,10 +81,10 @@ function delivereyMode($arg){
 }
 
 function CustomerSection($arg){
-    if($arg === 1){
-        return '<span class="badge badge-warning">WholeSale</span>';
+    if($arg === 'Cosmetics'){
+        return '<span class="badge badge-danger">'.$arg.'</span>';
     }else{
-        return '<span class="badge badge-danger">Cosmetics</span>';
+        return '<span class="badge badge-warning">'.$arg.'</span>';
     }
 }
 function VisionSmsResponse($response){

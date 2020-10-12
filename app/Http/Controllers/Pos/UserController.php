@@ -1,13 +1,14 @@
 <?php
 
 namespace App\Http\Controllers\Pos;
-
+use PDF;
 use Session;
 use App\User;
 use App\Product;
 use App\Section;
 use App\District;
 use App\Division;
+use App\GeneralOption;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
@@ -169,5 +170,13 @@ class UserController extends Controller
         $user->save();
         Session::flash('success','User Deleted successfully');
         return redirect(route('customers.index'));
+    }
+
+    public function export(Request $request){
+        $general_opt = GeneralOption::first();
+        $general_opt_value = json_decode($general_opt->options, true);
+        $customers = User::where('user_type','pos')->get();
+        $pdf = PDF::loadView('pos.user.export',compact('customers','general_opt_value'));
+        return $pdf->download('Customer Export'.time().'.pdf');
     }
 }

@@ -11,6 +11,10 @@
           <h5 class="card-title">Inventory Customer </h5>
         </div>
         <div class="col-lg-6 text-right">
+        <form action="{{route('user.export')}}" method="POST" style="display: inline">
+            @csrf
+            <button type="submit" class="btn btn-success btn-sm">Export</button>
+        </form>
           <a  href="{{route('customers.create')}}" class="btn btn-info btn-sm">+ Add New Customer</a>
         </div>
         
@@ -42,7 +46,7 @@
               <td>{{$customer->name}}</td>
               <td>{{$customer->phone}}</td>
               <td>{{$customer->address}}</td>
-              <td>{!!CustomerSection($customer->section_id)!!}</td>
+              <td>{!!CustomerSection($customer->section->name)!!}</td>
                 
             <td style="width: 100px;">
             <a href="{{route('customers.edit',$customer['id'])}}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>
