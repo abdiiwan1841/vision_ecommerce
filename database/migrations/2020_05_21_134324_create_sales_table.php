@@ -27,6 +27,9 @@ class CreateSalesTable extends Migration
             $table->boolean('edited')->default(0);
             $table->integer('delivery_marked_by')->nullable();
             $table->text('deliveryinfo')->nullable();
+            $table->boolean('is_condition')->default(0);
+            $table->float('condition_amount',16,2)->nullable();
+            $table->dateTime('delivered_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

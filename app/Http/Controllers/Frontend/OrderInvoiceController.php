@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Order;
 use App\Company;
+use Carbon\Carbon;
 use App\Deliveryinfo;
 use Illuminate\Http\Request;
 use LaravelDaily\Invoices\Invoice;
@@ -38,7 +39,7 @@ class OrderInvoiceController extends Controller
             'phone'          => $order->user->phone,
             'address'          => $order->user->address,
             'custom_fields' => [
-                'email' => $order->user->email,
+                'email' =>  ''//$order->user->email,
             ],
         ]);
 
@@ -50,7 +51,7 @@ class OrderInvoiceController extends Controller
 
 
         
-        $invoice = Invoice::make('ORDER ID #'.$order->id)
+        $invoice = Invoice::make('ORDER ID #'.now()->year.$order->id)
             ->series('ECOM')
             ->sequence($order->invoice_id)
             ->buyer($customer)

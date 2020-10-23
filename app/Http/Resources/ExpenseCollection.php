@@ -22,6 +22,7 @@ class ExpenseCollection extends ResourceCollection
                     'reasons' => $expense->reasons,
                     'amount' => $expense->amount,
                     'posted_by' => $expense->admin->name,
+                    'expensecategory' => $expense->expensecategory->name,
                     'created_at' => $expense->created_at->format('d-m-Y g:i a'),
                 ];
             })

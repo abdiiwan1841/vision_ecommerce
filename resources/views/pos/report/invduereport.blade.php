@@ -2,33 +2,18 @@
 @section('title','Inventory Divisionwise Statements')
 @section('content')
 
-  <div class="row">
-    <div class="col-lg-12">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-5 col-md-5">
         <div class="card">
             <div class="card-header">
-                Inventory Divisionwise  Due Report
+                 Customer Due Report (Inventory)
             </div>
             <div class="card-body">
-            <form action="{{route('report.divisionreportresult')}}" method="POST">
+            <form action="{{route('report.duereportresult')}}" method="POST">
               @csrf
                 <div class="row">
-                  <div class="col-lg-4">
-                      <div class="form-group">
-                        <span>Division : </span>
-                      </div>
-                      <div class="form-group @error('division') is-invalid @enderror">
-                        <select data-placeholder="Select a Division" name="division" id="division" class="form-control">
-                          <option></option>
-                          @foreach ($divisions as $division)
-                            <option value="{{$division->id}}" @if (old('division') == $division->id) selected  @endif>{{$division->name}}</option>
-                          @endforeach
-                        </select>
-                        @error('division')
-                        <small class="form-error">{{ $message }}</small>
-                        @enderror
-                      </div>
-                  </div>
-                  <div class="col-lg-3">
+
+                  <div class="col-12">
                     <div class="form-group">
                       <span>Start Date : </span>
                     </div>
@@ -40,7 +25,7 @@
                     </div>
                   </div>
 
-                  <div class="col-lg-3">
+                  <div class="col-lg-12">
                     <div class="form-group">
                       <span>End Date : </span>
                     </div>
@@ -51,9 +36,26 @@
                       @enderror
                     </div>
                   </div>
-                  <div class="col-lg-2">
+                  <div class="col-lg-12">
+                    <div class="form-group">
+                      <span>Filter</span>
+                    </div>
+                    <div class="form-group">
+                      <select name="section" id="section" class="form-control @error('section') is-invalid @enderror">
+                        <option value="all">All</option>
+                        @foreach ($sections as $item)
+                      <option value="{{$item->id}}">{{$item->name}}</option>
+                        @endforeach
+                      </select>
+                      @error('section')
+                          <small class="form-error">{{ $message }}</small>
+                          @enderror
+                    </div>
+                  </div>
+
+                  <div class="col-lg-12">
                     <div style="margin-top: 40px;">
-                      <button type="submit" class="btn btn-info">submit</button>
+                      <button type="submit" class="btn btn-block btn-info">submit</button>
                     </div>
                    
                   </div>

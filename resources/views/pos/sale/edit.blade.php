@@ -1,5 +1,5 @@
 @extends('layouts.adminlayout')
-@section('title','Edit Inventory Sales')
+@section('title','Create Inventory Sales')
 @section('content')
 
   <div class="row">
@@ -9,7 +9,7 @@
           <div class="row">
             <div class="col-lg-4"><a href="{{route('sale.index')}}" class="btn btn-sm btn-warning"><i class="fa fa-angle-left"></i> back</a></div>
             <div class="col-lg-8">
-               <strong class="float-right">EDIT SALES INVOICE - # {{$sale->id}}</strong> 
+               <strong class="float-right">CREATE SALES INVOICE</strong> 
             </div>
           </div>
           <hr>
@@ -17,7 +17,7 @@
 
             <div class="col-lg-4">
               <div class="form-group">
-                <label for="sales_date">Date <button onclick="changeDate()" class="btn btn-link">(change)</button></label>
+                <label for="sales_date">Date</label>
                 @php
                     $mytime = Carbon\Carbon::now();
                 @endphp
@@ -25,11 +25,13 @@
                 <div class="date_err"></div>
               </div>
 
+              
+
 
               <div class="form-group">
                 <label for="user">Customer </label>
-                <select data-placeholder="-select user-" class="js-example-responsive" name="user" id="user" class="form-control">
-                <option></option>
+                <select  class="js-example-responsive" name="user" id="user" class="form-control">
+                
                  
                   @foreach ($users as $user)
                 <option value="{{$user->id}}">{{$user->name}}</option>    
@@ -39,6 +41,8 @@
                 <div class="user_err err_form"></div>
                 
               </div>
+
+              
               
             
           </div>
@@ -57,8 +61,9 @@
             
             <div class="card-header">
               
-                <span class="float-left"><b>RESET FIELD</b></span> <button type="button" onclick="reset()" id="reset" class="btn btn-success float-right"><i class="fa fa-sync-alt"></i> </button>
-              </div>
+                <span class="float-left"><b>RESET FIELDS</b></span> <button type="button" onclick="reset()" id="reset" class="btn btn-success float-right"><i class="fa fa-sync-alt"></i> </button>
+            </div>
+
               
             </div>
           </div>
@@ -80,14 +85,14 @@
                   @endforeach
 
                 </select>
-                <div class="product_err err_form"></div>
-               
+                <div class="product_err err_form"></div>             
               </div>
               <div class="form-group">
                 <span class="text-center" id="selected-product-info"></span>
               </div>
 
             </div>
+
 
             <div class="col-lg-2">
               <div class="form-group">
@@ -96,28 +101,27 @@
                 <div class="qty_err"></div>
               </div>
             </div>
-
         
-            <div class="col-lg-2">
+                <div class="col-lg-2 col-md-2">
                   
-              <div class="form-group">
-                <label for="price">Price</label>
-                <input type="number" class="form-control" name="price" id="price" placeholder="Enter Price" >
-                <div class="price_err"></div>
-              </div>
-              
-             
-            </div>
+                  <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" class="form-control" name="price" id="price" placeholder="Enter Price" >
+                    <div class="price_err"></div>
+                  </div>
+                  
+                 
+                </div>
 
-            
-            
-            <div class="col-lg-2">
-              <div class="form-group">
-                <label for="qty">Free (optional)</label>
-                <input type="number" class="form-control" name="free" id="free" placeholder="Enter Free" value="0">
-                <div class="free_err"></div>
-              </div>
-            </div>
+               
+                
+                <div class="col-lg-2">
+                  <div class="form-group">
+                    <label for="qty">Free (optional)</label>
+                    <input type="number" class="form-control" name="free" id="free" placeholder="Enter Free" value="0">
+                    <div class="free_err"></div>
+                  </div>
+                </div>
                 <div class="col-lg-2">
                   <div style="margin-top: 31px">
                     <button type="button"  class="btn btn-warning  add-to-cart">ADD <i class="fa fa-plus"></i></button>
@@ -137,15 +141,9 @@
     <div class="col-lg-12">
       <hr>
       <div class="p_detail_wrapper table-responsive">
-      <h3 class="text-center">SALES INVOICE #{{$sale->id}}</h3>
+        <h3 class="text-center">SALES INVOICE</h3>
         <h5 class="date"></h5> <br>
-        <div class="row">
-            <div class="col-lg-6">
-                <div id="customer-info">
-
-            </div>
-         </div>
-    </div> <br><br>
+      <br><br>
     <div class="table-responsive">
       <table class="table table-bordered table-striped">
         <thead class="table-dark">
@@ -155,6 +153,7 @@
             <td>Image</td>
             <td>Qty</td>
             <td>Price</td>
+            <td>Size</td>
             <td>Free</td>
             <td>Total</td>
             <td>Action</td>
@@ -168,7 +167,20 @@
       </table>
       </div>
       <div class="row">
-      <div class="col-lg-7"></div>
+      <div class="col-lg-7 mt-3">
+        <div style="border: 1px solid #ddd;padding: 30px;border-radius: 10px">
+          <h3>Is Condition Booking</h3>
+          <div class="onoffswitch">
+            <input type="checkbox"  class="onoffswitch-checkbox" id="is_condition" value="1" @if($sale->is_condition == true) checked  @endif>
+            <label class="onoffswitch-label" for="is_condition">
+                <span class="onoffswitch-inner"></span>
+                <span class="onoffswitch-switch"></span>
+            </label>
+        </div>
+         
+          <input type="text" class="form-control mt-3" id="condition_amount" placeholder="Enter Condition Booking Amount" value="{{$sale->condition_amount}}">
+      </div>
+      </div>
       <div class="col-lg-5" id="amount-info">
         
         <table class="table table-bordered">
@@ -179,7 +191,7 @@
           
           <tr>
             <td>Discount (%) <input type="number" class="form-control tiny-input" id="discount_input" value="0"></td>
-          <td>Discount Amount <input type="text" class="discount form-control" value="{{$sale->discount}}"></td>
+            <td>Discount Amount <input type="text" class="discount form-control" value="{{$sale->discount}}"></td>
           </tr>
           <tr>
             <td>Net Amount</td>
@@ -212,25 +224,21 @@
 
 @push('css')
 <link rel="stylesheet" href="{{asset('public/assets/css/flatpicker.min.css')}}">
+<link rel="stylesheet" href="{{asset('public/assets/css/animate.css')}}">
+<style>
+  #condition_amount{
+    display: none;
+  }
+</style>
 @endpush
 
 @push('js')
+<script src="{{asset('public/assets/js/axios.min.js')}}"></script>
+
+
 <script>
-  //Toater Alert 
-  const Toast = Swal.mixin({
-  toast: true,
-  position: 'top-end',
-  showConfirmButton: false,
-  timer: 3000,
-  timerProgressBar: true,
-  onOpen: (toast) => {
-    toast.addEventListener('mouseenter', Swal.stopTimer)
-    toast.addEventListener('mouseleave', Swal.resumeTimer)
-  }
-});
-function changeDate(){
-  $("#sales_date").attr('disabled',false);
-}
+var baseurl = '{{url('/')}}';
+
 
 $.get("{{route('saleinfo.api',$sale->id)}}",function(data, status){
   if(status === 'success'){
@@ -252,14 +260,85 @@ $.get("{{route('saleinfo.api',$sale->id)}}",function(data, status){
 
 
 
-function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
 
-var baseuel = '{{url('/')}}';
+  //Toater Alert 
+  const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  onOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+})
+
+if($('#is_condition').prop("checked") == true){
+      $("#condition_amount").show();
+    }
+    else if($(this).prop("checked") == false){
+      $("#condition_amount").val('').hide();
+}
+
+$("#is_condition").change(function(){
+  if($(this).prop("checked") == true){
+      $("#condition_amount").show();
+    }
+    else if($(this).prop("checked") == false){
+      $("#condition_amount").val('').hide();
+    }
+   
+  })
+
+
+
+function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
+var salesupdateurl = '{{route('sale.update',$sale->id)}}';
+function displayCart() {
+  var discount_amount = $(".discount").val();
+  var cartArray = salesCart.listCart();
+  var output = "";
+  var subtotal = salesCart.totalCart();
+  var disc = subtotal*sales_discount;
+  var netamount = subtotal-discount_amount;
+  var g_total = parseFloat(netamount)+parseFloat(carrying_and_loading);
+  var j =1;
+  for(var i in cartArray) {
+    output += "<tr>"
+      + "<td>" + j++ + "</td>"
+      + "<td>" + cartArray[i].o_name + "</td>"
+      + "<td><img style='width: 50px;' src='"+baseurl+"/public/uploads/products/tiny/"+cartArray[i].image+"' class='img-thumbnail' /></td>"
+      + "<td>"+ cartArray[i].count +"</td>"
+      + "<td>" + cartArray[i].price + "</td>"
+      + "<td>" + cartArray[i].product_size + "</td>"
+      + "<td>"+ cartArray[i].free +"</td>"
+      + "<td>" + Math.round(cartArray[i].total) + "</td>" 
+      + "<td><button class='delete-item btn btn-sm badge-danger' data-name=" + cartArray[i].name + ">X</button></td>"
+      +  "</tr>";
+  }
+  $('.show-cart').html(output);
+  $('.total-cart').html(salesCart.totalCart());
+  $('.date').html('Sales Date: '+sessionStorage.sales_date);
+  $('.net-amount').text(Math.round(netamount));
+  $('.discount').text( Math.round(disc));
+  $('.carrying_and_loading').text(carrying_and_loading);
+  $('.grand-total').html(Math.round(g_total));
+}
+
+
+
+
+
 
   function reset(){
-    sessionStorage.clear();
-    $("#reset").html('<div class="fa-1x"><i class="fas fa-spinner fa-spin"></i></div>');
-    location.reload(true);
+    var conf = confirm('Are you sure you want to Reset All the Field?');
+    if(conf == true){
+      sessionStorage.clear();
+      $("#reset").html('<div class="fa-1x"><i class="fas fa-spinner fa-spin"></i></div>');
+      location.reload(true);
+    }
+
   }
 
   $('#product').select2({
@@ -283,12 +362,9 @@ if(sessionStorage.salesCart != undefined){
 }
 
 
-if(sessionStorage.user_id!= undefined || sessionStorage.user_id!= undefined){
+if(sessionStorage.user_id!= undefined || sessionStorage.sales_date!= undefined){
   $("#user").val(sessionStorage.user_id).trigger('change');
   $("#sales_date").val(sessionStorage.sales_date);
-  $("#user").prop("disabled", true);
-  $("#sales_date").prop("readonly", false);
-  $("#sales_date").prop("disabled", true);
 }
 
 
@@ -372,9 +448,9 @@ var salesCart = (function() {
     for(var item in cart) {
       if(cart[item].name === name) {
        Toast.fire({
-        icon: 'error',
-        title: 'Warning! This Product Is Out Of Stock',
-       });
+          icon: 'error',
+          title: 'Oops... This Product Already Added',
+        })
         return;
       }
     }
@@ -499,10 +575,10 @@ $('.add-to-cart').click(function(event) {
   var sales_date = $("#sales_date").val();
   var user_id = $("#user option:selected").val();
   var qnty = $("#qty").val();
+  var free = $("#free").val();
   var o_name = $("#product option:selected").text();
   var nameSlulg =  o_name.replace(/\s/g, '');
   var price = $("#price").val();
-  var free = $("#free").val();
   
   
   
@@ -541,6 +617,8 @@ $('.add-to-cart').click(function(event) {
   }else{
     $("#qty").removeClass('is-invalid');
   }
+
+  
   if(sales_date.length === 0){
     $("#sales_date").addClass('is-invalid');
     $(".date_err").addClass('invalid-feedback').text('Sales Date Field is Required');
@@ -568,7 +646,7 @@ $('.add-to-cart').click(function(event) {
     $(".user_err").text('User Field is Required');
     err.push('user_id');
   }else{
-    $("#user + span").removeClass("err_form");
+    $("#user + span").removeClass("is-invalid");
     $(".user_err").text('');
   }
   if(id.length === 0){
@@ -580,7 +658,7 @@ $('.add-to-cart').click(function(event) {
     $(".product_err").text('');
   }
   if(id.length > 0){
-  $.get(baseuel+"/api/productinfo/"+id, function(data, status){
+  $.get(baseurl+"/api/productinfo/"+id, function(data, status){
     if(status === 'success'){
       var image = data[0].image;
       var current_stock = data[1];
@@ -592,20 +670,21 @@ $('.add-to-cart').click(function(event) {
           title: 'Warning! This Product Is Out Of Stock',
         });
         salesCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size,free);
-
- 
+       
       }else if(current_stock < qnty){
         Toast.fire({
           icon: 'error',
           title: 'Warning! This Product Is Out Of Stock',
         });
         salesCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size,free);
+
     
-    
+   
       }else{
     salesCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size,free);
+    
     }
-       
+
     //Cart session has data
     if(sessionStorage.salesCart.length > 2){
     $(".p_detail_wrapper").show();
@@ -632,9 +711,6 @@ $('.add-to-cart').click(function(event) {
   }
 });
 }
-
-
-
 });
 
 
@@ -646,31 +722,83 @@ $( "#user" ).change(function() {
         
       }
     });
+    sessionStorage.setItem('user_id',user_id);
+    $("#user").attr('disabled',true);
+    
 });
-$( "#product" ).change(function() {
-    var product_id = $("#product option:selected").val();
 
-    if(product_id.length > 0){
 
-        $.get(baseuel+"/api/productinfo/"+product_id, function(data, status){
-          if(status === 'success'){
-              $("#selected-product-info").html('<table class="table table-sm table-hover table-dark"><tr><td> <b>'+data[0].product_name+'</b></td></tr><tr><td><img class="img-responsive img-thumbnail" src="'+baseuel+'/public/uploads/products/tiny/'+data[0].image+'" /></td></tr><tr><td>Trade Price: '+data[0].tp+'</td></tr><tr><tr><td>Ecommerce Price: '+data[0].current_price+'</td></tr><tr><td>Current Stock : '+data[1]+'</td></tr></table>');
 
-            
-            $("#selected-product-info").show();
-            $("#price").val(data[0].tp).removeClass('is-invalid');
-            $("#qty").val('').removeClass('is-invalid');
-            
 
-            
-          }
+$( "#product").change(function() {
+  var rate = 0;
+  let product_id = $("#product option:selected").val();
+  $("#product + span").removeClass("is-invalid");
+  $(".product_err").text('');
+
+  //if id found
+  if(product_id.length > 0){
+  let current_user_id = $("#user option:selected").val();
+  function getProductInfo() {
+    return axios.get(baseurl+"/api/productinfo/"+product_id);
+  }
+  function getUserInfo() {
+    return axios.get(baseurl+"/api/userinfo/"+current_user_id);
+  }
+
+
+  axios.all([getProductInfo(),getUserInfo()])
+
+  .then(function (response) {
+
+  let productresponse =  JSON.parse(response[0].request.response);
+  let userresponse = JSON.parse(response[1].request.response);
+
+  $("#selected-product-info").html('<table class="table table-sm table-dark table-hover"><tr><td> <b>'+productresponse[0].product_name+'</b></td></tr><tr><td><img class="img-responsive img-thumbnail" src="'+baseurl+'/public/uploads/products/tiny/'+productresponse[0].image+'" /></td></tr><tr><td> Size: '+productresponse[0].size.name+'</td></tr><tr><td>Trade Price: '+productresponse[0].tp+'</td></tr><tr><tr><td>Ecommerce Price: '+productresponse[0].current_price+'</td></tr><tr><td>Current Stock : '+productresponse[1]+'</td></tr></table>');
+  $("#selected-product-info").show();
+  $("#qty").val('').removeClass('is-invalid');
+
+
+
+
+  if(userresponse.pricedata){
+
+  let custompriceinit = JSON.parse(userresponse.pricedata);
+  let pricedata = JSON.parse(custompriceinit);
+
+  pricedata.forEach(function(item, index,arr){
+      if(product_id == item.id){
+        Swal.fire('Special Rate '+item.price+' tk Found','For:  '+userresponse.name+' Product: '+ item.o_name+' Rate : '+item.price,'info');
+        
        
-      });
-
+        rate = item.price;
+      }
      
-      
+  })
+  if(rate > 0){
+    $("#price").val(rate);
+  }else{
+    $("#price").val(productresponse[0].tp);
+  }
+  
+
+  }else{
+    $("#price").val(productresponse[0].tp);
+  }
+
+  })
+
+
+    .catch(function (error) {
+    // handle error
+    console.log(error);
+    })
+
+
+
     }
-   
+    //end product id found
+ 
 
 });
 
@@ -678,6 +806,7 @@ $( "#product" ).change(function() {
 $("#qty").change(function(){
   var qnty = $("#qty").val();
   if(qnty.length === 0){
+    $("#qty").addClass('is-invalid');
     $(".qty_err").addClass('invalid-feedback');
     $(".qty_err").text('Qty Field is Required');
     $(".add-to-cart").prop('disabled', true);
@@ -694,12 +823,30 @@ $("#qty").change(function(){
 }
 });
 
+$("#free").on("input",function(){
+
+  let free = $("#free").val();
+  if(free.length === 0){
+    $("#free").addClass('is-invalid');
+    $(".free_err").addClass('invalid-feedback').text('free Field is Required');
+    $(".add-to-cart").prop('disabled', true);
+  }else if(isNumber(free) == false){
+    $("#free").addClass('is-invalid');
+    $(".free_err").addClass('invalid-feedback').text('Filed Must Be Numeric');
+    $(".add-to-cart").prop('disabled', true);
+  }else{
+    $("#free").removeClass('is-invalid');
+    $(".free_err").removeClass('invalid-feedback').text('');
+    $(".add-to-cart").prop('disabled', false);
+}
+});
+
 $("#price").change(function(){
   var price = $("#price").val();
   if(price.length === 0){
     $("#price").addClass('is-invalid');
     $(".price_err").addClass('invalid-feedback');;
-    $(".price_err").text('Qty Field is Required');
+    $(".price_err").text('Price Field is Required');
     $(".add-to-cart").prop('disabled', true);
   }else if(isNumber(price) == false){
     $("#price").addClass('is-invalid');
@@ -717,22 +864,10 @@ $("#price").change(function(){
 
 
 $("#sales_date").change(function(){
-  var od = $("#sales_date").val();
-  if(od.length === 0){
-    $("#sales_date").addClass('is-invalid');
-    $(".date_err").addClass('invalid-feedback');
-    $(".date_err").text('Date Field is Required');
-  }else{
-    $("#sales_date").removeClass('is-invalid');
-    $(".date_err").removeClass('invalid-feedback');
-    $(".date_err").text('');
-}
+  let sd = $("#sales_date").val();
+  sessionStorage.setItem('sales_date',sd);
+  $("#sales_date").attr('readonly',false).attr('disabled',true);
 });
-
-
-
-
-
 
 
 
@@ -776,6 +911,8 @@ var carrying_and_loading = $('#carrying_and_loading').val();
     displayCart();
   });
 
+
+
   $("#carrying_and_loading").on("input",function(){
       if($('#carrying_and_loading').val() < 1){
         carrying_and_loading =  0;
@@ -796,47 +933,6 @@ var carrying_and_loading = $('#carrying_and_loading').val();
 
 
 
-
-function displayCart() {
-  var discount_amount = $(".discount").val();
-  var cartArray = salesCart.listCart();
-  var baseuel = '{{url('/')}}';
-  var output = "";
-  var subtotal = salesCart.totalCart();
-  var disc = subtotal*sales_discount;
-  var netamount = subtotal-discount_amount;
-  var g_total = parseFloat(netamount)+parseFloat(carrying_and_loading);
-  var j =1;
-  for(var i in cartArray) {
-    output += "<tr>"
-      + "<td>" + j++ + "</td>"
-      + "<td>" + cartArray[i].o_name + "</td>"
-      + "<td><img style='width: 50px;' src='"+baseuel+"/public/uploads/products/tiny/"+cartArray[i].image+"' class='img-thumbnail' /></td>"
-      + "<td>"+ cartArray[i].count +"</td>"
-      + "<td>" + cartArray[i].price + "</td>"
-      + "<td>"+ cartArray[i].free +"</td>"
-      + "<td>" + Math.round(cartArray[i].total) + "</td>" 
-      + "<td><button class='delete-item btn btn-sm badge-danger' data-name=" + cartArray[i].name + ">X</button></td>"
-      +  "</tr>";
-  }
-  $('.show-cart').html(output);
-  $('.total-cart').html(salesCart.totalCart());
-
-  $('.date').html('Sales Date: '+sessionStorage.sales_date);
-  $.get("{{url('/')}}/api/userinfo/"+sessionStorage.user_id, function(data, status){
-      if(status === 'success'){
-        $("#customer-info").html("<b>Name :</b>"+data.name+"</br><b>Address :</b>  "+data.address+"<br><b>Phone :</b> "+data.phone+"<br><b>Email :</b> "+data.email);
-        
-      }
-  });
-  $('.net-amount').text(Math.round(netamount));
-  
-  $('.discount').text( Math.round(disc));
-  $('.carrying_and_loading').text(carrying_and_loading);
-  $('.grand-total').html(Math.round(g_total));
-}
-
-
 // Delete item button
 
 $('.show-cart').on("click", ".delete-item", function(event) {
@@ -849,18 +945,18 @@ $('.show-cart').on("click", ".delete-item", function(event) {
 })
 
 
-// // -1
-// $('.show-cart').on("click", ".minus-item", function(event) {
-//   var name = $(this).data('name')
-//   salesCart.removeItemFromCart(name);
-//   displayCart();
-// })
-// // +1
-// $('.show-cart').on("click", ".plus-item", function(event) {
-//   var name = $(this).data('name')
-//   salesCart.IncrementCart(name);
-//   displayCart();
-// })
+// -1
+$('.show-cart').on("click", ".minus-item", function(event) {
+  var name = $(this).data('name')
+  salesCart.removeItemFromCart(name);
+  displayCart();
+})
+// +1
+$('.show-cart').on("click", ".plus-item", function(event) {
+  var name = $(this).data('name')
+  salesCart.IncrementCart(name);
+  displayCart();
+})
 
 // Item count input
 $('.show-cart').on("change", ".item-count", function(event) {
@@ -870,62 +966,104 @@ $('.show-cart').on("change", ".item-count", function(event) {
   displayCart();
 });
 
-displayCart();
+
+if (sessionStorage.getItem("salesCart") != null) {
+    displayCart()
+}
+
+
+
+function SendSalesDataAxios(discount_amount,carrying_and_loading,is_condition,condition_amount){
+  axios.put(salesupdateurl, {
+        'sales_date' : sessionStorage.sales_date,
+        'user_id' : sessionStorage.user_id,
+        'discount' : discount_amount,
+        'carrying_and_loading' : carrying_and_loading,
+        'is_condition' : is_condition,
+        'condition_amount' : condition_amount,
+        'product' : sessionStorage.salesCart,
+  })
+  .then(function (response) {
+    sessionStorage.clear();
+    window.location = baseurl+'/admin/pos/sale/'+response.request.response
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}
 
 
 // Ajax 
 
 function confirm_sales(){
-  $(document).ready(function () {
-    var discount_amount = $(".discount").val();
- 
+  
    if(sessionStorage.salesCart.length < 3){
       alert('please select a product');
    }else{
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
-    $.ajax({
-          data: {
-            'sales_date' : sessionStorage.sales_date,
-            'user_id' : sessionStorage.user_id,
-            'discount' : discount_amount,
-            'carrying_and_loading' : carrying_and_loading,
-            'product' : sessionStorage.salesCart,
-          },
-          url: "{{route('sale.update',$sale->id)}}",
-          type: "PUT",
-          dataType: 'json',
-          success: function (data) {
-            console.log(data);
-              sessionStorage.clear();
-              var b_url = '{{url('/')}}';
-              window.location = b_url+'/admin/pos/sale/'+data
-              
-          },
-          error: function (data) {
-            console.log(data);
-           sessionStorage.clear();
-           if(data.status == 200){
-              console.log(data.status);
-           }else{
-            
-           var errdata = "";
-           $.each(data.responseJSON.errors, function( key, value ) {
-                    errdata += "<li>"+value+"</li>";
-            });
-            $('#error').html(errdata);
-            $('#error').addClass('alert alert-danger');
-           }
-              
-          }
-      });
+     
+    let discount_amount = $(".discount").val();
+    let condition_amount = $("#condition_amount").val();
+    let is_condition = 0;
+    let conf = false;
+    if($("#is_condition").prop("checked") == true){
+      is_condition = 1;
+      if(condition_amount === ""){
+          Swal.fire({
+                    icon: 'error',
+            title: 'Oops... Condition Booking Amount Must Not be Empty',
+            showClass: {
+              popup: 'animate__animated animate__fadeInDown'
+            },
+            hideClass: {
+              popup: 'animate__animated animate__fadeOutUp'
+            }
+          })
+        return;
+      }else if(isNaN(condition_amount) == true )
+      
+              Swal.fire({
+                icon: 'error',
+                title: 'Condition Booking Amount Must be a Integer Number',
+                showClass: {
+                  popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                  popup: 'animate__animated animate__fadeOutUp'
+                }
+              })
+      
+      else{
+        Swal.fire({
+  title: 'Are you sure? this invoice is courier conditioned and condition booking amount is  '+condition_amount,
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonColor: '#44bd32',
+  cancelButtonColor: '#EA2027',
+  confirmButtonText: 'Yes, Confirm!'
+}).then((result) => {
+    if(!result.dismiss){
+        SendSalesDataAxios(discount_amount,carrying_and_loading,is_condition,condition_amount);
+        $('#confirm-btn').attr('disabled',true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading.....' );
+    }
+  if (result.isConfirmed) {
+    Swal.fire(
+      'Deleted!',
+      'Your file has been deleted.',
+      'success'
+    )
+  }
+});
+      }
+      
+    }else{
+      SendSalesDataAxios(discount_amount,carrying_and_loading,is_condition,condition_amount);
       $('#confirm-btn').attr('disabled',true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading.....' );
     }
-  });
+
+    }
+
+
   
 }
 

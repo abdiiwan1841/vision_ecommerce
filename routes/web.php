@@ -93,6 +93,9 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::post('stock/export', 'StockController@export')->name('stock.export');
     Route::resource('damages','DamageController');
     Route::resource('expense','ExpenseController');
+    Route::get('expensecatlist','ExpenseController@catlist')->name('expensecatlist');
+    Route::resource('expensecategories','ExpenseCategoryController');
+
     Route::get('last10expense','ExpenseController@last10')->name('expense.last10');
     Route::post('expense/datewise','ExpenseController@datewise')->name('expense.datewise');
     Route::get('expense/datewise/{start}/{end}','ExpenseController@datewiseGetMethod')->name('expense.datewisegetmethod');
@@ -154,9 +157,12 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], f
     Route::post('report/supplierdue/pdf', 'ReportController@pdfsupplierdue')->name('report.pdfsupplierdue');
 
 
-    Route::get('report/pos/divisiowisenreport/', 'ReportController@DivisionReport')->name('report.divisionreport');
-    Route::post('report/pos/divisiowisenreport/result', 'ReportController@DivisionReportResult')->name('report.divisionreportresult');
-    Route::post('report/pos/divisiowisenreport/result/pdf', 'ReportController@pdfDivisionReportResult')->name('report.pdfdivisionreportresult');
+    Route::get('report/pos/duereport/', 'ReportController@InvDueReport')->name('report.duereport');
+    Route::post('report/pos/duereport/result', 'ReportController@InvDueReportResult')->name('report.duereportresult');
+    Route::post('report/pos/duereport/pdf', 'ReportController@pdfInvDueReportResult')->name('report.pdfduereportresult');
+
+    
+
     Route::get('report/stockreport', 'StockController@stockreport')->name('stockreport.report');
     Route::post('report/stockreport', 'StockController@stockreportshow')->name('stockreport.show');
     Route::post('report/stockreport/pdf', 'StockController@stockreportpdf')->name('stockreport.pdf');

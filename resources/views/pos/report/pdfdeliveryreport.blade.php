@@ -68,7 +68,7 @@
                              $d_info =  $item['delivery_info'];
                             @endphp
                             
-                            <small>@if(isset($d_info->delivery_date)) Delivert Date: {{$d_info->delivery_date}}  @endif Delivery Mode:{!!delivereyMode($d_info->deliverymode)!!}, @if($d_info->deliverymode === "courier") Courier/Transport Name:{{$d_info->courier_name}}, Booking Amount: {{$d_info->booking_amount}},CN Number: {{$d_info->cn_number}}  Delivered By: {{App\Admin::find($d_info->delivered_by)->name}},Transportation Expense: {{$d_info->transportation_expense}} @endif </small>
+                            <small>@if(isset($d_info->delivery_date)) Delivert Date: {{$d_info->delivery_date}}  @endif Delivery Mode:{!!delivereyMode($d_info->deliverymode)!!},Transportation Expense: {{$d_info->transportation_expense}}, @if($d_info->deliverymode === "courier") Courier/Transport Name:{{$d_info->courier_name}}, Booking Amount: {{$d_info->booking_amount}},CN Number: {{$d_info->cn_number}}  Delivered By: {{App\Admin::find($d_info->delivered_by)->name}}@endif </small>
 
 
                             @endif

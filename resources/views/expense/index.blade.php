@@ -91,6 +91,7 @@
                               <th scope="col">Amount</th>
                               <th scope="col">Reasons</th>
                               <th scope="col">Posted By</th>
+                              <th scope="col">Type</th>
                               <th scope="col">Action</th>
                             </tr>
                           </thead>
@@ -127,6 +128,7 @@
   $("#end").flatpickr({dateFormat: 'Y-m-d'});
 
  var last10expenseurl = '{{route('expense.last10')}}';
+ var expensecategoriesurl = '{{route('expensecatlist')}}';
   var url = '{{url('/')}}';
   sessionStorage.clear();
   $('#user').select2({
@@ -137,6 +139,13 @@ width: '100%',
   last10Expense();
 
   function AdExpense(storeurl){
+    axios.get(expensecategoriesurl)
+  .then(res => {  
+  let  expensecategorydata = res.data;
+  let  expensecatdataoption = "";
+  expensecategorydata.forEach(function(data,key){
+    expensecatdataoption += '<option value="'+data.id+'">'+data.name+'</option>';
+  });
     $("#expenseModalLabel").text('Add New Expense');
     $("#expense-form").html(`  <form id="expense_form">
       <div class="form-group">
@@ -149,6 +158,14 @@ width: '100%',
         <label for="amont">Amount</label>
         <input type="number" class="form-control" placeholder="Enter Amount" name="amount" id="amount">
         <small class="text-danger amount_err"></small>
+    </div>
+    <div class="form-group">
+        <label for="expensecategory_id">Expense Type</label>
+        <select placeholder="Enter Expense Category" name="expensecategory_id" id="expensecategory_id" class="form-control">
+          <option>-Select Expense Type-</option>
+          ${expensecatdataoption}
+        </select>
+        <small class="text-danger expensecategory_id_err"></small>
     </div>
 
     <div class="form-group">
@@ -163,6 +180,9 @@ width: '100%',
 </form>`);
 $("#expense_date").flatpickr({dateFormat: 'Y-m-d'});
     $("#expenseModal").modal('show');
+
+
+  });
   }
 
 
@@ -180,6 +200,7 @@ function last10Expense(){
                       <td>${data.amount}</td>
                       <td>${data.reasons}</td>
                       <td>${data.posted_by} <br><small>At ${data.created_at}</small></td>
+                      <td><span class="badge badge-danger">${data.expensecategory}</span></td>
                       <td><a class="btn btn-warning btn-sm" onclick="EditExpense(${data.id})" href="javascript:void(0)"><i class="fas fa-edit"></i></a></td>
                     </tr>`;
   });
@@ -195,26 +216,57 @@ function last10Expense(){
 
 function EditExpense(id){
     $("#expenseModalLabel").text('Edit Expense');
-    axios.get(url+'/admin/expense/'+id+'/edit')
+
+    function getExpenseInfo() {
+      return axios.get(url+'/admin/expense/'+id+'/edit');
+    }
+
+    function getExpenseCategory() {
+      return  axios.get(expensecategoriesurl);
+    }
+
+    axios.all([getExpenseInfo(),getExpenseCategory()])
     .then(res => {  
-      let data = res.data;
+      let expdata = res[0].data;
+      let ex_cat_data = res[1].data;
+
+    let  expensecatdataoption = "";
+    ex_cat_data.forEach(function(data,key){
+      if(data.id == expdata.expensecategory_id){
+        expensecatdataoption += '<option value="'+data.id+'" selected>'+data.name+'</option>';
+      }else{
+        expensecatdataoption += '<option value="'+data.id+'">'+data.name+'</option>';
+      }
+     
+    });
+
+
       $("#expense-form").html(`<form id="expense_form">
 
 <div class="form-group">
   <label for="expense_date">Date</label>
-  <input type="text" class="form-control" placeholder="Select Date" name="expense_date" value="${data.expense_date}" id="expense_date">
+  <input type="text" class="form-control" placeholder="Select Date" name="expense_date" value="${expdata.expense_date}" id="expense_date">
   <small class="text-danger expense_date_err"></small>
 </div>
 
 <div class="form-group">
   <label for="amont">Amount</label>
-  <input type="number" class="form-control" placeholder="Enter Amount" name="amount" id="amount" value="${data.amount}">
+  <input type="number" class="form-control" placeholder="Enter Amount" name="amount" id="amount" value="${expdata.amount}">
   <small class="text-danger amount_err"></small>
 </div>
 
 <div class="form-group">
+        <label for="expensecategory_id">Expense Type</label>
+        <select placeholder="Enter Expense Category" name="expensecategory_id" id="expensecategory_id" class="form-control">
+          <option>-Select Expense Type-</option>
+          ${expensecatdataoption}
+        </select>
+        <small class="text-danger expensecategory_id_err"></small>
+    </div>
+
+<div class="form-group">
 <label for="reason">Reasons ( <small>Max 30 Charecters Allowed</small>)</label>
-<textarea class="form-control" name="reason" id="reason" placeholder="Enter Expesne Reasons">${data.reasons}</textarea>
+<textarea class="form-control" name="reason" id="reason" placeholder="Enter Expesne Reasons">${expdata.reasons}</textarea>
 
 <small class="text-danger reason_err"></small>
 </div>

@@ -26,13 +26,11 @@ class ProductStoreRequest extends FormRequest
         return [
             'product_name' => 'required|unique:products',
             'image' => 'image',
-            'price' => 'required|numeric',
             'category' => 'required|integer',
             'subcategory' => 'required|integer',
             'brand' => 'required|integer',
             'tags' => 'required',
             'size' => 'required',
-            'description' => 'required',
             'show_in' => 'required',
 
         ];

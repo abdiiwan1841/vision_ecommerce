@@ -87,6 +87,10 @@
                 <div class="col-sm-6">
                   <P>Other Infotmation</P>
                   <table class="table table-bordered">
+                      <tr>
+                        <td>Booking Type</td>
+                        <td>@if($sale->is_condition == true){!!fuc_is_conditioned($sale->is_condition)!!} <span class="badge badge-light">{{$sale->condition_amount}} Tk @else {!!fuc_is_conditioned($sale->is_condition)!!}  @endif </span></td>
+                      </tr>
                     <tr>
                       <td>Customer Division: </td>
                       <td>{{$sale->user->division->name}}</td>

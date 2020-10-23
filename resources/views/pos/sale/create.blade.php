@@ -25,6 +25,8 @@
                 <div class="date_err"></div>
               </div>
 
+              
+
 
               <div class="form-group">
                 <label for="user">Customer </label>
@@ -39,6 +41,8 @@
                 <div class="user_err err_form"></div>
                 
               </div>
+
+              
               
             
           </div>
@@ -58,7 +62,8 @@
             <div class="card-header">
               
                 <span class="float-left"><b>RESET FIELDS</b></span> <button type="button" onclick="reset()" id="reset" class="btn btn-success float-right"><i class="fa fa-sync-alt"></i> </button>
-              </div>
+            </div>
+
               
             </div>
           </div>
@@ -162,7 +167,20 @@
       </table>
       </div>
       <div class="row">
-      <div class="col-lg-7"></div>
+      <div class="col-lg-7 mt-3">
+        <div style="border: 1px solid #ddd;padding: 30px;border-radius: 10px">
+          <h3>Is Condition Booking</h3>
+          <div class="onoffswitch">
+            <input type="checkbox"  class="onoffswitch-checkbox" id="is_condition" value="1">
+            <label class="onoffswitch-label" for="is_condition">
+                <span class="onoffswitch-inner"></span>
+                <span class="onoffswitch-switch"></span>
+            </label>
+        </div>
+         
+          <input type="text" class="form-control mt-3" id="condition_amount" placeholder="Enter Condition Booking Amount">
+      </div>
+      </div>
       <div class="col-lg-5" id="amount-info">
         
         <table class="table table-bordered">
@@ -206,6 +224,12 @@
 
 @push('css')
 <link rel="stylesheet" href="{{asset('public/assets/css/flatpicker.min.css')}}">
+<link rel="stylesheet" href="{{asset('public/assets/css/animate.css')}}">
+<style>
+  #condition_amount{
+    display: none;
+  }
+</style>
 @endpush
 
 @push('js')
@@ -228,6 +252,25 @@ var baseurl = '{{url('/')}}';
     toast.addEventListener('mouseleave', Swal.resumeTimer)
   }
 })
+
+if($('#is_condition').prop("checked") == true){
+      $("#condition_amount").show();
+    }
+    else if($(this).prop("checked") == false){
+      $("#condition_amount").val('').hide();
+}
+
+$("#is_condition").change(function(){
+  if($(this).prop("checked") == true){
+      $("#condition_amount").show();
+    }
+    else if($(this).prop("checked") == false){
+      $("#condition_amount").val('').hide();
+    }
+   
+  })
+
+
 
 function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
 var salestoreurl = '{{route('sale.store')}}';
@@ -269,9 +312,13 @@ function displayCart() {
 
 
   function reset(){
-    sessionStorage.clear();
-    $("#reset").html('<div class="fa-1x"><i class="fas fa-spinner fa-spin"></i></div>');
-    location.reload();
+    var conf = confirm('Are you sure you want to Reset All the Field?');
+    if(conf == true){
+      sessionStorage.clear();
+      $("#reset").html('<div class="fa-1x"><i class="fas fa-spinner fa-spin"></i></div>');
+      location.reload(true);
+    }
+
   }
 
   $('#product').select2({
@@ -915,22 +962,15 @@ if (sessionStorage.getItem("salesCart") != null) {
 }
 
 
-// Ajax 
 
-function confirm_sales(){
-  $(document).ready(function () {
-  var discount_amount = $(".discount").val();
- 
-   if(sessionStorage.salesCart.length < 3){
-      alert('please select a product');
-   }else{
-
-
-    axios.post(salestoreurl, {
+function SendSalesDataAxios(discount_amount,carrying_and_loading,is_condition,condition_amount){
+  axios.post(salestoreurl, {
         'sales_date' : sessionStorage.sales_date,
         'user_id' : sessionStorage.user_id,
         'discount' : discount_amount,
         'carrying_and_loading' : carrying_and_loading,
+        'is_condition' : is_condition,
+        'condition_amount' : condition_amount,
         'product' : sessionStorage.salesCart,
   })
   .then(function (response) {
@@ -941,11 +981,79 @@ function confirm_sales(){
   .catch(function (error) {
     console.log(error);
   });
+}
+
+
+// Ajax 
+
+function confirm_sales(){
+  
+   if(sessionStorage.salesCart.length < 3){
+      alert('please select a product');
+   }else{
+     
+    let discount_amount = $(".discount").val();
+    let condition_amount = $("#condition_amount").val();
+    let is_condition = 0;
+    let conf = false;
+    if($("#is_condition").prop("checked") == true){
+      is_condition = 1;
+      if(condition_amount === ""){
+          Swal.fire({
+                    icon: 'error',
+            title: 'Oops... Condition Booking Amount Must Not be Empty',
+            showClass: {
+              popup: 'animate__animated animate__fadeInDown'
+            },
+            hideClass: {
+              popup: 'animate__animated animate__fadeOutUp'
+            }
+          })
+        return;
+      }else if(isNaN(condition_amount) == true )
+      
+              Swal.fire({
+                icon: 'error',
+                title: 'Condition Booking Amount Must be a Integer Number',
+                showClass: {
+                  popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                  popup: 'animate__animated animate__fadeOutUp'
+                }
+              })
+      
+      else{
+        Swal.fire({
+  title: 'Are you sure? this invoice is courier conditioned and condition booking amount is  '+condition_amount,
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonColor: '#44bd32',
+  cancelButtonColor: '#EA2027',
+  confirmButtonText: 'Yes, Confirm!'
+}).then((result) => {
+    if(!result.dismiss){
+        SendSalesDataAxios(discount_amount,carrying_and_loading,is_condition,condition_amount);
+        $('#confirm-btn').attr('disabled',true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading.....' );
+    }
+  if (result.isConfirmed) {
+    Swal.fire(
+      'Deleted!',
+      'Your file has been deleted.',
+      'success'
+    )
+  }
+});
+      }
+      
+    }else{
+      SendSalesDataAxios(discount_amount,carrying_and_loading,is_condition,condition_amount);
       $('#confirm-btn').attr('disabled',true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading.....' );
     }
 
-    //document ready end
-  });
+    }
+
+
   
 }
 

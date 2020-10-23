@@ -6,56 +6,58 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                Divisionwise  Result
+                Due  Result
             </div>
             <div class="card-body">
               <div class="row">
                 <div class="col-lg-12">
-                  <form action="{{route('report.divisionreportresult')}}" method="POST">
+                  <form action="{{route('report.duereportresult')}}" method="POST">
                     @csrf
                       <div class="row">
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                              <span>Division : </span>
-                            </div>
-                            <div class="form-group @error('division') is-invalid @enderror">
-                              <select data-placeholder="Select a Division" name="division" id="division" class="form-control">
-                                <option></option>
-                                @foreach ($divisions as $division)
-                                  <option value="{{$division->id}}" @if ($request->division == $division->id) selected  @endif>{{$division->name}}</option>
-                                @endforeach
-                              </select>
-                              @error('division')
-                              <small class="form-error">{{ $message }}</small>
-                              @enderror
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
+      
+                        <div class="col-3">
                           <div class="form-group">
                             <span>Start Date : </span>
                           </div>
                           <div class="form-group">
-                          <input type="text" class="form-control @error('start') is-invalid @enderror" name="start" id="start" placeholder="Select Start Date" value="{{$request->start}}">
+                            <input type="text" class="form-control @error('start') is-invalid @enderror" name="start" id="start" placeholder="Select Start Date" value="{{old('start',$request->start)}}">
                                 @error('start')
                                 <small class="form-error">{{ $message }}</small>
                                 @enderror
                           </div>
                         </div>
       
-                        <div class="col-lg-3">
+                        <div class="col-3">
                           <div class="form-group">
                             <span>End Date : </span>
                           </div>
                           <div class="form-group">
-                            <input type="text" class="form-control @error('end') is-invalid @enderror" name="end" id="end" placeholder="Select End Date" value="{{$request->end}}">
+                          <input type="text" class="form-control @error('end') is-invalid @enderror" name="end" id="end" placeholder="Select End Date" value="{{old('end',$request->end)}}">
                             @error('end')
                             <small class="form-error">{{ $message }}</small>
                             @enderror
                           </div>
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-3">
+                          <div class="form-group">
+                            <span>Filter</span>
+                          </div>
+                          <div class="form-group">
+                            <select name="section" id="section" class="form-control @error('section') is-invalid @enderror">
+                              <option value="all">All</option>
+                              @foreach ($sections as $item)
+                            <option value="{{$item->id}}" @if($item->id == $request->section) selected @endif>{{$item->name}}</option>
+                              @endforeach
+                            </select>
+                            @error('section')
+                                <small class="form-error">{{ $message }}</small>
+                                @enderror
+                          </div>
+                        </div>
+      
+                        <div class="col-2">
                           <div style="margin-top: 40px;">
-                            <button type="submit" class="btn btn-info">submit</button>
+                            <button type="submit" class="btn btn-block btn-info">submit</button>
                           </div>
                          
                         </div>
@@ -67,8 +69,7 @@
               <div class="row">
                 <div class="col-lg-12">
                   <div class="statement_table table-responsive">
-                    <h4 style="text-align: center;text-transform: uppercase;padding: 30px 0;font-family:Sans-serif">Division Wise Due Report</h4>
-                    <h4 class="text-center">{{$d_info->name}} Division</h4>
+                    <h4 style="text-align: center;text-transform: uppercase;padding: 30px 0;font-family:Sans-serif">Customer Due Report</h4>
                     <h5 class="text-center mb-5">From {{date("d-M-Y", strtotime($request->start) )}} To {{date("d-M-Y", strtotime($request->end) )}}</h5>
 
                 </div>
@@ -78,6 +79,7 @@
                   <tr style="background: #ddd">
                     <td style="width: 200px" class="align-middle">Name</td>
                     <td style="width: 150px" class="align-middle">Address</td>
+                    <td class="align-middle">Section</td>
                     <td class="align-middle">Prev. Bal</td>
                     <td class="align-middle">P.Due</td>
                     <td class="align-middle">Sales</td>
@@ -85,7 +87,6 @@
                     <td class="align-middle">Return</td>
                     <td class="align-middle">Due</td>
                   </tr>
-
                   @php
                     $total_sales = 0;
                     $total_cash = 0;
@@ -93,8 +94,7 @@
                     $total_p_due = 0;
                   @endphp
 
- 
-                  @foreach ($division_report as $item)
+                  @foreach ($inv_due_report as $item)
                   @php
                   $prev_balance = $item['prev_balance'];
                   $p_due = $item['prevdues'];
@@ -114,6 +114,7 @@
                   <tr>
                     <td class="align-middle"  style="width: 200px">{{$item['customer']}}</td>
                     <td  class="align-middle"style="width: 150px">{{$item['address']}}</td>
+                    <td class="align-middle">{!!CustomerSection($item['section'])!!}</td>
                     <td class="align-middle">{{$prev_balance}}</td>
                     <td class="align-middle">{{$p_due}}</td>
                     <td class="align-middle">{{$sales}}</td>
@@ -132,7 +133,7 @@
                     <table class="table table-bordered table-striped">
                       <tr>
                         <td>Total Customer</td>
-                      <td>{{count($division_report)}}</td>
+                      <td>{{count($inv_due_report)}}</td>
                       </tr>
                       <tr>
                         <td>Total Sales</td>
@@ -154,11 +155,11 @@
                       <tr>
                         <td>Action</td>
                         <td>
-                        <form action="{{route('report.pdfdivisionreportresult')}}" method="POST">
+                        <form action="{{route('report.pdfduereportresult')}}" method="POST">
                             @csrf
                               <input type="hidden" name="end" value="{{$request->end}}">
                               <input type="hidden" name="start" value="{{$request->start}}">
-                              <input type="hidden" name="division" value="{{$request->division}}">
+                              <input type="hidden" name="section" value="{{$request->section}}">
                               <button type="submit" class="btn btn-success">Download PDF</button>
                           </form>
                          

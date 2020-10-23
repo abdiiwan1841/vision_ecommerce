@@ -79,6 +79,15 @@ function delivereyMode($arg){
         return '<span class="badge badge-info">undefined</span>';
     }
 }
+function fuc_is_conditioned($arg){
+    if($arg == 1){
+        return '<span class="badge badge-success">conditioned</span>';
+    }elseif($arg == 0){
+        return '<span class="badge badge-danger">normal</span>';
+    }else{
+        return "";
+    }
+}
 
 function CustomerSection($arg){
     if($arg === 'Cosmetics'){

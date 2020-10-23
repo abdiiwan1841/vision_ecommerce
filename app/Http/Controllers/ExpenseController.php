@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Expense;
+use App\Expensecategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ExpenseCollection;
@@ -41,12 +42,14 @@ class ExpenseController extends Controller
         $this->validate($request,[
             'expense_date' => 'required|date',
             'amount' => 'required|integer',
+            'expensecategory_id' => 'required|integer',
             'reason' => 'required|max:30',
         ]);
         $expense = new Expense;
         $expense->expense_date = $request->expense_date;
         $expense->amount = $request->amount;
         $expense->reasons = $request->reason;
+        $expense->expensecategory_id = $request->expensecategory_id;
         $expense->admin_id = Auth::user()->id;
         $expense->save();
         return "Expense Stored Successfully";
@@ -86,12 +89,14 @@ class ExpenseController extends Controller
         $this->validate($request,[
             'expense_date' => 'required|date',
             'amount' => 'required|integer',
+            'expensecategory_id' => 'required|integer',
             'reason' => 'required|max:30',
         ]);
         $expense = Expense::findOrFail($id);
         $expense->expense_date = $request->expense_date;
         $expense->amount = $request->amount;
         $expense->reasons = $request->reason;
+        $expense->expensecategory_id = $request->expensecategory_id;
         $expense->admin_id = Auth::user()->id;
         $expense->save();
         return "Expense Updated Successfully";
@@ -125,5 +130,9 @@ class ExpenseController extends Controller
         // $request = ['start' => $start, 'end' => $end];
         $expenses = new ExpenseCollection(Expense::whereBetween('expense_date', [$start." 00:00:00", $end." 23:59:59"])->orderBy('expense_date', 'asc')->get());
         return $expenses;
+    }
+
+    public function catlist(){
+        return Expensecategory::all();
     }
 }

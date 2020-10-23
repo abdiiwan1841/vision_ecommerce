@@ -19,8 +19,11 @@ class CreateExpensesTable extends Migration
             $table->string('reasons');
             $table->float('amount',16,2);
             $table->foreignId('admin_id');
+            $table->foreignId('expensecategory_id');
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('admin_id')->references('id')->on('admins');
+            $table->foreign('expensecategory_id')->references('id')->on('expensecategories')->onDelete('cascade');
         });
     }
 

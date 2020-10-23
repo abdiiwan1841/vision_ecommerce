@@ -253,18 +253,7 @@
     
           
   
-          <div class="form-group">
-            <label for="price">Ecommerce Price</label>
-            <input type="text" class="form-control @error('price') is-invalid @enderror" name="price" id="price" placeholder="Enter Price" value="{{old('price')}}" oninput="saveValue(this)" required>
-            @error('price')
-            <small class="form-error">{{ $message }}</small>
-            @enderror
-    
-          </div>
-  
-          
-  
-          
+      
     
           <div class="form-group">
             <label for="description">Product Description</label>
@@ -406,14 +395,14 @@
 
           <div class="form-group">
             <label for="image">Product Image</label>
-          <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="image" >
+          <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="product_image" >
             @error('image')
             <small class="form-error">{{ $message }}</small>
             @enderror
     
           </div>
           <div class="form-group">
-            <img style="padding: 10px;display: none" class="img-thumbnail rounded" src="" id="pd_image" alt="">
+            <img  class="img-thumbnail rounded" src="" id="product_image_show" alt="">
           </div>
 
 
@@ -583,7 +572,7 @@ function ProductimageURL(input) {
     var reader = new FileReader();
     
     reader.onload = function(e) {
-      $('#pd_image').attr('src', e.target.result);
+      $('#product_image_show').attr('src', e.target.result);
     }
     
     reader.readAsDataURL(input.files[0]); // convert to base64 string
@@ -591,8 +580,7 @@ function ProductimageURL(input) {
 }
 
 
-$("#image").change(function() {
-  $('#pd_image').show();
+$("#product_image").change(function() {
   ProductimageURL(this);
 });
 

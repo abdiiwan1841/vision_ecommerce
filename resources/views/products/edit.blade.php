@@ -246,18 +246,7 @@
           </div>
     
           
-  
-          <div class="form-group">
-            <label for="price">Product Price</label>
-            <input type="text" class="form-control @error('price') is-invalid @enderror" name="price" id="price" placeholder="Enter Price" value="{{old('price',$product->current_price)}}" required>
-            @error('price')
-            <small class="form-error">{{ $message }}</small>
-            @enderror
-    
-          </div>
-  
-          
-  
+
           
     
           <div class="form-group">
@@ -407,14 +396,14 @@
 
           <div class="form-group">
             <label for="image">Product Image</label>
-          <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="image">
+          <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="product_image">
             @error('image')
             <small class="form-error">{{ $message }}</small>
             @enderror
     
           </div>
           <div class="form-group">
-          <img style="padding: 10px;e" class="img-thumbnail rounded" src="{{asset('public/uploads/products/thumb/'.$product->image)}}" id="pd_image" alt="">
+          <img style="padding: 10px;" class="img-thumbnail rounded" src="{{asset('public/uploads/products/thumb/'.$product->image)}}" id="product_image_show" alt="">
           </div>
 
           <div class="form-group">
@@ -534,13 +523,12 @@ function addBrand(){
 // Show Current Image On the Form Before Upload
 
 
-
 function ProductimageURL(input) {
   if (input.files && input.files[0]) {
     var reader = new FileReader();
     
     reader.onload = function(e) {
-      $('#pd_image').attr('src', e.target.result);
+      $('#product_image_show').attr('src', e.target.result);
     }
     
     reader.readAsDataURL(input.files[0]); // convert to base64 string
@@ -548,11 +536,9 @@ function ProductimageURL(input) {
 }
 
 
-$("#image").change(function() {
-  $('#pd_image').show();
+$("#product_image").change(function() {
   ProductimageURL(this);
 });
-
 
 
 

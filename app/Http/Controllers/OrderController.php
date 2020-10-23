@@ -318,7 +318,7 @@ class OrderController extends Controller
             'phone'          => $order->user->phone,
             'address'          => $order->user->address,
             'custom_fields' => [
-                'email' => $order->user->email,
+                'email' => null//$order->user->email,
             ],
         ]);
 
@@ -330,7 +330,7 @@ class OrderController extends Controller
 
 
         
-        $invoice = Invoice::make('ORDER ID #'.$order->id)
+        $invoice = Invoice::make('ORDER ID #'.now()->year.$order->id)
             ->series('ECOM')
             ->sequence($order->invoice_id)
             ->buyer($customer)

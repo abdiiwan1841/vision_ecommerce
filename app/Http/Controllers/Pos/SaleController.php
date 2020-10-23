@@ -60,8 +60,10 @@ class SaleController extends Controller
             'user_id' => 'required|numeric',
             'discount' => 'required|numeric',
             'carrying_and_loading' => 'required|numeric',
+            'is_condition' => 'required|numeric',
             'product' => 'required',
         ]);
+
 
         $sendstatus = 1101;
         
@@ -82,6 +84,8 @@ class SaleController extends Controller
         $sales->sales_at = $request->sales_date." ".Carbon::now()->toTimeString();
         $sales->amount = $amount_total;
         $sales->sales_status = 0;
+        $sales->is_condition = $request->is_condition;
+        $sales->condition_amount = $request->condition_amount;
         $sales->provided_by = Auth::user()->name;
         $sales->save();
 
@@ -157,10 +161,12 @@ class SaleController extends Controller
             'user_id' => 'required|numeric',
             'discount' => 'required|numeric',
             'carrying_and_loading' => 'required|numeric',
+            'is_condition' => 'required|numeric',
             'product' => 'required',
         ]);
 
         $sendstatus = 1101;
+        $number = "01700817934";
         
         //Amount calculation
         $products = json_decode($request->product);
@@ -179,6 +185,8 @@ class SaleController extends Controller
         $sale->sales_at = $request->sales_date." ".Carbon::now()->toTimeString();
         $sale->sales_status = 0;
         $sale->approved_by = null;
+        $sale->is_condition = $request->is_condition;
+        $sale->condition_amount = $request->condition_amount;
         $sale->edited = 1;
         $sale->amount = $amount_total;
         $sale->save();
@@ -336,6 +344,8 @@ class SaleController extends Controller
         }else{
             $this->validate($request,[
                 'delivered_by' => 'required',
+                'delivery_date' => 'required|date',
+                'transportation_expense' => 'required|integer',
             ]);
         }
         $text = "";

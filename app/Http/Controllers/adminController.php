@@ -8,6 +8,7 @@ use App\Role;
 use App\Sale;
 use App\User;
 use App\Admin;
+use App\Expense;
 use App\Order;
 use Carbon\Carbon;
 use App\GeneralOption;
@@ -157,18 +158,21 @@ class adminController extends Controller
         $general_opt = GeneralOption::first();
         $general_opt_value = json_decode($general_opt->options, true);
         $today = now()->toDateString();
+        $todays_expense = Expense::whereBetween('expense_date', [$today." 00:00:00", $today." 23:59:59"])->orderBy('expense_date', 'desc')->get();
         $todays_pos_sales = Sale::whereBetween('sales_at', [$today." 00:00:00", $today." 23:59:59"])->orderBy('sales_at', 'desc')->get();
-
         $todays_pos_returns = Returnproduct::where('type','pos')->whereBetween('returned_at', [$today." 00:00:00", $today." 23:59:59"])->orderBy('returned_at', 'desc')->get();
-
         $todays_pos_cash = Cash::whereBetween('received_at', [$today." 00:00:00", $today." 23:59:59"])->orderBy('received_at', 'desc')->get();
         $pending_sales = Sale::where('sales_status',0)->get();
         $pending_cash = Cash::where('status',0)->get();
         $pending_delivery = Sale::where('sales_status',1)->where('delivery_status',0)->get();
         $pending_returns = Returnproduct::where('return_status',0)->get();
         $last_ten_dlv = Sale::where('delivery_status',1)->take(10)->orderBy('id','desc')->get();
-
-        return view('admin.inventorydashboard',compact('todays_pos_sales','todays_pos_cash','todays_pos_returns','pending_sales','general_opt_value','pending_cash','pending_returns','pending_delivery','last_ten_dlv'));
+        $current_month_sale = Sale::whereBetween('sales_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->sum('amount');
+        $current_month_cash = Cash::whereBetween('received_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->sum('amount');
+        $current_month_return = Returnproduct::whereBetween('returned_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->sum('amount');
+        $current_month_expense = Expense::whereBetween('expense_date', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->sum('amount');
+        
+        return view('admin.inventorydashboard',compact('todays_pos_sales','todays_pos_cash','todays_pos_returns','pending_sales','general_opt_value','pending_cash','pending_returns','pending_delivery','last_ten_dlv','current_month_sale','current_month_cash','current_month_return','current_month_expense','todays_expense'));
     }
 
     public function inv_pendingcash($id){

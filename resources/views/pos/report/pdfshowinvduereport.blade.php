@@ -23,10 +23,11 @@
 </head>
 <body style="background: #fff;font-size: 12px;">
               <div style="width: 50%;margin: 0 auto">
-                <h5 style="text-align: center;font-family: Tahoma,sans-serif">Division Wise Due Report</h5>
+                
+                <h5 style="text-align: center;font-family: Tahoma,sans-serif">Customer Due Report </h5>
                 @if($general_opt_value['inv_diff_invoice_heading'] == 1)
                 <p style="font-weight: bold;text-align: center">{{$general_opt_value['inv_invoice_heading']}}</p>
-                <p  style="text-align: center;font-size: 11px">{{$general_opt_value['inv_invoice_address']}} <br> <b>Email :</b>  {{$general_opt_value['inv_invoice_email']}}</p>
+                <p  style="text-align: center;font-size: 11px">{{$general_opt_value['inv_invoice_address']}} <br> <b>Email :</b>  {{$general_opt_value['inv_invoice_email']}} <br> <b>Phone :</b>  {{$general_opt_value['inv_invoice_phone']}}</p>
                 @else
                 <p style="font-weight: bold;text-align: center">{{$CompanyInfo->company_name}}</p>
                 <p style="text-align: center;font-size: 11px">{{$CompanyInfo->address}} <br> <b>Email :</b>  {{$CompanyInfo->email}} <br> <b>Phone:</b>  {{$CompanyInfo->phone}}</p>
@@ -39,13 +40,14 @@
 
 
                   <div class="statement_table table-responsive">
-                    <p class="text-center"><b>{{$d_info->name}} Division</b></p>
                     <p style="text-align: center;margin-bottom: 10px;font-weight: bold">From {{date("d-M-Y", strtotime($request->start) )}} To {{date("d-M-Y", strtotime($request->end) )}}</p>
-                    <table class="table table-sm table-bordered">
+
+                    <table class="table table-bordered table-sm">
        
                       <tr style="background: #ddd">
-                        <td style="width: 120px" class="align-middle">Name</td>
-                        <td style="width: 120px" class="align-middle">Address</td>
+                        <td  class="align-middle">Name</td>
+                        <td  class="align-middle">Address</td>
+                        <td class="align-middle">Section</td>
                         <td class="align-middle">Prev. Bal</td>
                         <td class="align-middle">P.Due</td>
                         <td class="align-middle">Sales</td>
@@ -53,7 +55,6 @@
                         <td class="align-middle">Return</td>
                         <td class="align-middle">Due</td>
                       </tr>
-    
                       @php
                         $total_sales = 0;
                         $total_cash = 0;
@@ -61,8 +62,7 @@
                         $total_p_due = 0;
                       @endphp
     
-     
-                      @foreach ($division_report as $item)
+                      @foreach ($inv_due_report as $item)
                       @php
                       $prev_balance = $item['prev_balance'];
                       $p_due = $item['prevdues'];
@@ -80,8 +80,9 @@
                       @endphp
                       
                       <tr>
-                        <td class="align-middle"  style="width: 120px">{{$item['customer']}}</td>
-                        <td  class="align-middle"style="width: 120px">{{$item['address']}}</td>
+                        <td class="align-middle">{{$item['customer']}}</td>
+                        <td  class="align-middle">{{$item['address']}}</td>
+                        <td class="align-middle">{!!CustomerSection($item['section'])!!}</td>
                         <td class="align-middle">{{$prev_balance}}</td>
                         <td class="align-middle">{{$p_due}}</td>
                         <td class="align-middle">{{$sales}}</td>
@@ -93,12 +94,13 @@
     
     
                     </table>
+
                 </div>
                 <div class="amount-box" style="width: 40%;margin-left: 60%">
                   <table class="table table-sm">
                     <tr>
                       <td>Total Customer</td>
-                    <td>{{count($division_report)}}</td>
+                    <td>{{count($inv_due_report)}}</td>
                     </tr>
                     <tr>
                       <td>Total Sales</td>

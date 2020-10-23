@@ -41,7 +41,7 @@
 @endphp
 
 <div class="row">
-	<div class="col-lg-4">
+	<div class="col-12 col-md-4 col-lg-4" style="overflow: hidden">
 		<div class="card px-3 py-3 mb-3">
 			<div class="text-center">
 				@if($general_opt_value['inv_diff_invoice_heading'] == 1)
@@ -60,17 +60,17 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-8">
+	<div class="col-12 col-md-8 col-lg-8">
 
 	<div class="row">
-	<div class="col-lg-4">
+	<div class="col-6 col-md-4 col-lg-4">
 		<!-- small box -->
 		<div class="small-box bg-info">
 		  <div class="inner">
 		
 		  <h3 id="sales"></h3>
 
-			<p>Todays Sales Amount</p>
+			<p><b>Todays Sales Amount</b></p>
 		  </div>
 		  <div class="icon">
 			<i class="fas fa-balance-scale-right"></i>
@@ -81,13 +81,13 @@
 
 
 
-	  <div class="col-lg-4">
+	  <div class="col-6 col-md-4 col-lg-4">
 		<!-- small box -->
 		<div class="small-box bg-light-green">
 		  <div class="inner">
 			<h3 id="cashes"></h3>
 
-			<p>Todays Cash Amount</p>
+			<p><b>Todays Cash Amount</b></p>
 		  </div>
 		  <div class="icon">
 			<i class="fas fa-money-bill-alt"></i>
@@ -96,13 +96,13 @@
 		</div>
 	  </div>
 
-	  <div class="col-lg-4">
+	  <div class="col-6 col-md-4 col-lg-4">
 		<!-- small box -->
 		<div class="small-box bg-danger">
 		  <div class="inner">
 			<h3 id="returns"></h3>
 
-			<p>Todays Return Amount</p>
+			<p><b>Todays Return</b></p>
 		  </div>
 		  <div class="icon">
 			<i class="fas fa-undo-alt"></i>
@@ -111,40 +111,113 @@
 		</div>
 	  </div>
 
+	  <div class="col-6 col-md-4 col-lg-4">
+		<!-- small box -->
+		<div class="small-box bg-dark">
+		  <div class="inner">
+			<h3 id="todays_expense">0</h3>
+
+			<p><b>Todays Expense</b></p>
+		  </div>
+		  <div class="icon">
+			<i class="fas fa-hand-holding-usd"></i>
+		  </div>
+		  
+		</div>
+	  </div>
+
+	  <div class="col-6 col-md-4 col-lg-4">
+		<!-- small box -->
+		<div class="small-box bg-warning">
+		  <div class="inner">
+		
+		  <h3>{{$current_month_sale}}</h3>
+
+		  <span class="text-white"  >{{\Carbon\Carbon::now()->format('F')}} Sales upto <h5 class="badge badge-dark">{{\Carbon\Carbon::now()->format('d-m-Y g:i a')}} </h5></span>
+		  </div>
+		  
+		  
+		</div>
+	  </div>
+
+	  <div class="col-6 col-md-4 col-lg-4">
+		<!-- small box -->
+		<div class="small-box" style="background: #78e08f">
+		  <div class="inner">
+		
+		  <h3>{{$current_month_cash}}</h3>
+
+		  <span class="text-white">{{\Carbon\Carbon::now()->format('F')}} Cashes  upto <h5 class="badge badge-danger">{{\Carbon\Carbon::now()->format('d-m-Y g:i a')}} </h5> </span>
+		  </div>
+		  
+		  
+		</div>
+	  </div>
+
+	  
+	  <div class="col-6 col-md-4 col-lg-4">
+		<!-- small box -->
+		<div class="small-box" style="background: #B53471">
+		  <div class="inner">
+		
+		  <h3>{{$current_month_return}}</h3>
+
+			<span class="text-white">{{\Carbon\Carbon::now()->format('F')}} Returns upto <h5 class="badge badge-warning">{{\Carbon\Carbon::now()->format('d-m-Y g:i a')}} </h5></span>
+		  </div>
+		  
+		  
+		</div>
+	  </div>
+
+	  <div class="col-6 col-md-4 col-lg-4">
+		<!-- small box -->
+		<div class="small-box" style="background: #747d8c">
+		  <div class="inner">
+		  <h3>{{$current_month_expense}}</h3>
+
+			<p><b>{{\Carbon\Carbon::now()->format('F')}} Expenses</b></p>
+		  </div>
+		  <div class="icon">
+			<i class="fas fa-hand-holding-usd"></i>
+		  </div>
+		  
+		</div>
+	  </div>
+
 
 	  
 
-	<div class="col-lg-4">
-		<div class="info-box-4 hover-expand-effect">
+	<div class="col-6 col-md-4 col-lg-4">
+		<div class="info-box-4 hover-expand-effect" style="background: #EA2027">
 			<div class="icon">
 				<i class="fas fa-undo-alt"></i>
 			</div>
 			<div class="content">
-				<div class="text">Toral Return Count</div>
-			<div class="number">{{count($todays_pos_returns)}}</div>
+				<div class="text text-white">Total Return Count</div>
+			<div class="number text-white">{{count($todays_pos_returns)}}</div>
 			</div>
 		</div>
 	</div>
 
-	<div class="col-lg-4">
-		<div class="info-box-4 hover-expand-effect">
+	<div class="col-6 col-md-4 col-lg-4">
+		<div class="info-box-4 hover-expand-effect" style="background: #A3CB38">
 			<div class="icon">
 				<i class="fas fa-balance-scale-right"></i>
 			</div>
 			<div class="content">
-				<div class="text">Toral Sales Count</div>
-			<div class="number">{{count($todays_pos_sales)}}</div>
+				<div class="text text-white">Total Sales Count</div>
+			<div class="number text-white">{{count($todays_pos_sales)}}</div>
 			</div>
 		</div>
 	</div>
 
-	<div class="col-lg-4">
+	<div class="col-6 col-md-4 col-lg-4">
 		<div class="info-box-4 hover-expand-effect">
 			<div class="icon">
 				<i class="fas fa-money-bill-alt"></i>
 			</div>
 			<div class="content">
-				<div class="text">Toral Cash Count</div>
+				<div class="text">Total Cash Count</div>
 			<div class="number">{{count($todays_pos_cash)}}</div>
 			</div>
 		</div>
@@ -169,7 +242,7 @@
 	
 		@if(count($pending_sales) > 0)
 		  
-		<table class="table table-sm table-bordered" style="font-size: 14px;">
+		<table class="table table-sm table-bordered table-striped" style="font-size: 14px;">
 		  <thead class="thead-light">
 			<tr>
 			  <th class="align-middle">Sl</th>
@@ -183,12 +256,22 @@
 			@php
 				$sales_amount = round($pending_sales_item->amount);
 			@endphp
-			<tr style="background: #f6e58d" class="sale-{{$pending_sales_item->id}}">
-			<td  class="align-middle"><strong>{{$key+1}}</strong></td>
-			<td  class="align-middle"><a onclick="PendingSalesInfo('{{route('pendingsaleinfo.api',$pending_sales_item->id)}}','{{route('sale.approve',$pending_sales_item->id)}}',{{$pending_sales_item->user_id}})" style="color: #000;text-decoration: underline" data-toggle="tooltip" data-placement="top" title="Service Provided by {{$pending_sales_item->provided_by}}  at {{$pending_sales_item->created_at->format('d-M-Y g:i a')}}   - Click Here For Details"  class="btn btn-link" href="javascript:void(0)"> <small>{{$pending_sales_item->sales_at->format('d-M-Y g:i a')}} </small> <br> <strong>{{$pending_sales_item->user->name}}</strong> </a></td>
-			<th  class="align-middle" id="sale-{{$pending_sales_item->id}}">{!!FashiSalesStatus($pending_sales_item->sales_status)!!}</th>
 			
+			<tr class="sale-{{$pending_sales_item->id}}">
+			<td  class="align-middle"><strong>{{$key+1}}</strong></td>
+			<td  class="align-middle"><a onclick="PendingSalesInfo('{{route('pendingsaleinfo.api',$pending_sales_item->id)}}','{{route('sale.approve',$pending_sales_item->id)}}',{{$pending_sales_item->user_id}})" style="color: #000;text-decoration: underline"  href="javascript:void(0)"><small>{{$pending_sales_item->sales_at->format('d-M-Y g:i a')}} </small> <br> <strong>{{$pending_sales_item->user->name}}</strong> <br>				@if($pending_sales_item->is_condition == false)
+		
+				{!!fuc_is_conditioned($pending_sales_item->is_condition)!!} 
+				@else
+				{!!fuc_is_conditioned($pending_sales_item->is_condition)!!} <span class="badge badge-dark">
+				{{$pending_sales_item->condition_amount}} tk </span>
+				@endif </a></td>
+
+	
+			<th  class="align-middle" id="sale-{{$pending_sales_item->id}}">{!!FashiSalesStatus($pending_sales_item->sales_status)!!}</th>
+		
 			</tr>
+			
 			@endforeach
 			  
 			
@@ -416,6 +499,44 @@
 	</div>
 		</div>
 	<!-- End -->
+
+
+
+	<div class="card mt-3">
+		<div class="card-header text-white" style="background: #6ab04c">
+			<strong>Todays Expenses</strong>
+		</div>
+	<div class="card-body">
+	    @php 
+			$expensesum = 0;
+		@endphp
+		@if(count($todays_expense) > 0)
+		<table class="table">
+			<tr>
+				<th>Sl</th>
+				<th>Amount</th>
+				<th>Reasons</th>
+			</tr>
+			@foreach ($todays_expense as $key => $item)
+			@php
+				$expensesum = $expensesum+$item->amount
+			@endphp
+
+			<tr>
+			<td>{{$key+1}}</td>
+			<td>{{$item->amount}}</td>
+			<td><small>{{$item->reasons}}</small></td>
+			</tr>
+			@endforeach
+		</table>
+		<strong class="float-right">Total: {{$expensesum}}</strong>
+		@else
+			<p class="alert alert-success">No Expense Found Today</p>
+		@endif
+	</div>
+	</div>
+
+
 	
 	
 	</div>
@@ -655,6 +776,10 @@
 							<td>Delivery Mode</td>
 						   <td>{!!delivereyMode($d_info['deliverymode'])!!}</td>
 						</tr>
+						<tr>
+							<td>Transportation Charge </td>
+						   <td>{{$d_info['transportation_expense']}}</td>
+						</tr>
 						@if($d_info['deliverymode'] === 'courier')
 						<tr>
 							<td>Courier/Transport</td>
@@ -673,10 +798,7 @@
 						   <td>{{App\Admin::find($d_info['delivered_by'])->name}}</td>
 						</tr>
 
-						<tr>
-							<td>Transportation Expense </td>
-						   <td>{{$d_info['transportation_expense']}}</td>
-						</tr>
+						
 						@endif
 
 
@@ -722,6 +844,7 @@
 <script src="{{asset('public/assets/js/axios.min.js')}}"></script>
 <script src="{{asset('public/assets/js/flatpicker.min.js')}}"></script>
 <script>
+
 var baseurl = '{{url('/')}}';
 const swalWithBootstrapButtons = Swal.mixin({
   customClass: {
@@ -1079,10 +1202,12 @@ if(role == 1){
 	var sales_amount = '{{$sales_summation}}';
 	var cash_amount = '{{$cash_summation}}';
 	var return_amount = '{{$return_summation}}';
+	var expense_amount = '{{$expensesum}}';
 
 	$("#sales").text(sales_amount);
 	$("#cashes").text(cash_amount);
 	$("#returns").text(return_amount);
+	$("#todays_expense").text(expense_amount);
 
 function getDeliveryStatus(status){
 	if(status === 0){
@@ -1167,6 +1292,11 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 		<span class="text-danger delivered_by_err"></span>
 	</div>
 	</div>
+	<div class="form-group">
+		<label for="transportation_expense"><b>Transportation Charge</b></label>
+		<input type="text" class="form-control" id="transportation_expense" name="transportation_expense" placeholder="Enter Transportation Charge">
+		<span class="text-danger transportation_expense_err"></span>
+	</div>
 	<div id="courier-info">
 
 	
@@ -1186,11 +1316,7 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 		<input type="text" class="form-control" id="booking_amount" name="booking_amount" placeholder="Enter Booking Amount">
 		<span class="text-danger booking_amount_err"></span>
 	</div>
-	<div class="form-group">
-		<label for="transportation_expense"><b>Transportation Expense</b></label>
-		<input type="text" class="form-control" id="transportation_expense" name="transportation_expense" placeholder="Enter Transportation Expense">
-		<span class="text-danger transportation_expense_err"></span>
-	</div>
+
 	<div class="form-group">
 	<div class="row">
 		<div class="col-4"><b>Is Condition</b></div>

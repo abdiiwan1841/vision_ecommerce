@@ -100,8 +100,8 @@ class ProductController extends Controller
          $product->in_stock = $request->onoffswitch;
      }
      $product->product_name = $request['product_name'];
-     $product->price = $request['price'];
-     $product->current_price = $request['price'];
+     $product->price = 0;
+     $product->current_price = 0;
      $product->category_id = $request['category'];
      $product->subcategory_id = $request['subcategory'];
      $product->brand_id = $request['brand'];
@@ -159,13 +159,10 @@ class ProductController extends Controller
   
         $this->validate($request,[
             'product_name' => 'required|unique:products,product_name,'.$id,
-            'price' => 'required|numeric',
-            'discount_price' => 'numeric',
             'subcategory' => 'required|integer',
             'category' => 'required|integer',
             'brand' => 'required|integer',
             'tags' => 'required',
-            'description' => 'required',
             'size' => 'required',
             'image' => 'image',
         ]);
@@ -233,14 +230,6 @@ class ProductController extends Controller
 
 
 
-        if($request->price >=  $product->price){
-            $product->price = $request->price;
-            $product->discount_price = NULL;
-            $product->current_price = $request->price;
-        }elseif($request->price < $product->price){
-            $product->discount_price = $request->price;
-            $product->current_price = $request->price;
-        }
 
         if($request->has('onoffswitch')){
             $product->in_stock = $request->onoffswitch;

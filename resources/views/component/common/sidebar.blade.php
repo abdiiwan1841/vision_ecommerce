@@ -35,8 +35,19 @@
             <a href="{{ route('damages.index') }}"><i class="fas fa-trash-alt"></i>  Damage &amp; Samples</a>
         </li>
 
-        <li class="{{Request::is('admin/expense*') ? 'active' : '' }}">
-            <a href="{{ route('expense.index') }}"><i class="fas fa-rupee-sign"></i>  Expense</a>
+        <li class="">
+            <a href="#expense" data-toggle="collapse" aria-expanded="{{Request::is('admin/expense*') ? 'true' : '' }}" class="dropdown-toggle"> <i class="fa fa-dollar-sign"></i> Expense Section</a>
+            <ul class="collapse list-unstyled {{Request::is('admin/expense*') ? 'active collapse show' : '' }}" id="expense">
+
+
+        <li class="{{Request::is('admin/expense') ? 'active' : '' }}">
+            <a href="{{ route('expense.index') }}"><i class="fas fa-hand-holding-usd"></i>  Expense</a>
+        </li>
+
+        <li class="{{Request::is('admin/expensecategories*') ? 'active' : '' }}">
+            <a href="{{ route('expensecategories.index') }}"><i class="fas fa-funnel-dollar"></i>  Expense Type</a>
+        </li>
+        </ul>
         </li>
 
         @if(Auth::user()->role->id == 4)
@@ -89,7 +100,7 @@
         
         
         <li class="">
-            <a href="#Frontend" data-toggle="collapse" aria-expanded="{{Request::is('admin/ecom*') ? 'true' : '' }}" class="dropdown-toggle"> <i class="fab fa-opencart"></i> ECOMMERCE</a>
+            <a href="#Frontend" data-toggle="collapse" aria-expanded="{{Request::is('admin/ecom*') ? 'true' : '' }}" class="dropdown-toggle"> <i class="fab fa-opencart"></i> Ecommerce</a>
             <ul class="collapse list-unstyled {{Request::is('admin/ecom*') ? 'active collapse show' : '' }}" id="Frontend">
         
         
@@ -194,7 +205,7 @@
         </li>
         
         <li class="">
-            <a href="#pos" data-toggle="collapse" aria-expanded="{{Request::is('admin/pos*') ? 'true' : '' }}" class="dropdown-toggle"> <i class="fas fa-truck-moving"></i> INVENTORY SECTION</a>
+            <a href="#pos" data-toggle="collapse" aria-expanded="{{Request::is('admin/pos*') ? 'true' : '' }}" class="dropdown-toggle"> <i class="fas fa-truck-moving"></i> Inventory Section</a>
             <ul class="collapse list-unstyled {{Request::is('admin/pos*') ? 'active collapse show' : '' }}" id="pos">
             
           
@@ -302,8 +313,8 @@
                 </li>
         
                 
-                <li class="{{Request::is('admin/report/pos/divisiowisenreport') ? 'active' : '' }}">
-                    <a href="{{ route('report.divisionreport') }}"><i class="fa fa-layer-group"></i> Inventory Divisionwise Report</a>
+                <li class="{{Request::is('admin/report/pos/duereport*') ? 'active' : '' }}">
+                    <a href="{{ route('report.duereport') }}"><i class="fa fa-layer-group"></i>Customer Due Report</a>
                 </li>
         
                 <li class="{{Request::is('admin/report/stockreport') ? 'active' : '' }}">

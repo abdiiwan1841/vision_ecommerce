@@ -491,25 +491,26 @@ class ReportController extends Controller
     }
 
 
-    public function DivisionReport(){
-        $divisions =  Division::all();
-        return view('pos.report.divisionresult',compact('divisions'));
+    public function InvDueReport(){
+        $sections = Section::all();
+        return view('pos.report.invduereport',compact('sections'));
     }
 
-    public function DivisionReportResult(Request $request){
+    public function InvDueReportResult(Request $request){
         $this->validate($request,[
-            'division' => 'required|numeric',
+            'section' => 'required',
             'start' => 'required|date',
             'end' => 'required|date',
         ]);
 
-    $divisions =  Division::all();
-    $d_info = Division::findOrFail($request->division);
-    
-    $poscustomer = User::where('user_type','pos')->where('division_id',$request->division)->get();
+    $sections = Section::all();
+    if($request->section === 'all'){
+        $poscustomer = User::with('section')->where('user_type','pos')->get();
+    }else{
+        $poscustomer = User::with('section')->where('user_type','pos')->where('section_id',$request->section)->get();
+    }
 
-
-    $division_report = [];
+    $inv_due_report = [];
 
     foreach($poscustomer as $customer){
 
@@ -540,37 +541,36 @@ class ReportController extends Controller
 
 
 
-        $division_report [] = ['customer' => $customer->name,'address' => $customer->address,'sales' => $sales, 'returns' => $returns, 'cashes' => $cashes,'prevdues' => $prevdues, 'prev_balance' =>  $prev_balance];
-
+        $inv_due_report [] = ['customer' => $customer->name,'address' => $customer->address,'section' => $customer->section->name,'sales' => $sales, 'returns' => $returns, 'cashes' => $cashes,'prevdues' => $prevdues, 'prev_balance' =>  $prev_balance];
 
     }
 
-    return view('pos.report.showdivisionresult',compact('division_report','request','divisions','d_info'));
+
+    return view('pos.report.showinvduereport',compact('inv_due_report','request','sections'));
         
 
     }
 
 
-    public function pdfDivisionReportResult(Request $request){
+    public function pdfInvDueReportResult(Request $request){
         $this->validate($request,[
-            'division' => 'required|numeric',
+            'section' => 'required',
             'start' => 'required|date',
             'end' => 'required|date',
         ]);
     $general_opt = GeneralOption::first();
     $general_opt_value = json_decode($general_opt->options, true);
 
-    $divisions =  Division::all();
-    $d_info = Division::findOrFail($request->division);
-    
-    $poscustomer = User::where('user_type','pos')->where('division_id',$request->division)->get();
+    $sections = Section::all();
+    if($request->section === 'all'){
+        $poscustomer = User::with('section')->where('user_type','pos')->get();
+    }else{
+        $poscustomer = User::with('section')->where('user_type','pos')->where('section_id',$request->section)->get();
+    }
 
-
-    $division_report = [];
+    $inv_due_report = [];
 
     foreach($poscustomer as $customer){
-
-        
         $prevdues = Prevdue::where('user_id',$customer->id)->whereBetween('due_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
 
         $sales = Sale::where('user_id',$customer->id)->whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
@@ -597,13 +597,12 @@ class ReportController extends Controller
 
 
 
-        $division_report [] = ['customer' => $customer->name,'address' => $customer->address,'sales' => $sales, 'returns' => $returns, 'cashes' => $cashes,'prevdues' => $prevdues, 'prev_balance' =>  $prev_balance];
-
+        $inv_due_report [] = ['customer' => $customer->name,'address' => $customer->address,'section' => $customer->section->name,'sales' => $sales, 'returns' => $returns, 'cashes' => $cashes,'prevdues' => $prevdues, 'prev_balance' =>  $prev_balance];
 
     }
 
-    $pdf = PDF::loadView('pos.report.pdfshowdivisionresult',compact('division_report','request','divisions','d_info','general_opt_value'));
-    return $pdf->download('invoice.pdf');
+    $pdf = PDF::loadView('pos.report.pdfshowinvduereport',compact('inv_due_report','request','sections','general_opt_value'));
+    return $pdf->download('Due Report from '.$request->start.' to'.$request->end.'.pdf');
 
     }
 
@@ -625,7 +624,6 @@ class ReportController extends Controller
     $d_info = Division::findOrFail($request->division);
     
     $ecomcustomer = User::where('user_type','ecom')->where('division_id',$request->division)->get();
-
 
     $division_report = [];
 
@@ -725,7 +723,7 @@ class ReportController extends Controller
         if($request->section === 'all'){
             $poscashes = Cash::where('status',1)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
         }else{
-            $users = User::where('section_id',$request->section)->select('id')->get();
+            $users = User::where('user_type','pos')->where('section_id',$request->section)->select('id')->get();
             $poscashes = Cash::whereIn('user_id',$users)->where('status',1)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
         }
        
@@ -804,7 +802,7 @@ class ReportController extends Controller
         if($request->section === 'all'){
         $sales = Sale::whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('sales_at', 'ASC')->get();
         }else{
-            $users = User::where('section_id',$request->section)->select('id')->get();
+            $users = User::where('user_type','pos')->where('section_id',$request->section)->select('id')->get();
             $sales = Sale::whereIn('user_id',$users)->whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('sales_at', 'ASC')->get();
         }
 
