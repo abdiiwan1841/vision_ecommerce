@@ -61,7 +61,7 @@
                         <td>{{$item['date']}}</td>
                         <td>{{$item['customer']}}</td>
                         <td style="width: 100px">{{$item['address']}}</td>
-                        <td><b>{{$item['amount']}}</b></td>
+                        <td><b>{{round($item['amount'])}}</b></td>
                       </tr>
                       @endforeach
                  

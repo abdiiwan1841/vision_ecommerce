@@ -12,11 +12,11 @@ use Intervention\Image\Facades\Image;
 
 class DealController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:Ecommerce Section');
+    }
     public function index()
     {
         $deal = Deal::where('status','1')->first();

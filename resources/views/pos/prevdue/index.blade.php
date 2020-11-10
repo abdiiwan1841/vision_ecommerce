@@ -108,6 +108,7 @@
             <th scope="col">User</th>
             <th scope="col">Amount</th>
             <th scope="col">Reference</th>
+            <th scope="col">Posted By</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -122,6 +123,7 @@
               <td>{{$pd->user->name}}</td>
               <td>{{$pd->amount}}</td>
               <td>{{$pd->reference}}</td>
+              <td>{{$pd->admin->name}}</td>
               <td>
                 <button class="btn btn-primary btn-sm" id="open_modal" onclick="EditProcess('{{route('prevdue.edit',$pd->id)}}','{{route('prevdue.update',$pd->id)}}')"  data-baseurl="{{asset('')}}" ><i class="fas fa-edit"></i></button> 
              

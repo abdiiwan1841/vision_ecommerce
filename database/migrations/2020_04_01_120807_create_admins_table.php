@@ -17,7 +17,6 @@ class CreateAdminsTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('adminname');
-            $table->integer('role_id')->default(2);
             $table->string('email')->unique();
             $table->string('phone')->unique();
             $table->string('image')->default('default.png');

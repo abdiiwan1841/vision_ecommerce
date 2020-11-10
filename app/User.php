@@ -43,12 +43,6 @@ class User extends Authenticatable
         return $this->belongsTo('App\Division');
     }
 
-    public function district(){
-        return $this->belongsTo('App\District');
-    }
-    public function area(){
-        return $this->belongsTo('App\Area');
-    }
     public function section(){
         return $this->belongsTo('App\Section');
     }

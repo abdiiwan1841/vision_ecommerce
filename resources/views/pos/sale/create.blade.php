@@ -754,19 +754,19 @@ $( "#product").change(function() {
         Swal.fire('Special Rate '+item.price+' tk Found','For:  '+userresponse.name+' Product: '+ item.o_name+' Rate : '+item.price,'info');
         
        
-        rate = item.price;
+        rate = Math.round(item.price);
       }
      
   })
   if(rate > 0){
-    $("#price").val(rate);
+    $("#price").val(Math.round(rate));
   }else{
-    $("#price").val(productresponse[0].tp);
+    $("#price").val(Math.round(productresponse[0].tp));
   }
   
 
   }else{
-    $("#price").val(productresponse[0].tp);
+    $("#price").val(Math.round(productresponse[0].tp));
   }
 
   })

@@ -36,7 +36,11 @@
                         <td>{{$admin->name}}</td>
                         <td>{{$admin->email}}</td>
                         <td>{{$admin->phone}}</td>
-                        <td>{{$admin->role->name}}</td>
+                        <td>
+                        @foreach ($admin->roles as $item)
+                            <span class="badge badge-success">{{$item->name}}</span>
+                        @endforeach
+                        </td>
                     <td><img style="width: 100px" src="{{asset('public/uploads/admin/signature/'.$admin->signature)}}" alt=""></td>
                         <td>{{$admin->created_at->format('d-M-Y g:i a')}}</td>
                     <td><a class="btn btn-sm btn-primary" href="{{route('admininfo.edit',$admin->id)}}"><i class="fas fa-edit"></i></a></td>

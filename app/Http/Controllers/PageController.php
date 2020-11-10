@@ -12,8 +12,10 @@ use Intervention\Image\Facades\Image;
 
 class PageController extends Controller
 {
-    public function __construct(){
+    public function __construct()
+    {
         $this->middleware('auth:admin');
+        $this->middleware('permission:Ecommerce Section');
     }
     
     public function index()

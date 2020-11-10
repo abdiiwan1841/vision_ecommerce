@@ -15,11 +15,13 @@ use Illuminate\Support\Facades\Auth;
 
 class ReturnproductController extends Controller
 {
-       /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:Ecommerce Section');
+    }
+
+    
     public function index()
     {
         $returns = Returnproduct::withTrashed('user','product')->where('type','ecom')->orderBy('returned_at', 'ASC')->get();

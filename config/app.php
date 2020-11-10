@@ -178,6 +178,7 @@ return [
         Brian2694\Toastr\ToastrServiceProvider::class,
         Harimayco\Menu\MenuServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
 
         
 

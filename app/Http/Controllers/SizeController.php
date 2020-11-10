@@ -11,6 +11,8 @@ class SizeController extends Controller
 {
     public function __construct(){
         $this->middleware('auth:admin');
+        $this->middleware('permission:Product Section');
+        $this->middleware('permission:Product Edit')->only('edit','update');
     }
 
     

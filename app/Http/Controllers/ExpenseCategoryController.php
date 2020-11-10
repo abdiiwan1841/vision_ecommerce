@@ -8,11 +8,12 @@ use Brian2694\Toastr\Facades\Toastr;
 
 class ExpenseCategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct(){
+        $this->middleware('auth:admin');
+        $this->middleware('permission:Expense Section');
+        $this->middleware('permission:Edit Expense')->only('edit','update');
+    }
+    
     public function index()
     {
         $expensecategories = Expensecategory::all();

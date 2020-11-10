@@ -95,16 +95,7 @@
                       <td>Customer Division: </td>
                       <td>{{$sale->user->division->name}}</td>
                     </tr>
-                    <tr>
-                      <td>Customer District: </td>
-                      <td>{{$sale->user->district->name}}</td>
-                    </tr>
-
-                    <tr>
-                      <td>Customer Area: </td>
-                      <td>{{$sale->user->area->name}}</td>
-                    </tr>
-
+  
                     <tr>
                       <td>Delivery Staus</td>
                       <td> 
@@ -224,11 +215,11 @@
                       </tr>
                       <tr>
                         <th>Discount</th>
-                      <td>{{$sale->discount}}</td>
+                      <td>{{round($sale->discount)}}</td>
                       </tr>
                       <tr>
                         <th>Carrying & Loading:</th>
-                      <td>{{$sale->carrying_and_loading}}</td>
+                      <td>{{round($sale->carrying_and_loading)}}</td>
                       </tr>
                       <tr>
                         <th>Total:</th>

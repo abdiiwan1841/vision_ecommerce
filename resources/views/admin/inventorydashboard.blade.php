@@ -131,7 +131,7 @@
 		<div class="small-box bg-warning">
 		  <div class="inner">
 		
-		  <h3>{{$current_month_sale}}</h3>
+		  <h3>{{round($current_month_sale)}}</h3>
 
 		  <span class="text-white"  >{{\Carbon\Carbon::now()->format('F')}} Sales upto <h5 class="badge badge-dark">{{\Carbon\Carbon::now()->format('d-m-Y g:i a')}} </h5></span>
 		  </div>
@@ -145,7 +145,7 @@
 		<div class="small-box" style="background: #78e08f">
 		  <div class="inner">
 		
-		  <h3>{{$current_month_cash}}</h3>
+		  <h3>{{round($current_month_cash)}}</h3>
 
 		  <span class="text-white">{{\Carbon\Carbon::now()->format('F')}} Cashes  upto <h5 class="badge badge-danger">{{\Carbon\Carbon::now()->format('d-m-Y g:i a')}} </h5> </span>
 		  </div>
@@ -160,7 +160,7 @@
 		<div class="small-box" style="background: #B53471">
 		  <div class="inner">
 		
-		  <h3>{{$current_month_return}}</h3>
+		  <h3>{{round($current_month_return)}}</h3>
 
 			<span class="text-white">{{\Carbon\Carbon::now()->format('F')}} Returns upto <h5 class="badge badge-warning">{{\Carbon\Carbon::now()->format('d-m-Y g:i a')}} </h5></span>
 		  </div>
@@ -173,7 +173,7 @@
 		<!-- small box -->
 		<div class="small-box" style="background: #747d8c">
 		  <div class="inner">
-		  <h3>{{$current_month_expense}}</h3>
+		  <h3>{{round($current_month_expense)}}</h3>
 
 			<p><b>{{\Carbon\Carbon::now()->format('F')}} Expenses</b></p>
 		  </div>
@@ -232,7 +232,7 @@
 
 	<div class="col-lg-5 mt-5">
 
-		@if(Auth::user()->role->id != 4)
+
 		<!-- Card Start -->
 		<div class="card">
 			<div class="card-header">
@@ -284,7 +284,7 @@
 	<div class="row">
 		<span class="alert alert-success">No Pending Sales Found</span>
 	</div>
-	  @endif
+
 	  <hr>
 	</div>
 		</div>
@@ -330,7 +330,7 @@
 					</tr>
 					<tr>
 						<td>Amount: </td>
-						<th><h4>{{$pending_cash_item->amount}}/-</h4></th>
+						<th><h4>{{round($pending_cash_item->amount)}}/-</h4></th>
 					</tr>
 					<tr>
 						<td>Date:</td>
@@ -345,14 +345,14 @@
 			<td class="align-middle"> 
 				@if($pending_cash_item->status == 0)
 		
-				@if(Auth::user()->role->id == 1)
+				{{-- @if(Auth::user()->role->id == 1) --}}
 				
 					<button id="cash-{{$pending_cash_item->id}}"  onclick="Confirmation('{{route('cash.approve',$pending_cash_item->id)}}','{{$pending_cash_item->user->name}}','{{$pending_cash_item->amount}}')"  type="button" class="btn btn-sm btn-danger">Approve</button>
 	
-					@else
+					{{-- @else --}}
 	
 					<span class="badge badge-warning">pending</span>
-				@endif
+				{{-- @endif --}}
 				@else
 	
 	
@@ -601,8 +601,7 @@
 		
 			  @endif
 			  <hr>
-			
-			  @if(Auth::user()->role->id != 4)
+
 
 			  <h5>Todays Cash</h5>
 			  @if(count($todays_pos_cash) > 0)
@@ -653,7 +652,7 @@
 		  </div>
 		  
 		  
-		  @endif
+
 
 		  <hr>
 		  <h5>Todays Returns</h5>
@@ -854,7 +853,7 @@ const swalWithBootstrapButtons = Swal.mixin({
   buttonsStyling: false
 });
 
-	var role = {{Auth::user()->role->id}};
+	var role = 1;
 	function PendingSalesInfo(salesinfourl,salesapproveurl,customerid){
 		
 		function getSalesInfo() {
@@ -936,15 +935,15 @@ const swalWithBootstrapButtons = Swal.mixin({
 		</tr>
 		<tr>
 			<th>Discount: </th>
-			<th>${salesdata.discount}</th>
+			<th>${Math.round(salesdata.discount)}</th>
 		</tr>
 		<tr>
 			<th>Carrying: </th>
-			<th>${salesdata.carrying_and_loading}</th>
+			<th>${Math.round(salesdata.carrying_and_loading)}</th>
 		</tr>
 		<tr>
 			<th>Total: </th>
-			<th>${salesdata.amount}</th>
+			<th>${Math.round(salesdata.amount)}</th>
 		</tr>
 	</table>
 	</div> `)
@@ -1036,19 +1035,19 @@ $("#InfoModal").modal('show');
 	<table class="table table-sm">
 		<tr>
 			<th>Subtotal: </th>
-			<th>${pdsum}</th>
+			<th>${Math.round(pdsum)}</th>
 		</tr>
 		<tr>
 			<th>Discount: </th>
-			<th>${returndata.discount}</th>
+			<th>${Math.round(returndata.discount)}</th>
 		</tr>
 		<tr>
 			<th>Carrying: </th>
-			<th>${returndata.carrying_and_loading}</th>
+			<th>${Math.round(returndata.carrying_and_loading)}</th>
 		</tr>
 		<tr>
 			<th>Total: </th>
-			<th>${returndata.amount}</th>
+			<th>${Math.round(returndata.amount)}</th>
 		</tr>
 	</table>
 	</div> `)
@@ -1199,10 +1198,10 @@ if(role == 1){
 
 
 
-	var sales_amount = '{{$sales_summation}}';
-	var cash_amount = '{{$cash_summation}}';
-	var return_amount = '{{$return_summation}}';
-	var expense_amount = '{{$expensesum}}';
+	var sales_amount = '{{round($sales_summation)}}';
+	var cash_amount = '{{round($cash_summation)}}';
+	var return_amount = '{{round($return_summation)}}';
+	var expense_amount = '{{round($expensesum)}}';
 
 	$("#sales").text(sales_amount);
 	$("#cashes").text(cash_amount);

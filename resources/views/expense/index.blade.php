@@ -279,7 +279,7 @@ $("#expenseModal").modal('show');
     })
 
     .catch(err => {
-  console.log(err);
+      toastr.error(err.response.data.message);
   });
 
 

@@ -12,4 +12,8 @@ class Prevdue extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function admin(){
+        return $this->belongsTo('App\Admin');
+    }
+
 }

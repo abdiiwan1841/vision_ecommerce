@@ -64,19 +64,7 @@
                 <small class="form-error">{{ $message }}</small>
                 @enderror
             </div>
-            <div class="form-group">
-              <label for="section">Customer Section<span>*</span></label>
-              <select name="section" id="section" class="form-control @error('section') is-invalid @enderror" required>
-                  <option value="">--Select Section--</option>
-                  @foreach ($sections as $item)
-                      <option value="{{$item->id}}" @if($item->id == $customer->section_id ) selected @endif >{{$item->name}}</option>
-                  @endforeach
-                  
-              </select>
-              @error('section')
-              <small class="form-error">{{ $message }}</small>
-              @enderror
-          </div>
+
       
 
         </div>
@@ -103,30 +91,21 @@
                 <small class="form-error">{{ $message }}</small>
                 @enderror
             </div>
+
+            <div class="form-group">
+              <label for="section">Customer Section<span>*</span></label>
+              <select name="section" id="section" class="form-control @error('section') is-invalid @enderror" required>
+                  <option value="">--Select Section--</option>
+                  @foreach ($sections as $item)
+                      <option value="{{$item->id}}" @if($item->id == $customer->section_id ) selected @endif >{{$item->name}}</option>
+                  @endforeach
+                  
+              </select>
+              @error('section')
+              <small class="form-error">{{ $message }}</small>
+              @enderror
+          </div>
             
-
-
-            <div class="form-group">
-                <label for="district">District<span>*</span></label>
-                <select name="district" id="district" class="form-control @error('district') is-invalid @enderror" required>
-                    <option value="">Select District</option>
-                   
-                    
-                </select>
-                @error('district')
-                <small class="form-error">{{ $message }}</small>
-                @enderror
-            </div>
-      
-            <div class="form-group">
-                <label for="area">Area<span>*</span></label>
-                <select name="area" id="area" class="form-control @error('area') is-invalid @enderror" id="area" required>
-                    <option value="">Select Area</option>
-                </select>
-                @error('area')
-                <small class="form-error">{{ $message }}</small>
-                @enderror
-            </div>
 
             <input type="hidden" id="pricedata" name="pricedata">
             
@@ -282,17 +261,7 @@ $('#product').select2({
     theme: "bootstrap",
     placeholder: "Select a Division",
 });
-$('#district').select2({
-    width: '100%',
-    theme: "bootstrap",
-    placeholder: "Select a District",
-});
 
-$('#area').select2({
-    width: '100%',
-    theme: "bootstrap",
-    placeholder: "Select a Area",
-});
 var exist_division_id = '{{$customer->division_id}}';
 var exist_district_id = '{{$customer->district_id}}';
 var exist_area_id = '{{$customer->area_id}}';
@@ -305,97 +274,8 @@ var district_id = $("#district").val();
     var base_url = '{{url('/')}}';
     var output = '';
     var division_id = $("#division").val();
-    
+  
 
-    if(division_id.length > 0){
-        $.get("{{asset('')}}api/district/"+division_id, function(data, status){
-            if(data.length>0){
-            output = '';
-            $(data).each(function(index,element){
-                if(element.id == exist_district_id){
-                    output += '<option value="'+element.id+'" selected>'+element.name+'</option>';
-               
-            }else{
-                output += '<option value="'+element.id+'">'+element.name+'</option>';
-            }
-            });
-                $("#district").html(output);
-            }else{
-                $("#district").html('<option value="">No Area Found</option>');
-            }
-        });
-        }else{
-            $("#area").html('<option value="">No Area Found</option>');
-        }
-
-
-
-     $.get("{{asset('')}}api/area/"+exist_district_id, function(data, status){
-        if(data.length>0){
-        output = '';
-        $(data).each(function(index,areaelement){
-            if(areaelement.id == exist_area_id){
-
-                output += '<option value="'+areaelement.id+'" selected>'+areaelement.name+'</option>';
-            }else{
-                output += '<option value="'+areaelement.id+'">'+areaelement.name+'</option>';
-            }
-        
-        });
-        $("#area").html(output);
-        }else{
-            $("#area").html('<option value="">No Area Found</option>');
-        }
-    });
-
-        
-    $("#division").change(function(){
-        var division_id = $("#division").val();
-        if(division_id.length > 0){
-          $.get("{{asset('')}}api/district/"+division_id, function(data, status){
-            if(data.length>0){
-            output = '';
-            $(data).each(function(index,element){
-               output += '<option value="'+element.id+'">'+element.name+'</option>';
-            });
-               $("#district").html(output);
-               $("#district").val(null).trigger('change');
-               $('#area').html('');
- 
-            }else{
-                $("#district").html('<option value="">No Area Found</option>');
-            }
-        });
-        }else{
-          $("#area").html('<option value="">No Area Found</option>');
-        }
-        });
-
-
-       
-    
-
-
-       
-        $("#district").change(function(){
-      district_id = $("#district").val();
-            
-        if(district_id != null){
-          $.get("{{asset('')}}api/area/"+district_id, function(data, status){
-            if(data.length>0){
-            output = '';
-            $(data).each(function(index,element){
-               output += '<option value="'+element.id+'">'+element.name+'</option>';
-            });
-               $("#area").html(output);
-            }else{
-                $("#area").html('<option value="">No Area Found</option>');
-            }
-        });
-        }else{
-          $("#area").html('<option value="">No Area Found</option>');
-        }
-        });
 
 function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
 

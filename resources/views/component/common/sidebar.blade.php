@@ -6,8 +6,7 @@
                 <img  width="50px" src="{{asset('public/uploads/user/thumb/'.Auth::user()->image)}}" alt="">
             </div>
             <div class="col-lg-9">
-            <h5>{{Auth::user()->name}}  <br><strong style="font-size: 10px">( {{Auth::user()->role->name}} )</strong></h5>
-            
+            <h5>{{Auth::user()->name}}  <br><strong style="font-size: 10px">@foreach(Auth::user()->roles as $role) {{$role->name}} @endforeach</strong></h5>
             </div>
            
 
@@ -19,23 +18,34 @@
 
     <ul class="list-unstyled components">
 
+        @can('Ecommerce Dashboard')
         <li class="{{Request::is('admin/dashboard*') ? 'active' : '' }}">
             <a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> E-commerce  Dashboard</a>
         </li>
+        @endcan
+
+
+        @can('Inventory Dashboard')
         <li class="{{Request::is('admin/inventory/dashboard*') ? 'active' : '' }}">
             <a href="{{ route('admin.inventorydashboard') }}"><i class="fas fa-chart-line"></i> Inventory  Dashboard</a>
         </li>
+        @endcan
 
+        
+        @can('Stock View')
         <li class="{{Request::is('admin/stock*') ? 'active' : '' }}">
             <a href="{{ route('stock.index') }}"> <i class="fa fa-cubes"></i> Stock</a>
         </li>
-    
-    
+        @endcan
+        
+        @can('Damages')
         <li class="{{Request::is('admin/damages*') ? 'active' : '' }}">
             <a href="{{ route('damages.index') }}"><i class="fas fa-trash-alt"></i>  Damage &amp; Samples</a>
         </li>
+        @endcan
 
-        <li class="">
+        @can('Expense Section')
+        <li>
             <a href="#expense" data-toggle="collapse" aria-expanded="{{Request::is('admin/expense*') ? 'true' : '' }}" class="dropdown-toggle"> <i class="fa fa-dollar-sign"></i> Expense Section</a>
             <ul class="collapse list-unstyled {{Request::is('admin/expense*') ? 'active collapse show' : '' }}" id="expense">
 
@@ -49,24 +59,34 @@
         </li>
         </ul>
         </li>
+        @endcan
 
-        @if(Auth::user()->role->id == 4)
-        <li class="{{Request::is('admin/pos/sale*') ? 'active' : '' }}">
-            <a href="{{ route('sale.index') }}"><i class="fas fa-people-carry"></i>Sales Invoices</a>
-        </li>
-        @endif
 
-        @if(Auth::user()->role->id != 4)
-      
-        @if(Auth::user()->role->id == 1 || Auth::user()->role->id == 2 )
+
+        @can('General Options')
+
         <li class="{{Request::is('admin/generaloption*') ? 'active' : '' }}">
             <a href="{{route('generaloption.index')}}"> <i class="fas fa-filter"></i>General Options</a>
         </li>
-        @endif
-        
-        
+        @endcan
 
-        <li class="">
+        @can('Roles and Permissions')
+        <li>
+            <a href="#rp_section" data-toggle="collapse" aria-expanded="{{Request::is('admin/rp*') ? 'true' : '' }}" class="dropdown-toggle"> <i class="fas fa-tools"></i> Roles &amp; Permissions </a>
+            <ul class="collapse list-unstyled {{Request::is('admin/rp*') ? 'active collapse show' : '' }}" id="rp_section">
+
+                <li class="{{Request::is('admin/rp/role') ? 'active' : '' }}">
+                    <a href="{{route('role.index')}}"> <i class="fas fa-user-shield"></i>Roles</a>
+                </li>
+
+            </ul>
+        </li>
+
+        @endcan
+
+        @can('Product Section')
+
+        <li>
             <a href="#product_section" data-toggle="collapse" aria-expanded="{{Request::is('admin/product_section*') ? 'true' : '' }}" class="dropdown-toggle"> <i class="fas fa-box-open"></i> Product Section</a>
             <ul class="collapse list-unstyled {{Request::is('admin/product_section*') ? 'active collapse show' : '' }}" id="product_section">
 
@@ -94,12 +114,13 @@
             </ul>
         </li>
 
+        @endcan
        
         
         
         
-        
-        <li class="">
+        @can('Ecommerce Section')
+        <li>
             <a href="#Frontend" data-toggle="collapse" aria-expanded="{{Request::is('admin/ecom*') ? 'true' : '' }}" class="dropdown-toggle"> <i class="fab fa-opencart"></i> Ecommerce</a>
             <ul class="collapse list-unstyled {{Request::is('admin/ecom*') ? 'active collapse show' : '' }}" id="Frontend">
         
@@ -108,14 +129,9 @@
                     <a href="{{route('advertisement.index')}}"> <i class="fas fa-ad"></i> Advertisement</a>
                 </li>
         
-               
+
         
-                <li class="{{Request::is('admin/ecom/area*') ? 'active' : '' }}">
-                    <a href="{{ route('area.index') }}"> <i class="fas fa-map-marker-alt"></i> Area</a>
-                </li>
-                
-        
-                <li class="{{Request::is('admin/ecom/customers*') ? 'active' : '' }}">
+                <li class="{{Request::is('admin/ecom/ecomcustomer*') ? 'active' : '' }}">
                     <a href="{{route('ecomcustomer.index')}}"> <i class="fas fa-user"></i> Customer</a>
                 </li>
                 <li class="{{Request::is('admin/comments*') ? 'active' : '' }}">
@@ -131,10 +147,7 @@
                 <li class="{{Request::is('admin/ecom/deals*') ? 'active' : '' }}">
                     <a href="{{route('deals.index')}}"> <i class="fas fa-bullhorn"></i> Deals</a>
                 </li>
-        
-                <li class="{{Request::is('admin/ecom/district*') ? 'active' : '' }}">
-                    <a href="{{ route('district.index') }}"> <i class="fas fa-location-arrow"></i> District </a>
-                </li>
+
         
                 <li class="{{Request::is('admin/ecom/menus*') ? 'active' : '' }}">
                     <a href="#Menu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> <i class="fas fa-bars"></i> Frontend Menus</a>
@@ -143,10 +156,6 @@
                     <li>
                     <a class="nav-link" href="{{ route('admin.menus').'?menu=1'}}">Footer Second Column</a>
                     </li>
-                      
-                   
-              
-                        
                     </ul>
         
                 </li>
@@ -155,9 +164,6 @@
                     <a href="{{ route('charge.index') }}"><i class="fas fa-credit-card"></i>All Charges </a>
                 </li>
                
-               
-        
-           
         
                 <li class="{{Request::is('admin/ecom/pages*') ? 'active' : '' }}">
                     <a href="{{route('pages.index')}}"> <i class="fas fa-file"></i> Pages</a>
@@ -203,6 +209,8 @@
             </ul>
         
         </li>
+
+        @endcan
         
         <li class="">
             <a href="#pos" data-toggle="collapse" aria-expanded="{{Request::is('admin/pos*') ? 'true' : '' }}" class="dropdown-toggle"> <i class="fas fa-truck-moving"></i> Inventory Section</a>
@@ -233,11 +241,11 @@
         
         </li>
         
-        @if(Auth::user()->role->id == 1 || Auth::user()->role->id == 2)
+
         <li class="{{Request::is('admin/company*') ? 'active' : '' }}">
             <a href="{{ route('company.index') }}"><i class="fas fa-building"></i> Company Information</a>
         </li>
-        @endif
+
         <li class="{{Request::is('admin/allprice*') ? 'active' : '' }}">
             <a href="{{ route('price.index') }}"><i class="fas fa-dollar-sign"></i> Update Ecommerce Price</a>
         </li>
@@ -289,14 +297,15 @@
                 <a href="{{ route('marketingreport.index') }}"><i class="fas fa-bullhorn"></i>Marketing Sales Report</a>
             </li>
            
-            @if(Auth::user()->role->id == 1)
-        
+
+            @can('Admin Permission')
             <li class="{{Request::is('admin/admininfo*') ? 'active' : '' }}">
                 <a href="{{ route('admininfo.index') }}"><i class="fas fa-user-alt"></i>  Admin</a>
             </li>
-            @endif
+            @endcan
+
         
-        
+   
         
         
         <li class="{{Request::is('admin/report*') ? 'active' : '' }}">
@@ -316,10 +325,12 @@
                 <li class="{{Request::is('admin/report/pos/duereport*') ? 'active' : '' }}">
                     <a href="{{ route('report.duereport') }}"><i class="fa fa-layer-group"></i>Customer Due Report</a>
                 </li>
-        
+                
+                @can('Stock Report')
                 <li class="{{Request::is('admin/report/stockreport') ? 'active' : '' }}">
                     <a href="{{ route('stockreport.report') }}"> <i class="fa fa-layer-group"></i> Stock Report</a>
                   </li>
+                @endcan
         
                   <li class="{{Request::is('admin/report/ecom/ecomuserstatement') ? 'active' : '' }}">
                     <a href="{{ route('report.ecomuserstatement') }}"> <i class="fa fa-layer-group"></i> Ecommerce Customer Satements</a>
@@ -352,7 +363,7 @@
         
         </li>
 
-        @endif
+ 
 
 
         <li class="{{Request::is('admin/action/changepassword') ? 'active' : '' }}">

@@ -12,23 +12,8 @@
             <form action="{{route('report.ecomdivisionreportresult')}}" method="POST">
               @csrf
                 <div class="row">
+
                   <div class="col-lg-4">
-                      <div class="form-group">
-                        <span>Division : </span>
-                      </div>
-                      <div class="form-group @error('division') is-invalid @enderror">
-                        <select data-placeholder="Select a Division" name="division" id="division" class="form-control">
-                          <option></option>
-                          @foreach ($divisions as $division)
-                            <option value="{{$division->id}}" @if (old('division') == $division->id) selected  @endif>{{$division->name}}</option>
-                          @endforeach
-                        </select>
-                        @error('division')
-                        <small class="form-error">{{ $message }}</small>
-                        @enderror
-                      </div>
-                  </div>
-                  <div class="col-lg-3">
                     <div class="form-group">
                       <span>Start Date : </span>
                     </div>
@@ -40,7 +25,7 @@
                     </div>
                   </div>
 
-                  <div class="col-lg-3">
+                  <div class="col-lg-4">
                     <div class="form-group">
                       <span>End Date : </span>
                     </div>

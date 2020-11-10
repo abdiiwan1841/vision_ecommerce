@@ -9,8 +9,10 @@ use App\Http\Requests\ChargeUpdateRequest;
 
 class ChargeController extends Controller
 {
-    public function __construct(){
+    public function __construct()
+    {
         $this->middleware('auth:admin');
+        $this->middleware('permission:Ecommerce Section');
     }
     
     public function index(){

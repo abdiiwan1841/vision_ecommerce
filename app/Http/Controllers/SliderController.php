@@ -14,8 +14,10 @@ use App\Http\Requests\SliderStoreRequest;
 
 class SliderController extends Controller
 {
-    public function __construct(){
+    public function __construct()
+    {
         $this->middleware('auth:admin');
+        $this->middleware('permission:Ecommerce Section');
     }
 
     

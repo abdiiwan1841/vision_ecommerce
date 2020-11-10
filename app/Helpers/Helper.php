@@ -92,8 +92,12 @@ function fuc_is_conditioned($arg){
 function CustomerSection($arg){
     if($arg === 'Cosmetics'){
         return '<span class="badge badge-danger">'.$arg.'</span>';
-    }else{
+    }elseif($arg === 'Wholesale'){
         return '<span class="badge badge-warning">'.$arg.'</span>';
+    }elseif($arg === 'Self'){
+        return '<span class="badge badge-danger">'.$arg.'</span>';
+    }else{
+        return '<span class="badge badge-dark">'.$arg.'</span>';
     }
 }
 function VisionSmsResponse($response){

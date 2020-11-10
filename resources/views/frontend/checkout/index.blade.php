@@ -64,27 +64,8 @@
                         </div>
 
 
-                        <div class="form-group @error('district') has-error @enderror">
-                            <label for="district">District<span>*</span></label>
-                            <select name="district" id="district" class="form-control">
-                                <option value="">Select District</option>
-                            
-                                
-                            </select>
-                            @error('district')
-                            <small class="form-error">{{ $message }}</small>
-                            @enderror
-                        </div>
-                
-                        <div class="form-group @error('area') has-error @enderror">
-                            <label for="area">Area<span>*</span></label>
-                            <select name="area" id="area" placeholder="Select a Area" class="form-control" id="area">
-                                <option value="">Select Area</option>
-                            </select>
-                            @error('area')
-                            <small class="form-error">{{ $message }}</small>
-                            @enderror
-                        </div>
+
+            
                         <div class="form-group">
                             <label for="phone">Phone<span>*</span></label>
                         <input type="text" id="phone" placeholder="Enter Your phone" class="form-control @error('phone') is-invalid @enderror" name="phone" value="@if(old('phone')){{old('phone')}} @else {{Auth::user()->phone}} @endif">
@@ -187,27 +168,9 @@
                         </div>
 
 
-                        <div class="form-group @error('district') has-error @enderror">
-                            <label for="district">District<span>*</span></label>
-                            <select name="district" id="district" class="form-control">
-                                <option value="">Select District</option>
-                            
-                                
-                            </select>
-                            @error('district')
-                            <small class="form-error">{{ $message }}</small>
-                            @enderror
-                        </div>
+
                 
-                        <div class="form-group @error('area') has-error @enderror">
-                            <label for="area">Area<span>*</span></label>
-                            <select name="area" id="area" placeholder="Select a Area" class="form-control" id="area">
-                                <option value="">Select Area</option>
-                            </select>
-                            @error('area')
-                            <small class="form-error">{{ $message }}</small>
-                            @enderror
-                        </div>
+     
                     </div>
                     <div class="col-lg-6">
                         <div class="form-group">
@@ -237,7 +200,7 @@
                     </div>
 
 
-                    <div class="col-lg-6 mt-5">
+                    <div class="col-lg-6">
                         <div class="form-group">
                             <label for="payment_method">Payment Method</label>
                             <select name="payment_method" id="payment_method" class="form-control @error('payment_method')is-invalid @enderror">
@@ -326,66 +289,19 @@
     theme: "bootstrap",
     placeholder: "Select a Division",
 });
-$('#district').select2({
-    width: '100%',
-    theme: "bootstrap",
-    placeholder: "Select a District",
-});
 
-$('#area').select2({
-    width: '100%',
-    theme: "bootstrap",
-    placeholder: "Select a Area",
-});
 
     var base_url = '{{url('/')}}';
     var output = '';
 
 
 
-    $("#division").change(function(){
-        var division_id = $("#division").val();
-        if(division_id.length > 0){
-          $.get("{{asset('')}}api/district/"+division_id, function(data, status){
-            if(data.length>0){
-            output = '';
-            $(data).each(function(index,element){
-               output += '<option value="'+element.id+'">'+element.name+'</option>';
-            });
-               $("#district").html('<option value="0">--Choose Your District--</option>'+output);
-               $("#area").html('');
- 
-            }else{
-                $("#district").html('<option value="">No District Found</option>');
-            }
-        });
-        }else{
-          $("#area").html('<option value="">No District Found</option>');
-        }
-        });
 
 
 
 
        
-        $("#district").change(function(){
-         district_id = $("#district").val();
-        if(district_id != null){
-          $.get("{{asset('')}}api/area/"+district_id, function(data, status){
-            if(data.length>0){
-            output = '';
-            $(data).each(function(index,element){
-               output += '<option value="'+element.id+'">'+element.name+'</option>';
-            });
-               $("#area").html(output);
-            }else{
-                $("#area").html('<option value="">No Area Found</option>');
-            }
-        });
-        }else{
-          $("#area").html('<option value="">No Area Found</option>');
-        }
-        });
+
 
 
         $("#payment_method").change(function(){

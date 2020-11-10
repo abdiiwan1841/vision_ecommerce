@@ -98,7 +98,7 @@
                               <td class="align-middle">{!!FashiSalesStatus($item->sales_status)!!}</td>
                               <td class="align-middle">{!!fuc_is_conditioned($item->is_condition)!!}</td>
                               @if($item->deleted_at == NULL) 
-                                <td ><a class="btn btn-info btn-sm" target="_blank" href="{{route('sale.show',$item->id)}}"><i class="fa fa-eye"></i></a>  @if(Auth::user()->role->id != 4) | <a target="_blank" class="btn btn-primary btn-sm" href="{{route('sale.edit',$item->id)}}"><i class="fa fa-edit"></i></a> @endif 
+                                <td ><a class="btn btn-info btn-sm" target="_blank" href="{{route('sale.show',$item->id)}}"><i class="fa fa-eye"></i></a>   | <a target="_blank" class="btn btn-primary btn-sm" href="{{route('sale.edit',$item->id)}}"><i class="fa fa-edit"></i></a> 
                                 </td>
                               @else
                               <td class="align-middle"><small>By: {{App\Admin::where('id',$item->approved_by)->first()->name }} </small> <br><small>At {{$item->updated_at->format('d M Y g: i a')}}</small></td>

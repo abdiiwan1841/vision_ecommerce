@@ -481,13 +481,7 @@ $('.add-to-cart').click(function(event) {
     if(status === 'success'){
       var image = data[0].image;
 
-      var current_stock = data[1];
     if(err.length<1){
-      if(current_stock < 1){
-        alert('Out Of Stock');
-      }else if(current_stock < qnty){
-        alert('Out Of Stock');
-      }else{
 
     orderCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image);
     $(".is-valid").removeClass('is-valid');
@@ -514,7 +508,7 @@ $('.add-to-cart').click(function(event) {
     $("#qty").val("");
     $("#selected-product-info").hide();
 
-      }
+  
   }
 
 
@@ -528,7 +522,7 @@ $( "#user" ).change(function() {
     var user_id = $("#user option:selected").val();
     $.get("{{url('/')}}/api/userinfo/"+user_id, function(data, status){
       if(status === 'success'){
-        $("#customer-details").html("<b>Address :</b> <br> "+data.address+"<br><b>Phone :</b> "+data.phone+"<br><b>Email :</b> "+data.email);
+        $("#customer-details").html("<b>Name :</b> "+data.name+"<br><b>Address :</b> "+data.address+"<br><b>Phone :</b> "+data.phone);
         
       }
     });

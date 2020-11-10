@@ -269,12 +269,7 @@ class SaleController extends Controller
 
     public function approve(Request $request,$id){
         $sendstatus = 1101;
-        $sale = Sale::with('product')->findOrFail($id);
-        if(Auth::user()->role->id != 1){
-           return ['id'=> $sale->id,'status' => $sale->sales_status,'msg' => 'You Are Not Authorized' ];
-            
-        }else{
-       
+        $sale = Sale::with('product')->findOrFail($id);       
         $sale->sales_status = 1;
         $sale->approved_by = Auth::user()->id;
         $sale->save();
@@ -326,7 +321,7 @@ class SaleController extends Controller
         }
         
     
-        }
+        
     }
 
     public function delivery(Request $request,$id){

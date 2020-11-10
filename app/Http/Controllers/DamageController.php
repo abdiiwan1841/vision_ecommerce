@@ -14,6 +14,8 @@ class DamageController extends Controller
 {
     public function __construct(){
         $this->middleware('auth:admin');
+        $this->middleware('permission:Damges');
+        $this->middleware('permission:Cancel Damges')->only('destroy');
     }
 
     
@@ -107,15 +109,10 @@ class DamageController extends Controller
      */
     public function destroy(Damage $damage)
     {
-        if(Auth::user()->role->id != 1){
-            Toastr::error('Only Superadmin Can Cancel This Damge Record', 'error');
-            return redirect()->back();
-        }else{
         $damage->deleted_at = now();
         $damage->save();
         $damage->product()->detach();
         Toastr::success('Damage Cancelled Successfully', 'success');
         return redirect()->route('damages.index');
-        }
     }
 }

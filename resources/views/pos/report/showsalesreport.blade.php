@@ -97,7 +97,7 @@
                         <td>{{$item['customer']}}</td>
                         <td>{{$item['address']}}</td>
                         <td>{{$item['phone']}}</td>
-                        <td>{{$item['amount']}}</td>
+                        <td>{{round($item['amount'])}}</td>
                       </tr>
                       @endforeach
                  

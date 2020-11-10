@@ -27,7 +27,7 @@
                <form action="{{route('damages.destroy',$item->id)}}" method="POST">
               @csrf
               @method('delete')
-               <button @if(Auth::user()->role->id != 1) disabled @endif onclick="return confirm('Are You Sure you want to cancel This Damage')" type="submit" class="btn btn-sm btn-danger">Cancel This Record ID#{{$item->id}}</button>
+               <button onclick="return confirm('Are You Sure you want to cancel This Damage')" type="submit" class="btn btn-sm btn-danger">Cancel This Record ID#{{$item->id}}</button>
             </form></p>
               <table class="table table-sm">
                 <tr>

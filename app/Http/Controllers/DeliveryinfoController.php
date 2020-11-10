@@ -8,8 +8,10 @@ use Brian2694\Toastr\Facades\Toastr;
 
 class DeliveryinfoController extends Controller
 {
-    public function __construct(){
+    public function __construct()
+    {
         $this->middleware('auth:admin');
+        $this->middleware('permission:Ecommerce Section');
     }
 
     

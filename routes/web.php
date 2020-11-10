@@ -74,6 +74,11 @@ Route::post('admin/login', 'Auth\AdminLoginController@adminLoginSubmit')->name('
 //Access For All Admin
 
 Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
+
+    Route::resource('admininfo','adminController');
+    Route::resource('rp/role','RoleController');
+    Route::resource('rp/permissions','RoleController');
+
     Route::get('dashboard', 'adminController@dashboard')->name('admin.dashboard');
     Route::get('inventory/dashboard', 'adminController@inventorydashboard')->name('admin.inventorydashboard');
     Route::get('logout', 'Auth\AdminLoginController@adminLogout')->name('admin.logout');
@@ -103,40 +108,8 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::get('inventory/dashboard/viewsales/{id}', 'Pos\SaleController@show')->name('viewsales.show');
     Route::post('pos/sale/delivery/{id}', 'Pos\SaleController@delivery')->name('sale.delivery');
 
-    //Sales Invoice
-    Route::resource('pos/sale', 'Pos\SaleController');
-    Route::post('pos/saleresult','Pos\SaleController@result')->name('sale.result');
-    Route::post('pos/sale/{id}/invoice', 'Pos\SaleController@invoice')->name('sale.invoice');
 
-});
-
-
-//Access For Accountant, Admin And Superadmin Only
-
-Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], function(){
-    Route::resource('suppliersection/supplierdue', 'SupplierdueController');
-    Route::resource('pos/customers', 'Pos\UserController');
-    Route::post('pos/customers/export', 'Pos\UserController@export')->name('user.export');
-    Route::get('ecom/customers', 'Ecom\UserController@index')->name('ecomcustomer.index');
-    Route::resource('product_section/products', 'ProductController');
-    Route::post('product_section/products/export', 'ProductController@export')->name('product.export');
-    Route::post('removegalleryimage/{id}', 'ProductController@removegalleryimage')->name('products.removegalleryimage');
-    Route::resource('product_section/sizes', 'SizeController');
-    Route::resource('product_section/categories', 'CategoryController');
-    Route::resource('product_section/tags', 'TagsController');
-    Route::resource('product_section/brands', 'BrandController');
-    Route::resource('product_section/subcategories', 'SubcategoryController');
-    Route::resource('ecom/order', 'OrderController');
-    Route::get('ecom/order/{id}/view', 'OrderController@show')->name('order.view');
-    Route::get('pos/cashresult','Pos\CashController@index');
-    Route::post('pos/cashresult','Pos\CashController@result')->name('poscash.result');
-    Route::resource('pos/prevdue', 'Pos\PrevdueController');
-    Route::post('transfertoecom/{id}','ProductController@transfertoecom')->name('product.transfertoecom');
-    Route::post('transfertoinventory/{id}','ProductController@transfertoinventory')->name('product.transfertoinventory');
-    Route::resource('purchase', 'PurchaseController');
-    Route::get('inventory/dashboard/cashdetails/{id}', 'adminController@inv_pendingcash')->name('invdashboard.cashdetails');
-
-
+    //Report Related Route
     Route::get('report/marketingreport', 'ReportController@MarketingReport')->name('report.marketingreport');
     Route::post('report/marketingreport', 'ReportController@ShowMarketingReport')->name('report.showmarketingreport');
 
@@ -184,6 +157,41 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], f
     Route::get('report/cashreport', 'ReportController@cashreport')->name('report.poscashreport');
     Route::post('report/cashreport', 'ReportController@showcashreport')->name('report.showcashreport');
     Route::post('report/cashreport/pdf', 'ReportController@pdfcashreport')->name('report.pdfcashreport');
+
+
+
+
+
+    
+    //Sales Invoice
+    Route::resource('pos/sale', 'Pos\SaleController');
+    Route::post('pos/saleresult','Pos\SaleController@result')->name('sale.result');
+    Route::post('pos/sale/{id}/invoice', 'Pos\SaleController@invoice')->name('sale.invoice');
+
+    Route::resource('suppliersection/supplierdue', 'SupplierdueController');
+    Route::resource('pos/customers', 'Pos\UserController');
+    Route::post('pos/customers/export', 'Pos\UserController@export')->name('user.export');
+    Route::resource('ecom/ecomcustomer', 'Ecom\UserController');
+    Route::resource('product_section/products', 'ProductController');
+    Route::post('product_section/products/export', 'ProductController@export')->name('product.export');
+    Route::post('removegalleryimage/{id}', 'ProductController@removegalleryimage')->name('products.removegalleryimage');
+    Route::resource('product_section/sizes', 'SizeController');
+    Route::resource('product_section/categories', 'CategoryController');
+    Route::resource('product_section/tags', 'TagsController');
+    Route::resource('product_section/brands', 'BrandController');
+    Route::resource('product_section/subcategories', 'SubcategoryController');
+    Route::resource('ecom/order', 'OrderController');
+    Route::get('ecom/order/{id}/view', 'OrderController@show')->name('order.view');
+    Route::get('pos/cashresult','Pos\CashController@index');
+    Route::post('pos/cashresult','Pos\CashController@result')->name('poscash.result');
+    Route::resource('pos/prevdue', 'Pos\PrevdueController');
+    Route::post('transfertoecom/{id}','ProductController@transfertoecom')->name('product.transfertoecom');
+    Route::post('transfertoinventory/{id}','ProductController@transfertoinventory')->name('product.transfertoinventory');
+    Route::resource('purchase', 'PurchaseController');
+    Route::get('inventory/dashboard/cashdetails/{id}', 'adminController@inv_pendingcash')->name('invdashboard.cashdetails');
+
+
+
     Route::get('allprice','PriceController@index')->name('price.index');
     Route::put('allprice/{id}','PriceController@update')->name('price.update');
     Route::get('tp','PriceController@tpindex')->name('tp.index');
@@ -209,14 +217,9 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','accountant']], f
     Route::resource('pos/cash', 'Pos\CashController');
     Route::resource('marketingreport','MarketingReportController');
     Route::post('marketingreport/datewiseview','MarketingReportController@datewiseview')->name('marketingreport.datewiseview');
-});
 
 
 
-
-
-//Access Only For SuperAdmin And Admin  
-Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','admin']], function(){
     Route::get('company','CompanyController@index')->name('company.index');
     Route::get('company/{id}/edit','CompanyController@edit')->name('company.edit');
     Route::put('company/{id}','CompanyController@update')->name('company.update');
@@ -229,8 +232,6 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','admin']], functi
     Route::resource('ecom/pages', 'PageController');
     Route::post('pos/returnproduct/approve/{id}', 'Pos\ReturnproductController@approve')->name('returnproduct.approve');
     Route::resource('ecom/deals', 'Ecom\DealController');
-    Route::resource('ecom/district', 'DistrictController');
-    Route::resource('ecom/area', 'AreaController');
     Route::get('ecom/menus', 'MenuController@index')->name('admin.menus');
     Route::get('ecom/advertisement','AdvertisementController@index')->name('advertisement.index');
     Route::get('ecom/advertisement/{id}/edit','AdvertisementController@edit')->name('advertisement.edit');
@@ -247,7 +248,5 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','admin']], functi
 });
 
 
-//Access For Only Super Admin
-Route::group(['prefix'=> 'admin','middleware' => ['auth:admin','superadmin']], function(){
-    Route::resource('admininfo','adminController');
-});
+
+

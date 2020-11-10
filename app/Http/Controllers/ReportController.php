@@ -492,7 +492,7 @@ class ReportController extends Controller
 
 
     public function InvDueReport(){
-        $sections = Section::all();
+        $sections = Section::where('module','inventory')->get();
         return view('pos.report.invduereport',compact('sections'));
     }
 
@@ -608,8 +608,7 @@ class ReportController extends Controller
 
 
     public function EcomDivisionReport(){
-        $divisions =  Division::all();
-        return view('ecom.report.divisionresult',compact('divisions'));
+        return view('ecom.report.divisionresult');
     }
 
     
@@ -620,10 +619,8 @@ class ReportController extends Controller
             'end' => 'required|date',
         ]);
 
-    $divisions =  Division::all();
-    $d_info = Division::findOrFail($request->division);
     
-    $ecomcustomer = User::where('user_type','ecom')->where('division_id',$request->division)->get();
+    $ecomcustomer = User::where('user_type','ecom')->get();
 
     $division_report = [];
 
@@ -644,17 +641,14 @@ class ReportController extends Controller
 
         $previous_cashes = Order::where('user_id',$customer->id)->where('payment_status',1)->whereNotBetween('paymented_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('cash');
 
-
         $prev_balance = ($previous_sales)-( $previous_cashes+$previous_returns);
-
-
 
         $division_report [] = ['customer' => $customer->name,'address' => $customer->address,'sales' => $sales, 'returns' => $returns, 'cashes' => $cashes ,'prev_balance' =>  $prev_balance];
 
 
     }
 
-    return view('ecom.report.showdivisionresult',compact('division_report','request','divisions','d_info'));
+    return view('ecom.report.showdivisionresult',compact('division_report','request'));
         
 
     }
@@ -666,10 +660,9 @@ class ReportController extends Controller
             'end' => 'required|date',
         ]);
 
-    $divisions =  Division::all();
-    $d_info = Division::findOrFail($request->division);
+
     
-    $ecomcustomer = User::where('user_type','ecom')->where('division_id',$request->division)->get();
+    $ecomcustomer = User::where('user_type','ecom')->get();
 
 
     $division_report = [];
@@ -701,14 +694,14 @@ class ReportController extends Controller
 
     }
 
-    $pdf = PDF::loadView('ecom.report.pdfshowdivisionresult',compact('division_report','request','divisions','d_info'));
-    return $pdf->download('invoice.pdf');
+    $pdf = PDF::loadView('ecom.report.pdfshowdivisionresult',compact('division_report','request'));
+    return $pdf->download('Ecommerce_Report'.now().'.pdf');
         
 
     }
 
     public function cashreport(){
-        $sections = Section::all();
+        $sections = Section::where('module','inventory')->get();
         return view('general_report.cashreport',compact('sections'));
     }
 
@@ -789,7 +782,7 @@ class ReportController extends Controller
 
 
     public function SalesReport(){
-        $sections = Section::all();
+        $sections = Section::where('module','inventory')->get();
         return view('pos.report.salesreport',compact('sections'));
     }
     public function SalesReportResult(Request $request){

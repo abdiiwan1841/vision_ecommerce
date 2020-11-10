@@ -4,34 +4,37 @@ namespace App\Http\Controllers;
 
 use Session;
 use App\Cash;
-use App\Role;
 use App\Sale;
 use App\User;
 use App\Admin;
-use App\Expense;
 use App\Order;
+use App\Expense;
 use Carbon\Carbon;
 use App\GeneralOption;
 use App\Returnproduct;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use PhpParser\Node\Stmt\Return_;
+use Spatie\Permission\Models\Role;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
-use PhpParser\Node\Stmt\Return_;
 
 class adminController extends Controller
 {
     public function __construct(){
         $this->middleware('auth:admin');
+        $this->middleware('permission:Inventory Dashboard')->only('inventorydashboard');
+        $this->middleware('permission:Ecommerce Dashboard')->only('dashboard');
+        $this->middleware('permission:Admin Permission')->only('index','create','edit','store','update');
     }
 
 
     public function index(){
         
-        $admins = Admin::with('role')->get();
+        $admins = Admin::with('roles')->get();
         return view('admin.admininfo.index',compact('admins'));
     }
 
@@ -76,8 +79,8 @@ class adminController extends Controller
         $admin->email = $request->email;
         $admin->phone = $request->phone;
         $admin->password = Hash::make($request->password);
-        $admin->role_id = $request->role;
         $admin->save();
+        $admin->assignRole($request->role);
         Toastr::success('Admin Created Successfully','success');
         return redirect(route('admininfo.index'));
     }
@@ -132,8 +135,8 @@ class adminController extends Controller
         //$admin->adminname = Str::slug($request->name);
         $admin->email = $request->email;
         $admin->phone = $request->phone;
-        $admin->role_id = $request->role;
         $admin->save();
+        $admin->syncRoles($request->role);
         Toastr::success('Admin Updated Successfully','success');
         return redirect(route('admininfo.index'));
     }
@@ -148,10 +151,16 @@ class adminController extends Controller
 
         $todays_ecom_returns = Returnproduct::where('type','ecom')->whereBetween('returned_at', [$today." 00:00:00", $today." 23:59:59"])->orderBy('returned_at', 'desc')->get();
 
-        $pending_orders = Order::where('order_status',0)->get();
+        $pending_orders = Order::with('product')->where('order_status',0)->get();
         $pending_shipping = Order::where('order_status',1)->where('shipping_status',0)->get();
 
-        return view('admin.dashboard',compact('pending_orders','todays_order','todays_ecom_cash','todays_ecom_returns','pending_shipping'));
+        $current_month_order = Order::whereBetween('ordered_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->sum('amount');
+
+        $current_year_order = Order::whereBetween('ordered_at', [Carbon::now()->startOfYear(), Carbon::now()])->sum('amount');
+
+        $last_ten_orders = Order::where('order_status','!=',0)->take(10)->orderBy('id','desc')->get();
+
+        return view('admin.dashboard',compact('pending_orders','todays_order','todays_ecom_cash','todays_ecom_returns','pending_shipping','current_month_order','current_year_order','last_ten_orders'));
     }
 
     public function inventorydashboard(){

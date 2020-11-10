@@ -59,7 +59,7 @@
                   <select name="role" id="role" class="form-control">
                     <option value="">-select admin role-</option>
                     @foreach ($roles as $item)
-                  <option value="{{$item->id}}">{{$item->name}}</option>
+                  <option value="{{$item->name}}">{{$item->name}}</option>
                     @endforeach
                     
                   </select>

@@ -15,6 +15,8 @@ class StockController extends Controller
 {
     public function __construct(){
         $this->middleware('auth:admin');
+        $this->middleware('permission:Stock View')->only('index','purchasehistory','saleshistory','returnhistory','orderhistory','damagehistory','freehistory');
+        $this->middleware('permission:Stock Report')->only('stockreport','stockreportshow','stockreportpdf','export');
     }
 
     

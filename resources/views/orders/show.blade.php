@@ -118,7 +118,11 @@
                     </tr>
                     <tr>
                       <th>Email: </th>
+                      @if($order->user->section_id == 4)
+                      <td>{{$order->user->custom_email}}</td>
+                      @else
                       <td>{{$order->user->email}}</td>
+                      @endif
                     </tr>
                     <tr>
                       <th>Phone: </th>
@@ -128,15 +132,7 @@
                       <th>Division: </th>
                       <td>{{$order->division->name}}</td>
                     </tr>
-                    <tr>
-                      <th>District: </th>
-                      <td>{{$order->district->name}}</td>
-                    </tr>
 
-                    <tr>
-                      <th>Area: </th>
-                      <td>{{$order->area->name}}</td>
-                    </tr>
                     <tr>
                       <th>Address: </th>
                       <td>{{$order->address}}</td>

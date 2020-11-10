@@ -107,7 +107,7 @@
                     <td  class="align-middle" >{{ $userinfo->name}}</td>
                     <td style="width: 80px"  class="align-middle" >{{ $userinfo->address}}</td>
                     <td  class="align-middle" >{{ $userinfo->phone}}</td>
-                    <td  class="align-middle">{{$item['amount']}}</td>
+                    <td  class="align-middle">{{round($item['amount'])}}</td>
                     <td  class="align-middle">{{$item['reference']}}</td>
                     <td  class="align-middle">{{$item['source']}}</td>
                   </tr>

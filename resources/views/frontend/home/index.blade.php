@@ -100,7 +100,48 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
       </div>
     <div class="row" id="dynamic-product">
       
+
+      @foreach ($dynamic_products as $item)
+          
   
+      @php
+ $in_stock = "";
+      
+if($item->in_stock == false){
+        $in_stock = '<div class="stock-out">Stock Out</div>';
+     }
+     if($item->discount_price === null){
+       $pd_price = '<div class="product-price">Tk.'.round($item->current_price).'</div>';
+     }else{
+       $pd_price = '<div class="product-price">Tk.'.round($item->current_price).'<span>Tk.'.round($item->current_price).'</span></div>';
+     }
+@endphp 
+      <div class="col-6 col-md-2 col-lg-2">
+        <div class="product-item">
+            <div class="pi-pic">
+            <img src="{{url('/')}}/public/uploads/products/thumb/{{$item->image}}" alt="{{$item->product_name}}">
+            {!!$in_stock!!}
+                <div class="icon">
+                  <span class="badge badge-pink">{{$item->brand->brand_name}}</span> 
+              </div>
+                <ul>
+                <li class="w-icon active homepd"><a id="pd-${data.id}" href="javascript:void(0)"  class="add-to-cart" onclick="addToCart({{$item->id}},'{{$item->product_name}}','{{url('/')}}/public/uploads/products/tiny/{{$item->image}}',{{round($item->current_price)}},{{$item->in_stock}})"><i class=" icon_cart_alt"></i></a></li>
+                    <li class="quick-view homepd"><a href="{{url('/')}}/product/${data.id}">+ Details</a></li>
+                </ul>
+              </div>
+            <div class="pi-text">
+              <div class="catagory-name"><span style="color: purple">${{$item->subcategory->subcategory_name}}</span> - Size:  {{$item->size->name}} </div>
+                <a href="${url}/product/${data.id}">
+                    <h5>{{$item->product_name}}</h5>
+                </a>
+                {!!$pd_price!!}
+            </div>
+        </div>
+        </div>
+
+        @endforeach
+
+
       </div>
       <div style="width: 100%;text-align: center" >
       <a class="btn site-btn" id="moreproduct" href="javascript:void(0)" onclick="IncrementProduct()">Load More Products</a>
@@ -353,7 +394,7 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
 <script>
 var url = "{{url('/')}}";
 var limit = 12;
-PopulateDynamicProduct(limit);
+
 
 
 
@@ -376,9 +417,9 @@ axios.get(url+'/api/dynamicproduct/'+limit)
            in_stock = '<div class="stock-out">Stock Out</div>';
         }
         if(data.discount_price === null){
-          pd_price = `<div class="product-price">Tk.${data.current_price}</div>`;
+          pd_price = `<div class="product-price">Tk.${Math.round(data.current_price)}</div>`;
         }else{
-          pd_price = `<div class="product-price">Tk.${data.current_price}<span>${data.price}</span></div>`;
+          pd_price = `<div class="product-price">Tk.${Math.round(data.current_price)}<span>Tk. ${Math.round(data.price)}</span></div>`;
         }
         concatproductdata += `<div class="col-6 col-md-2 col-lg-2">
           <div class="product-item">
@@ -403,7 +444,7 @@ axios.get(url+'/api/dynamicproduct/'+limit)
           </div>
           </div>`;
     });
-    $("#dynamic-product").html(concatproductdata);
+   $("#dynamic-product").html(concatproductdata);
     if(limit > total_products){
       $("#moreproduct").hide();
     }else{

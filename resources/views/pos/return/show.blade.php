@@ -77,15 +77,6 @@
                       <td>{{$returnDetails->user->division->name}}</td>
                     </tr>
                     <tr>
-                      <th>District: </th>
-                      <td>{{$returnDetails->user->district->name}}</td>
-                    </tr>
-
-                    <tr>
-                      <th>Area: </th>
-                      <td>{{$returnDetails->user->area->name}}</td>
-                    </tr>
-                    <tr>
                       <th>Address: </th>
                       <td>{{$returnDetails->user->address}}</td>
                     </tr>
@@ -105,15 +96,8 @@
                       <th>Customer Division: </th>
                       <td>{{$returnDetails->user->division->name}}</td>
                     </tr>
-                    <tr>
-                      <th>Customer District: </th>
-                      <td>{{$returnDetails->user->district->name}}</td>
-                    </tr>
 
-                    <tr>
-                      <th>Customer Area: </th>
-                      <td>{{$returnDetails->user->area->name}}</td>
-                    </tr>
+      
                   </table>
                 </div>
 

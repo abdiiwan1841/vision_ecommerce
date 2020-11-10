@@ -8,24 +8,25 @@
         <div class="card-header">
             <div class="row">
                 <div class="col-lg-4">
-                <a class="btn btn-info btn-sm" href="{{route('customers.index')}}"><i class="fa fa-angle-left"></i> back</a>
+                <a class="btn btn-info btn-sm" href="{{route('ecomcustomer.index')}}"><i class="fa fa-angle-left"></i> back</a>
                 </div>
                 <div class="col-lg-8">
-                    <h5 class="card-title float-right">Add New Customer</h5>
+                    <p class="card-title float-right">Add New Customer For Ecommerce Module</p>
                 </div>
             </div>
         </div>
     <div class="card-body">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-    <form action="{{route('customers.store')}}" method="POST" style="border: 1px solid #ddd;padding: 20px;border-radius: 5px">
+            <h4 class="text-center">Ecommerce Module Customer</h4>
+    <form action="{{route('ecomcustomer.store')}}" method="POST" style="border: 1px solid #ddd;padding: 20px;border-radius: 5px">
         @csrf
         <div class="row">
        
         <div class="col-lg-6">
             
             <div class="form-group">
-                <label for="name">Distributor Name<span>*</span></label>
+                <label for="name">Customer Name<span>*</span></label>
             <input type="text" id="name" placeholder="Enter Your Name" class="form-control @error('name') is-invalid @enderror" name="name" value="{{old('name')}}" required>
       
                 @error('name')
@@ -33,19 +34,12 @@
                 @enderror
             </div>
 
-            <div class="form-group">
-                <label for="proprietor">Proprietor Name<span>(optional)</span></label>
-            <input type="text" id="proprietor" placeholder="Enter Proprietor Name" class="form-control @error('proprietor') is-invalid @enderror" name="proprietor" value="{{old('proprietor')}}">
-      
-                @error('proprietor')
-                <small class="form-error">{{ $message }}</small>
-                @enderror
-            </div>
+
       
             <div class="form-group">
-                <label for="inventory_email">Email<span>(optional)</span></label>
-                <input type="text" id="inventory_email" placeholder="Enter Your Email" class="form-control @error('inventory_email') is-invalid @enderror" name="inventory_email" value="{{old('inventory_email')}}">
-                @error('inventory_email')
+                <label for="email">Email<span>(optional)</span></label>
+                <input type="text" id="email" placeholder="Enter Your Email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{old('email')}}">
+                @error('email')
                 <small class="form-error">{{ $message }}</small>
                 @enderror
             </div>
@@ -57,28 +51,7 @@
                 <small class="form-error">{{ $message }}</small>
                 @enderror
             </div>
-            <div class="form-group">
-                <label for="company">Company<span>(optional)</span></label>
-            <input type="text" id="company" placeholder="Enter Your Company Name" class="form-control @error('company') is-invalid @enderror" name="company" value="{{old('company')}}">
-                @error('company')
-                <small class="form-error">{{ $message }}</small>
-                @enderror
-            </div>
 
-             
-            <div class="form-group">
-                <label for="section">Customer Section<span>*</span></label>
-                <select name="section" id="section" class="form-control @error('section') is-invalid @enderror" required>
-                    <option value="">--Select Section--</option>
-                    @foreach ($sections as $item)
-                        <option value="{{$item->id}}">{{$item->name}}</option>
-                    @endforeach
-                    
-                </select>
-                @error('section')
-                <small class="form-error">{{ $message }}</small>
-                @enderror
-            </div>
       
 
         </div>
@@ -98,7 +71,7 @@
                 <select name="division" id="division" class="form-control @error('division') is-invalid @enderror" required>
                     <option value="">Select Division</option>
                     @foreach ($divisions as $item)
-                    <option value="{{$item->id}}" {{ (old("division") == $item->id ? "selected": "") }}>{{$item->name}}</option>
+                        <option value="{{$item->id}}" {{ (old("division") == $item->id ? "selected": "") }}>{{$item->name}}</option>
                     @endforeach
                     
                 </select>

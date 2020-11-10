@@ -58,7 +58,7 @@
               <form id="delete-from-{{$product['id']}}" style="display: inline-block" action="{{route('products.destroy',$product['id'])}}" method="POST">
                     @csrf
                     @method('DELETE')
-                    <button @if(Auth::user()->role->id != 1 && Auth::user()->role->id != 2 ) disabled @endif type="button" onclick="deleteProduct({{$product['id']}})"  class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
+                    <button type="button" onclick="deleteProduct({{$product['id']}})"  class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
         
                 </form> 
               </td>

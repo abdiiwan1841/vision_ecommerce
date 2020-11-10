@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Session;
 use App\User;
 use App\Order;
 use App\Charge;
@@ -21,11 +22,15 @@ use LaravelDaily\Invoices\Classes\InvoiceItem;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:Ecommerce Section');
+        $this->middleware('permission:Ecom Order Edit')->only('edit','update');
+        $this->middleware('permission:Ecom Order Approval')->only('approval');
+        $this->middleware('permission:Ecom Order Cancel')->only('OrderCancel');
+    }
+
     public function index()
     {
         $orders = Order::with('user')->get();
@@ -39,10 +44,6 @@ class OrderController extends Controller
      */
     public function create()
     {
-        if(Auth::user()->role->id != 1){
-            Toastr::error('Only Super Admin Can Create This Order', 'error');
-            return redirect()->back();
-        }
         $charge = Charge::first();
         $users = User::where('user_type','ecom')->get();
         $products = Product::where('type','ecom')->get();
@@ -65,9 +66,6 @@ class OrderController extends Controller
 
         $approval_info = json_encode(array('approved_by' => Auth::user()->name,'approved_at' => now())); 
 
-
-
-
         $charges = Charge::first();
 
         //Amount calculation
@@ -89,7 +87,6 @@ class OrderController extends Controller
 
         $userinfo = User::findOrFail($request->user_id);
          
-
         $order = new Order;
         $order->user_id = $request->user_id;
         $order->discount = $request->discount_percent;
@@ -99,32 +96,79 @@ class OrderController extends Controller
         $order->payment_method = 1;
         $order->payment_status = 0;
         $order->shipping_status = 0;
-        $order->order_status = 1;
+        $order->order_status = 0;
         $order->amount = $amount_total;
         $order->division_id = $userinfo->division_id;
-        $order->district_id = $userinfo->district_id;
-        $order->area_id =  $userinfo->area_id;
         $order->address =  $userinfo->address;
         $order->approval_info = $approval_info;
         $order->invoice_id = $request->user_id.time().rand(1,500);
         $order->ordered_at = $request->order_date." ".Carbon::now()->toTimeString();
         $order->save();
 
-       
         $product_info = [];
+        $smspdinfo = "";
         foreach($products as $product){
+
+        $smspdinfo .= $product->o_name." = ".$product->count." x ".$product->price." = ".round($product->count)*round($product->price).",";
+
          $product_info[] = ['order_id' =>$order->id, 'product_id' => $product->id,'qty' => $product->count,'price' => $product->price, 'user_id' => $request->user_id,'ordered_at' => $request->order_date." ".Carbon::now()->toTimeString() ];   
         }
         $order->product()->attach($product_info);
+
+
+        // $url = "http://66.45.237.70/api.php";
+        // $number= $userinfo->phone;
+        // $adminnumber = "01700817934";
+
+        // $text = $userinfo->name." Your Order has been received. Product:".$smspdinfo."Discount: ".$disc_amount." Delivery Charge = ". $shipping." Tk.Total Payable Amount = ".$order->amount." Tk.(Vision Mart)";
+
+        // $text2 = "New Ecommerce Order in Visionmart Customer: ".$userinfo->name." Product: ".$smspdinfo." Address: ".$order->address.". Total Payable Amount = ".$order->amount.". Please Review The Order In Ecommerce Dashboard";
+
+        // $data= array(
+        // 'username'=>"shajibazher",
+        // 'password'=>"UtUs6B8WVqjmm72",
+        // 'number'=>"$number",
+        // 'message'=>"$text"
+        // );
+
+        // $data2 = array(
+        //     'username'=>"shajibazher",
+        //     'password'=>"UtUs6B8WVqjmm72",
+        //     'number'=>"$adminnumber",
+        //     'message'=>"$text2"
+        // );
+        // $ch = curl_init(); // Initialize cURL
+        // curl_setopt($ch, CURLOPT_URL,$url);
+
+
+        // //Sms For Customer
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $smsresult = curl_exec($ch);
+        // $p = explode("|",$smsresult);
+        // $sendstatus1 = $p[0];
+
+        // //Sms For Admin
+
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data2));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $smsresult = curl_exec($ch);
+        // $p = explode("|",$smsresult);
+        // $sendstatus2 = $p[0];
+
+
+        // if($sendstatus1 == 1101){
+        //     Toastr::success($text, 'success');
+        // }else{
+        //     Toastr::success('Sales Created Successfully', 'success');
+        //     Toastr::error(VisionSmsResponse($sendstatus), 'error');
+        // }
+
+
         return $order->id;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
         $order = Order::findOrFail($id);
@@ -140,11 +184,6 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
-        if(Auth::user()->role->id != 1){
-            Toastr::error('Only Super Admin Can Edit This Order', 'error');
-            return redirect()->back();
-        }
-
         $order =  Order::with('product')->findOrFail($id);
         $users = User::where('user_type','ecom')->get();
         $products = Product::where('type','ecom')->get();
@@ -193,6 +232,7 @@ class OrderController extends Controller
         $order->approval_info = $approval_info;
         $order->discount = $request->discount_percent;
         $order->shipping = $request->shipping;
+        $order->order_status = 0;
         $order->ordered_at = $request->order_date." ".Carbon::now()->toTimeString();
         $order->amount = $amount_total;
         $order->approval_info = $approval_info;
@@ -262,6 +302,7 @@ class OrderController extends Controller
         $order->approval_info = $approval_info;
         $order->save();
         Toastr::success('Order Approved Successfully', 'success');
+        Session::flash('orderapproval',$order);
         return redirect()->back();
     }
 
@@ -312,13 +353,18 @@ class OrderController extends Controller
 
 
 
+        if($order->user->section_id == 4){
+            $user_email = $order->user->custom_email;
+        }else{
+            $user_email = $order->user->custom_email;
+        }
 
         $customer = new Party([
             'name'          => $order->user->name,
             'phone'          => $order->user->phone,
             'address'          => $order->user->address,
             'custom_fields' => [
-                'email' => null//$order->user->email,
+                'email' => $user_email,
             ],
         ]);
 

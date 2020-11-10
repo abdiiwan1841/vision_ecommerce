@@ -38,8 +38,6 @@ class CheckoutPageController extends Controller
             'phone' => 'required',
             'cartdata' => 'required',
             'division' => 'required',
-            'district' => 'required',
-            'area' => 'required',
             'address' => 'required|max:500',
             'password' => 'required|confirmed|min:8|max:14',
             'password_confirmation' => 'required|min:8|max:14',
@@ -81,8 +79,7 @@ class CheckoutPageController extends Controller
         $user->email = $request->email;
         $user->phone = $request->phone;
         $user->division_id = $request->division;
-        $user->district_id = $request->district;
-        $user->area_id = $request->area;
+        $user->section_id = 3;
         $user->address = $request->address;
         $user->password = Hash::make($request->password);
         $user->save();
@@ -106,8 +103,6 @@ class CheckoutPageController extends Controller
         $order->amount = $amount_total;
         $order->invoice_id = $request->user_id.time().rand(1,500);
         $order->division_id = $request->division;
-        $order->district_id = $request->district;
-        $order->area_id = $request->area;
         $order->address = $request->address;
         $order->ordered_at = now();
         if($request->has('txn_id')){
@@ -115,15 +110,61 @@ class CheckoutPageController extends Controller
         }
         $order->save();
         $cart = [];
+        $smspdinfo = "";
         foreach($products as $shopping_cart){
+            $smspdinfo .= $shopping_cart->o_name." = ".$shopping_cart->count." x ".$shopping_cart->price." = ".round($shopping_cart->count)*round($shopping_cart->price).",";
+
             $cart[] = ['order_id' =>$order->id, 'product_id' => $shopping_cart->id,'user_id'=> $user->id,'qty' => $shopping_cart->count,'price' => $shopping_cart->price,'ordered_at' => now()];        
         }
 
         $order->product()->attach($cart);
 
+
+
+        // $url = "http://66.45.237.70/api.php";
+        // $number= $user->phone;
+        // $adminnumber = "01700817934";
+
+        // $text = $user->name." Your Order has been received. Product:".$smspdinfo."Discount: ".$disc_amount." Delivery Charge = ". $shipping." Tk.Total Payable Amount = ".$order->amount." Tk.(Vision Mart)";
+
+        // $text2 = "New Ecommerce Order in Visionmart Customer: ".$user->name." Product: ".$smspdinfo." Address: ".$order->address.". Total Payable Amount = ".$order->amount.". Please Review The Order In Ecommerce Dashboard";
+
+        // $data= array(
+        // 'username'=>"shajibazher",
+        // 'password'=>"UtUs6B8WVqjmm72",
+        // 'number'=>"$number",
+        // 'message'=>"$text"
+        // );
+
+        // $data2 = array(
+        //     'username'=>"shajibazher",
+        //     'password'=>"UtUs6B8WVqjmm72",
+        //     'number'=>"$adminnumber",
+        //     'message'=>"$text2"
+        // );
+        // $ch = curl_init(); // Initialize cURL
+        // curl_setopt($ch, CURLOPT_URL,$url);
+
+
+        // //Sms For Customer
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $smsresult = curl_exec($ch);
+        // $p = explode("|",$smsresult);
+        // $sendstatus1 = $p[0];
+
+        // //Sms For Admin
+
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data2));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $smsresult = curl_exec($ch);
+        // $p = explode("|",$smsresult);
+        // $sendstatus2 = $p[0];
+
+
+
+
         Session::flash('OrderCompleted',true);
-
-
 
         if (Auth::attempt($credentials,'on')) {
             return redirect(route('order.confirmation',$order->id));
@@ -133,9 +174,6 @@ class CheckoutPageController extends Controller
 
 
         
-        
-
-        
     }
 
     public function oldcustomerorder(Request $request, $id){
@@ -143,8 +181,6 @@ class CheckoutPageController extends Controller
             'cartdata' => 'required',
             'phone' => 'required',
             'division' => 'required',
-            'district' => 'required',
-            'area' => 'required',
             'address' => 'required|max:500',
             'payment_method' => 'required',
         ]);
@@ -160,9 +196,6 @@ class CheckoutPageController extends Controller
         $cartdata = json_decode($request->cartdata);
         $products = json_decode($cartdata);
         
-
-
-
 
          $today = Carbon::now()->toDateString(); 
         $delivery_info = Deliveryinfo::first();
@@ -195,7 +228,6 @@ class CheckoutPageController extends Controller
         $user->save();
 
 
-         
         //order 
         
         $order = new Order;
@@ -210,8 +242,6 @@ class CheckoutPageController extends Controller
         $order->shipping_status = 0;
         $order->order_status = 0;
         $order->division_id = $request->division;
-        $order->district_id = $request->district;
-        $order->area_id = $request->area;
         $order->address = $request->address;
         $order->amount = $amount_total;
         $order->invoice_id = $request->user_id.time().rand(1,500);
@@ -224,11 +254,55 @@ class CheckoutPageController extends Controller
 
 
         $cart = [];
+        $smspdinfo = "";
         foreach($products as $shopping_cart){
-            $cart[] = ['order_id' =>$order->id, 'product_id' => $shopping_cart->id,'user_id'=>  Auth::user()->id,'qty' => $shopping_cart->count,'price' => $shopping_cart->price,'ordered_at' => now()];        
+            $cart[] = ['order_id' =>$order->id, 'product_id' => $shopping_cart->id,'user_id'=>  Auth::user()->id,'qty' => $shopping_cart->count,'price' => $shopping_cart->price,'ordered_at' => now()];     
+            
+            $smspdinfo .= $shopping_cart->o_name." = ".$shopping_cart->count." x ".$shopping_cart->price." = ".round($shopping_cart->count)*round($shopping_cart->price).",";
         }
 
         $order->product()->attach($cart);
+
+
+        // $url = "http://66.45.237.70/api.php";
+        // $number= $user->phone;
+        // $adminnumber = "01700817934";
+
+        // $text = $user->name." Your Order has been received. Product:".$smspdinfo."Discount: ".$disc_amount." Delivery Charge = ". $shipping." Tk.Total Payable Amount = ".$order->amount." Tk.(Vision Mart)";
+
+        // $text2 = "New Ecommerce Order in Visionmart Customer: ".$user->name." Product: ".$smspdinfo." Address: ".$order->address.". Total Payable Amount = ".$order->amount.". Please Review The Order In Ecommerce Dashboard";
+
+        // $data= array(
+        // 'username'=>"shajibazher",
+        // 'password'=>"UtUs6B8WVqjmm72",
+        // 'number'=>"$number",
+        // 'message'=>"$text"
+        // );
+
+        // $data2 = array(
+        //     'username'=>"shajibazher",
+        //     'password'=>"UtUs6B8WVqjmm72",
+        //     'number'=>"$adminnumber",
+        //     'message'=>"$text2"
+        // );
+        // $ch = curl_init(); // Initialize cURL
+        // curl_setopt($ch, CURLOPT_URL,$url);
+
+
+        // //Sms For Customer
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $smsresult = curl_exec($ch);
+        // $p = explode("|",$smsresult);
+        // $sendstatus1 = $p[0];
+
+        // //Sms For Admin
+
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data2));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $smsresult = curl_exec($ch);
+        // $p = explode("|",$smsresult);
+        // $sendstatus2 = $p[0];
         Session::flash('OrderCompleted',true);
         return redirect(route('order.confirmation',$order->id));
 

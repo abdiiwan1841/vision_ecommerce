@@ -19,7 +19,8 @@ class CreateUsersTable extends Migration
             $table->string('proprietor')->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('inventory_email')->unique()->nullable();
-            $table->string('phone');
+            $table->string('custom_email')->nullable();
+            $table->string('phone')->nullable();
             $table->text('address');
             $table->string('company')->nullable();
             $table->foreignId('division_id')->references('id')->on('divisions');

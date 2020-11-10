@@ -52,7 +52,7 @@
                   <select name="role" id="role" class="form-control">
                     <option value="">-select admin role-</option>
                     @foreach ($roles as $item)
-                  <option value="{{$item->id}}" @if($admin->role_id == $item->id) selected @endif>{{$item->name}}</option>
+                  <option value="{{$item->name}}" @if($admin->roles[0]->id == $item->id) selected @endif>{{$item->name}}</option>
                     @endforeach
                     
                   </select>

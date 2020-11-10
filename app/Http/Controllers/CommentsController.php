@@ -10,6 +10,14 @@ use Brian2694\Toastr\Facades\Toastr;
 class CommentsController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('auth:admin');
+        $this->middleware('permission:Ecommerce Section');
+        
+    }
+
+    
     public function index(){
         $comments = Comments::all();
         return view('ecom.comments.index',compact('comments'));

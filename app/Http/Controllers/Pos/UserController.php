@@ -25,7 +25,7 @@ class UserController extends Controller
     
     public function index()
     {
-        $customers = User::with('area')->where('user_type','pos')->get();
+        $customers = User::where('user_type','pos')->get();
         return view('pos.user.index',compact('customers'));
     }
 
@@ -38,7 +38,7 @@ class UserController extends Controller
     {
        
         $divisions = Division::all();
-        $sections = Section::all();
+        $sections = Section::where('module','inventory')->get();
         return view('pos.user.create',compact('divisions','sections'));
     }
 
@@ -57,8 +57,6 @@ class UserController extends Controller
             // 'inventory_email' => 'unique:users',
             'phone' => 'required',
             'division' => 'required',
-            'district' => 'required',
-            'area' => 'required',
             'section' => 'required|integer',
             'address' => 'required|max:500',
         ]);
@@ -69,8 +67,6 @@ class UserController extends Controller
         $user->inventory_email = $request->inventory_email;
         $user->phone = $request->phone;
         $user->division_id = $request->division;
-        $user->district_id = $request->district;
-        $user->area_id = $request->area;
         $user->address = $request->address;
         $user->section_id = $request->section;
         $user->password = Hash::make(123456);
@@ -106,7 +102,7 @@ class UserController extends Controller
         $products = Product::all();
         $customer = User::findOrFail($id);
         $divisions = Division::all();
-        $sections = Section::all();
+        $sections = Section::where('module','inventory')->get();
         $pricedata =  $customer->pricedata;
         return view('pos.user.edit',compact('divisions','customer','products','pricedata','sections'));
     }
@@ -126,8 +122,6 @@ class UserController extends Controller
             // 'inventory_email' => 'unique:users,inventory_email,'.$id,
             //'phone' => 'integer',
             'division' => 'required',
-            'district' => 'required',
-            'area' => 'required',
             'section' => 'required',
             'address' => 'required|max:500',
         ]);
@@ -138,8 +132,6 @@ class UserController extends Controller
         $user->inventory_email = $request->inventory_email;
         $user->phone = $request->phone;
         $user->division_id = $request->division;
-        $user->district_id = $request->district;
-        $user->area_id = $request->area;
         $user->section_id = $request->section;
         $user->address = $request->address;
         if(strlen($request->pricedata) < 6){
@@ -165,11 +157,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->deleted_at = now();
-        $user->save();
-        Session::flash('success','User Deleted successfully');
-        return redirect(route('customers.index'));
+        return false;
     }
 
     public function export(Request $request){
