@@ -87,7 +87,7 @@
 		<div class="small-box" style="background: #B53471">
 		  <div class="inner">
 		
-		  <h3>{{$current_month_order}}</h3>
+		  <h3>{{round($current_month_order)}}</h3>
 
 		  <span class="text-white"  >{{\Carbon\Carbon::now()->format('F')}} Ecommerce Order upto <h5 class="badge badge-dark">{{\Carbon\Carbon::now()->format('d-m-Y g:i a')}} </h5></span>
 		  </div>
@@ -102,7 +102,7 @@
 		<div class="small-box" style="background: #A3CB38">
 		  <div class="inner">
 		
-		  <h3>{{$current_year_order}}</h3>
+		  <h3>{{round($current_year_order)}}</h3>
 
 		  <span class="text-white"  >Total Order In Year <b> {{\Carbon\Carbon::now()->format('Y')}} </b> upto <h5 class="badge badge-dark">{{\Carbon\Carbon::now()->format('d-m-Y g:i a')}} </h5></span>
 		  </div>
@@ -270,8 +270,8 @@
 
 				  @foreach ($last_ten_orders as $order_item)
 					  <tr>
-					  <td class="align-middle">#{{\Carbon\Carbon::now()->format('Y')}}{{$order_item->id}}</td>
-					  <td style="width: 120px;" class="align-middle">{{$order_item->ordered_at->format('d-m-Y g:i a')}}</td>
+					  <td class="align-middle"> <a href="{{route('order.show',$order_item->id)}}">#{{\Carbon\Carbon::now()->format('Y')}}{{$order_item->id}} </a></td>
+					  <td style="width: 120px;" class="align-middle"><a href="{{route('order.show',$order_item->id)}}">{{$order_item->ordered_at->format('d-m-Y g:i a')}} </a></td>
 					  <td class="align-middle">
 							<table class="table">
 								<tr>
@@ -292,6 +292,7 @@
 								<td>Order Status</td>
 								<td>{!!FashiOrderStatus($order_item->order_status)!!}</td>
 							</tr>
+							@if($order_item->order_status != 2)
 							<tr>
 								 <td>Payment Status</td>
 								 <td>{!!FashiPaymentStatus($order_item->payment_status)!!}</td>
@@ -300,6 +301,7 @@
 								<td>Delivery Status</td>
 								<td>{!!FashiShippingStatus($order_item->shipping_status)!!}</td>
 							</tr>
+							@endif
 						</table>  
 						
 						

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 use Session;
-use App\Area;
 use App\Cash;
 use App\Sale;
 use App\User;
@@ -11,7 +10,6 @@ use App\Order;
 use App\Company;
 use App\Prevdue;
 use App\Product;
-use App\District;
 use App\Purchase;
 use App\Supplier;
 use Carbon\Carbon;
@@ -19,17 +17,12 @@ use App\Paymentmethod;
 use App\Returnproduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 
 class ApiInformationController extends Controller
 {
-    public function districtinfo($id){
-        return District::where('division_id',$id)->get();
-    }
-    public function areainfo($id){
-        return Area::where('district_id',$id)->get();
-    }
-    
+
     public function userinfo($id){
         return User::findOrFail($id);
     }
@@ -151,12 +144,18 @@ class ApiInformationController extends Controller
     }
 
     public function deliveryman(){
-        return Admin::where('role_id',4)->get();
+        return Admin::get();
     }
 
     public function dynamicProduct($limit=10){
         $total_products = Product::where('type','ecom')->count('id');
         $dynamic_products = Product::with('brand','category','size','subcategory')->where('type','ecom')->orderBy('id','desc')->take($limit)->get();
         return ['total_products' => $total_products,'dynamic_products' => $dynamic_products];
+    }
+
+    public function getrolepermissions($rolename){
+        $role = Role::where('name',$rolename)->with('permissions')->first();
+        return $role;
+    
     }
 }

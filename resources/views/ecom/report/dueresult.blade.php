@@ -6,10 +6,10 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                Ecommerce Divisionwise  Statement
+                Ecommerce Due Report
             </div>
             <div class="card-body">
-            <form action="{{route('report.ecomdivisionreportresult')}}" method="POST">
+            <form action="{{route('report.ecomduereportresult')}}" method="POST">
               @csrf
                 <div class="row">
 

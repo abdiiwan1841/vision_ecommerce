@@ -15,6 +15,8 @@ class PaymentController extends Controller
 
     public function __construct(){
         $this->middleware('auth:admin');
+        $this->middleware('permission:Supplier Section');
+        $this->middleware('permission:Payment Edit')->only('edit','update');
     }
 
     

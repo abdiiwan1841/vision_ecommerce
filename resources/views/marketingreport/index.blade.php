@@ -86,11 +86,11 @@
                                   <td>{{$item->order}}</td>
                                   <td>{{$item->delivery}}</td>
                                   <td>{{$item->market}}</td>
-                                  <td><a  class="btn btn-warning btn-sm" href="{{route('marketingreport.edit',$item->id) }}"><i class="fas fa-edit"></i></a> @if(Auth::user()->role->id == 1) | <form action="{{route('marketingreport.destroy',$item->id) }}" method="POST" style="display: inline-block">
+                                  <td><a  class="btn btn-warning btn-sm" href="{{route('marketingreport.edit',$item->id) }}"><i class="fas fa-edit"></i></a> | <form action="{{route('marketingreport.destroy',$item->id) }}" method="POST" style="display: inline-block">
                                   @csrf
                                   @method('DELETE')
                                   <button onclick="return confirm('Are You Sure Want Move this to Trash?')" type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>  
-                                  </form> @endif</td>
+                                  </form></td>
                                 
                               </tr>
           

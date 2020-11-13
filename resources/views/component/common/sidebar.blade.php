@@ -217,53 +217,68 @@
             <ul class="collapse list-unstyled {{Request::is('admin/pos*') ? 'active collapse show' : '' }}" id="pos">
             
           
-
-
+        @can('Inventory Customers')
         <li class="{{Request::is('admin/pos/customers') ? 'active' : '' }}">
             <a href="{{ route('customers.index') }}"><i class="fas fa-user-friends"></i>Customers</a>
         </li>
+        @endcan
 
+        @can('Inventory PrevDue')
         <li class="{{Request::is('admin/pos/prevdue*') ? 'active' : '' }}">
             <a href="{{ route('prevdue.index') }}"><i class="fas fa-search-dollar"></i> Previous Due</a>
         </li>
+        @endcan
+
+        @can('Sales Invoices')
         <li class="{{Request::is('admin/pos/sale*') ? 'active' : '' }}">
             <a href="{{ route('sale.index') }}"><i class="fas fa-people-carry"></i>Sales Invoices</a>
         </li>
+        @endcan
+
+        @can('Inventory Cashes')
         <li class="{{Request::is('admin/pos/cash*') ? 'active' : '' }}">
             <a href="{{ route('cash.index') }}"><i class="fas fa-hand-holding-usd"></i>Cashes</a>
         </li>
+        @endcan
+
+        @can('Inventory Returns')
         <li class="{{Request::is('admin/pos/returnproduct*') ? 'active' : '' }}">
             <a href="{{ route('returnproduct.index') }}"><i class="fas fa-undo"></i>Returns</a>
         </li>
+        @endcan
+
         
             
             </ul>
         
         </li>
         
-
+        @can('Company Information Access')
         <li class="{{Request::is('admin/company*') ? 'active' : '' }}">
             <a href="{{ route('company.index') }}"><i class="fas fa-building"></i> Company Information</a>
         </li>
+        @endcan
 
+        @can('Update Ecom Price')
         <li class="{{Request::is('admin/allprice*') ? 'active' : '' }}">
             <a href="{{ route('price.index') }}"><i class="fas fa-dollar-sign"></i> Update Ecommerce Price</a>
         </li>
-        
+        @endcan
+
+        @can('Update Trade Price')
         <li class="{{Request::is('admin/tp*') ? 'active' : '' }}">
             <a href="{{ route('tp.index') }}"><i class="fas fa-money-bill-alt"></i> Update Trade Price</a>
         </li>
+        @endcan
         
+        @can('Purchase')
         <li class="{{Request::is('admin/purchase*') ? 'active' : '' }}">
         <a href="{{ route('purchase.index') }}"> <i class="fas fa-store"></i> Purchase</a>
         </li>
-        
+        @endcan
   
-        
-            
-
-
-            <li class="">
+        @can('Supplier Section')
+            <li>
             <a href="#suppliersection" data-toggle="collapse" aria-expanded="{{Request::is('admin/suppliersection*') ? 'true' : '' }}" class="dropdown-toggle"> <i class="fas fa-hospital-user"></i> Suppliers Section</a>
             <ul class="collapse list-unstyled {{Request::is('admin/suppliersection*') ? 'active collapse show' : '' }}" id="suppliersection">
             
@@ -281,9 +296,11 @@
             </ul>
 
            </li>
+
+           @endcan
         
             
-           
+           @can('Employee Section')
         
             <li class="{{Request::is('admin/emp_type*') ? 'active' : '' }}">
                 <a href="{{ route('emp_type.index') }}"><i class="fas fa-user-tag"></i>  Employee Type</a>
@@ -293,10 +310,13 @@
                 <a href="{{ route('employee.index') }}"><i class="fas fa-users"></i>  Employee's</a>
             </li>
 
+            @endcan
+
+            @can('Marketing Report')
             <li class="{{Request::is('admin/marketingreport*') ? 'active' : '' }}">
                 <a href="{{ route('marketingreport.index') }}"><i class="fas fa-bullhorn"></i>Marketing Sales Report</a>
             </li>
-           
+           @endcan
 
             @can('Admin Permission')
             <li class="{{Request::is('admin/admininfo*') ? 'active' : '' }}">
@@ -311,20 +331,29 @@
         <li class="{{Request::is('admin/report*') ? 'active' : '' }}">
             <a href="#user-outstanding" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> <i class="fa fa-info-circle"></i> Reports</a>
             <ul class="collapse list-unstyled {{Request::is('admin/report*') ? 'active collapse show' : '' }}" id="user-outstanding">
-        
-        
+                
+
+
+                @can('Inventory Customer Statements')
                 <li class="{{Request::is('admin/report/pos/posuserstatement') ? 'active' : '' }}">
                     <a href="{{ route('report.posuserstatement') }}"><i class="fa fa-layer-group"></i> customer Statement</a>
                 </li>
+                @endcan
         
+
+                @can('Inventory Details Statements')
                 <li class="{{Request::is('admin/report/pos/posdeatailstatement') ? 'active' : '' }}">
                     <a href="{{ route('report.posdetailstatement') }}"><i class="fa fa-layer-group"></i> customer Detail Statement</a>
                 </li>
+                @endcan
         
+                @can('Inventory Due Report')
                 
                 <li class="{{Request::is('admin/report/pos/duereport*') ? 'active' : '' }}">
                     <a href="{{ route('report.duereport') }}"><i class="fa fa-layer-group"></i>Customer Due Report</a>
                 </li>
+
+                @endcan
                 
                 @can('Stock Report')
                 <li class="{{Request::is('admin/report/stockreport') ? 'active' : '' }}">
@@ -332,32 +361,60 @@
                   </li>
                 @endcan
         
-                  <li class="{{Request::is('admin/report/ecom/ecomuserstatement') ? 'active' : '' }}">
-                    <a href="{{ route('report.ecomuserstatement') }}"> <i class="fa fa-layer-group"></i> Ecommerce Customer Satements</a>
-                  </li>
-        
-                  <li class="{{Request::is('admin/report/ecom/divisiowisenreport*') ? 'active' : '' }}">
-                    <a href="{{ route('report.ecomdivisionreport') }}"><i class="fa fa-layer-group"></i> Ecommerce Divisionwise Report</a>
-                </li>
+              
+
+               
+
+              
+
+
+                @can('Inventory Cash Report')
                 <li class="{{Request::is('admin/report/cashreport*') ? 'active' : '' }}">
                     <a href="{{ route('report.poscashreport') }}"><i class="fa fa-layer-group"></i> Cash Report</a>
                 </li>
+                @endcan
 
+
+                @can('Inventory Sales Report')
                 <li class="{{Request::is('admin/report/pos/salesreport*') ? 'active' : '' }}">
                     <a href="{{ route('report.possalesreport') }}"><i class="fa fa-layer-group"></i>Sales Report</a>
                 </li>
-
+                @endcan
+                
+                @can('Inventory Delivery Report')
                 <li class="{{Request::is('admin/report/pos/deliveryreport*') ? 'active' : '' }}">
                     <a href="{{ route('report.posdeliveryreport') }}"><i class="fa fa-layer-group"></i>Delivery Report</a>
                 </li>
+                @endcan
 
-
+                @can('Supplier Due Report')
                 <li class="{{Request::is('admin/report/supplierdue*') ? 'active' : '' }}">
                     <a href="{{ route('report.supplierdue') }}"><i class="fa fa-layer-group"></i>Supplier Due Report</a>
                 </li> 
+                @endcan
+                
                 <li class="{{Request::is('admin/report/marketingreport*') ? 'active' : '' }}">
                     <a href="{{ route('report.marketingreport') }}"><i class="fa fa-layer-group"></i>Marketing Report</a>
-                </li>     
+                </li>
+                
+                
+                @can('Ecommerce OrderReport')
+                <li class="{{Request::is('admin/report/ecom/orderreport*') ? 'active' : '' }}">
+                    <a href="{{ route('report.orderreport') }}"><i class="fa fa-layer-group"></i> Ecommerce Order Report</a>
+                </li>
+                @endcan
+
+                @can('Ecom Due Report')
+                <li class="{{Request::is('admin/report/ecom/divisiowisenreport*') ? 'active' : '' }}">
+                  <a href="{{ route('report.ecomduereport') }}"><i class="fa fa-layer-group"></i> Ecommerce Due Report</a>
+              </li> 
+              @endcan
+
+              @can('Ecom Statement')
+              <li class="{{Request::is('admin/report/ecom/ecomuserstatement') ? 'active' : '' }}">
+                <a href="{{ route('report.ecomuserstatement') }}"> <i class="fa fa-layer-group"></i> Ecommerce Customer Satements</a>
+              </li>
+            @endcan
                 
             </ul>
         

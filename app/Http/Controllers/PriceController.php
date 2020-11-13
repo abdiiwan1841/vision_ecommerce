@@ -11,9 +11,10 @@ class PriceController extends Controller
 
     public function __construct(){
         $this->middleware('auth:admin');
+        $this->middleware('permission:Update Ecom Price')->only('index','update');
+        $this->middleware('permission:Update Trade Price')->only('tpindex','tpupdate');
     }
 
-    
     public function index(){
         $products = Product::orderBy('product_name', 'ASC')->get();
         return view('price.index',compact('products'));

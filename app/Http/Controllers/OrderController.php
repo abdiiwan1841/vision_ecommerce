@@ -263,6 +263,7 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
         $order->order_status = 2;
         $order->shipping_status = 2;
+        $order->amount = 0;
         $order->save();
         $order->product()->detach();
         Toastr::success('Order cancelled Successfully', 'success');

@@ -18,8 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('district/{id}', 'Api\ApiInformationController@districtinfo');
-Route::get('area/{id}', 'Api\ApiInformationController@areainfo');
+
 Route::get('userinfo/{id}', 'Api\ApiInformationController@userinfo');
 Route::get('supplierinfo/{id}', 'Api\ApiInformationController@supplierinfo');
 Route::get('productinfo/{id}', 'Api\ApiInformationController@productinfo');
@@ -36,3 +35,4 @@ Route::get('invdueinfo/{id}', 'Api\ApiInformationController@invdueinfo');
 Route::get('pendingdeliveryinfo/{id}', 'Api\ApiInformationController@pendingDeliveryInfo')->name('pendingdeliveryinfo.api');
 Route::get('deliveryman', 'Api\ApiInformationController@deliveryman')->name('deliveryman.api');
 Route::get('dynamicproduct/{limit}', 'Api\ApiInformationController@dynamicProduct');
+Route::get('getrolepermissions/{rolename}', 'Api\ApiInformationController@getrolepermissions');

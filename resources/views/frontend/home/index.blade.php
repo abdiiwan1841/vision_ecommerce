@@ -87,10 +87,8 @@ $colors = ["#eb4d4b", "#A3CB38", "#f1c40f", "#f39c12", "#2980b9", "#ff7979", "pu
 
 
 
-
-      <div class="row">
-
-        
+<div class="container-fluid">
+<div class="row">  
 <div class="col-lg-12">
 
   <div class="product-list banner-section spad">
@@ -125,12 +123,12 @@ if($item->in_stock == false){
                   <span class="badge badge-pink">{{$item->brand->brand_name}}</span> 
               </div>
                 <ul>
-                <li class="w-icon active homepd"><a id="pd-${data.id}" href="javascript:void(0)"  class="add-to-cart" onclick="addToCart({{$item->id}},'{{$item->product_name}}','{{url('/')}}/public/uploads/products/tiny/{{$item->image}}',{{round($item->current_price)}},{{$item->in_stock}})"><i class=" icon_cart_alt"></i></a></li>
-                    <li class="quick-view homepd"><a href="{{url('/')}}/product/${data.id}">+ Details</a></li>
+                <li class="w-icon active homepd"><a id="pd-{{$item->id}}" href="javascript:void(0)"  class="add-to-cart" onclick="addToCart({{$item->id}},'{{$item->product_name}}','{{url('/')}}/public/uploads/products/tiny/{{$item->image}}',{{round($item->current_price)}},{{$item->in_stock}})"><i class=" icon_cart_alt"></i></a></li>
+                    <li class="quick-view homepd"><a href="{{url('/')}}/product/{{$item->id}}">+ Details</a></li>
                 </ul>
               </div>
             <div class="pi-text">
-              <div class="catagory-name"><span style="color: purple">${{$item->subcategory->subcategory_name}}</span> - Size:  {{$item->size->name}} </div>
+              <div class="catagory-name"><span style="color: purple">{{$item->subcategory->subcategory_name}}</span> - Size:  {{$item->size->name}} </div>
                 <a href="${url}/product/${data.id}">
                     <h5>{{$item->product_name}}</h5>
                 </a>
@@ -347,7 +345,7 @@ if($item->in_stock == false){
 
   </div>
 </div>
-
+</div>
 
 
 

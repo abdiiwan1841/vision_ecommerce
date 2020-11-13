@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
+use Spatie\Permission\Models\Permission;
 
 class adminController extends Controller
 {
@@ -34,7 +35,7 @@ class adminController extends Controller
 
     public function index(){
         
-        $admins = Admin::with('roles')->get();
+        $admins = Admin::where('id','!=',Auth::user()->id)->with('roles')->get();
         return view('admin.admininfo.index',compact('admins'));
     }
 
@@ -87,7 +88,8 @@ class adminController extends Controller
     public function edit($id){
         $roles = Role::all();
         $admin = Admin::findOrFail($id);
-        return view('admin.admininfo.edit',compact('admin','roles'));
+        $permissions = Permission::all();
+        return view('admin.admininfo.edit',compact('admin','roles','permissions'));
     }
 
 
@@ -102,6 +104,13 @@ class adminController extends Controller
     
         $admin = Admin::findOrFail($id);
 
+
+        // $d_permit = [];
+        // if($request->has('permissions')){
+        //     foreach($request->permissions as $dp){
+        //         $d_permit[] = $dp['name'];
+        //     }   
+        // }
         if($request->hasFile('signature')){
             //get form image
             $image = $request->file('signature');
@@ -137,8 +146,12 @@ class adminController extends Controller
         $admin->phone = $request->phone;
         $admin->save();
         $admin->syncRoles($request->role);
+
+        if($request->has('permissions')){
+            $admin->givePermissionTo($request->permissions);
+        }
         Toastr::success('Admin Updated Successfully','success');
-        return redirect(route('admininfo.index'));
+        return redirect()->back();
     }
 
 

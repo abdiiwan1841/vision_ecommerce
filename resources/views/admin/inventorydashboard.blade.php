@@ -284,7 +284,7 @@
 	<div class="row">
 		<span class="alert alert-success">No Pending Sales Found</span>
 	</div>
-
+	@endif
 	  <hr>
 	</div>
 		</div>
@@ -345,18 +345,14 @@
 			<td class="align-middle"> 
 				@if($pending_cash_item->status == 0)
 		
-				{{-- @if(Auth::user()->role->id == 1) --}}
-				
+					@can('Inventory Approval Cashes')
 					<button id="cash-{{$pending_cash_item->id}}"  onclick="Confirmation('{{route('cash.approve',$pending_cash_item->id)}}','{{$pending_cash_item->user->name}}','{{$pending_cash_item->amount}}')"  type="button" class="btn btn-sm btn-danger">Approve</button>
-	
-					{{-- @else --}}
+					@else
 	
 					<span class="badge badge-warning">pending</span>
-				{{-- @endif --}}
-				@else
-	
-	
-				<span class="badge badge-warning">pending</span>
+
+				    @endcan
+
 				@endif</td>
 				
 			</tr>
@@ -429,8 +425,7 @@
 	</div>
 		</div>
 	<!-- End -->
-	
-	@endif
+
 	
 	
 	
@@ -853,7 +848,17 @@ const swalWithBootstrapButtons = Swal.mixin({
   buttonsStyling: false
 });
 
-	var role = 1;
+	var CashApprovalPermission = false;
+	var ReturnApprovalPermission = false;
+
+	@can('Approve Sales Invoice')
+	CashApprovalPermission = true;
+	@endcan
+
+	@can('Inventory Approve Returns')
+	ReturnApprovalPermission = true;
+	@endcan
+
 	function PendingSalesInfo(salesinfourl,salesapproveurl,customerid){
 		
 		function getSalesInfo() {
@@ -950,7 +955,7 @@ const swalWithBootstrapButtons = Swal.mixin({
 
 $("#InfoModalLabel").text('Pending Sales Information');
 $(".modal-header").css('background','#F6E58D')
-if(role == 1){
+if(CashApprovalPermission == true){
 	$("#InfoModal-footer").html(`<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button onclick="SalesApprove('${salesapproveurl}')" type="button" id="sales_approval" class="btn btn-success">Approve</button>`);
 }else{
 	$("#InfoModal-footer").html(`<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>`);
@@ -1054,7 +1059,7 @@ $("#InfoModal").modal('show');
 
 $("#InfoModalLabel").text('Pending Return Information');
 $(".modal-header").css('background','#b8e994')
-if(role == 1){
+if(ReturnApprovalPermission == true){
 	$("#InfoModal-footer").html(`<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button onclick="returnApprove('${returnapproveurl}')" type="button" id="sales_approval" class="btn btn-success">Approve</button>`);
 }else{
 	$("#InfoModal-footer").html(`<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>`);
@@ -1094,6 +1099,7 @@ if(role == 1){
 			
 		})
 		.catch(function (error) {
+			toastr.error(error.response.data.message,error.response.status)
 			console.log(error);
 			
 		});
@@ -1173,8 +1179,8 @@ if(role == 1){
 			
 		})
 		.catch(function (error) {
-			console.log(error);
-			
+			toastr.error(error.response.data.message,error.response.status)
+			console.log(error.response);			
 		});
 	}
 
@@ -1185,10 +1191,16 @@ if(role == 1){
 			
 			$("#cash-"+response.request.response).html('<i class="fas fa-check"></i> done').css('background','#44bd32').css('border','none').attr('disabled',true);
 			$(".cash-"+response.request.response).css('background','#F1F2F6').delay(6000).fadeOut('slow');
+		swalWithBootstrapButtons.fire(
+			'Approved Successfully!',
+			'Your Data Has Been Stored',
+			'success'
+			)
 			
 		})
 		.catch(function (error) {
-			console.log(error);
+			toastr.error(error.response.data.message,error.response.status)
+			console.log(error.response);			
 		});
 
 	}
@@ -1448,7 +1460,7 @@ function sendDeliveryForm(delivery_marked_url){
 	
 function Confirmation(cash_aprove_url,customer,amount){
 	swalWithBootstrapButtons.fire({
-  title: 'Are you sure? '+customer+' Amount: '+amount+'/-',
+  title: 'Are you sure? '+customer+' Amount: '+Math.round(amount)+'/-',
   text: "You won't be able to revert this!",
   icon: 'warning',
   showCancelButton: true,
@@ -1457,12 +1469,7 @@ function Confirmation(cash_aprove_url,customer,amount){
   reverseButtons: true
 }).then((result) => {
   if (result.value) {
-	CashApprove(cash_aprove_url)
-    swalWithBootstrapButtons.fire(
-      'Approved Successfully!',
-      'Your Data Has Been Stored',
-      'success'
-    )
+	 CashApprove(cash_aprove_url);
   } else if (
     /* Read more about handling dismissals below */
     result.dismiss === Swal.DismissReason.cancel

@@ -3,14 +3,12 @@
 @section('content')
 
 
-
-
 <section class="invoice_content">
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
 
-
+            @if($sale->sales_status != 2)
 
             <!-- Main content -->
             <div class="invoice p-3 mb-3">
@@ -26,7 +24,7 @@
               </div>
               <div class="col-lg-4">
                 @if($sale->sales_status == 0)
-                @if(Auth::user()->role->id == 1)
+                @can('Ecom Order Approval')
                
                   <button onclick="SalesApproval('{{route('sale.approve',$sale->id)}}')" type="submit" class="btn btn-warning btn-sm mb-3 float-right" style="margin-right: 5px;">
                     <i class="fas fa-check"></i> APPROVE THIS ORDER ?
@@ -40,7 +38,7 @@
                     <i class="fas fa-trash"></i> Cancel
                   </button>
                 </form>
-                @endif
+                @endcan
                 @else
               <button  disabled type="button" class="btn btn-success"><i class="fas fa-check"></i>  Approved by {{$signature->name}} <br><span class="badge badge-warning">{{$sale->updated_at->format('d-F-Y g:i a')}}</span></button>
     
@@ -239,7 +237,7 @@
 
                   @if($sale->sales_status == 1)
 
-                  @if(Auth::user()->role->id == 1)
+                  @can('Ecom Order Cancel')
                   <form id="delete-from-{{$sale->id}}" style="display: inline-block;" action="{{route('sale.destroy',$sale->id)}}" method="POST">
                     @csrf
                     @method('DELETE')
@@ -272,6 +270,10 @@
             </div>
             <!-- /.invoice -->
           </div><!-- /.col -->
+
+
+
+          @endif
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </section>
@@ -287,19 +289,9 @@
 function SalesApprove(sales_approve_url){
 		axios.post(sales_approve_url)
 		.then(function (response) {
-			let feedback = JSON.parse(response.request.response);
-			if(feedback.status == 0){
-				toastr.error(feedback.msg, 'Notifications')
-			}else if(feedback.status == 1){
-				
-        toastr.success(feedback.msg, 'Notifications')
-
+        let feedback = JSON.parse(response.request.response);
+        toastr.success(feedback.message, 'Notifications')
         location.reload();
-			
-			}
-
-
-			
 		})
 		.catch(function (error) {
 			console.log(error);

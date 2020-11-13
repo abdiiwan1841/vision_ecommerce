@@ -20,6 +20,8 @@ class UserController extends Controller
 {
     public function __construct(){
         $this->middleware('auth:admin');
+        $this->middleware('permission:Inventory Customers');
+        $this->middleware('permission:Inventory Customer Edit')->only('edit','update');
     }
 
     

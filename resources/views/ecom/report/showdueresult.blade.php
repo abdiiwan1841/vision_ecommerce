@@ -11,7 +11,7 @@
             <div class="card-body">
               <div class="row">
                 <div class="col-lg-12">
-                  <form action="{{route('report.ecomdivisionreportresult')}}" method="POST">
+                  <form action="{{route('report.ecomduereportresult')}}" method="POST">
                     @csrf
                       <div class="row">
 
@@ -52,8 +52,7 @@
               <div class="row">
                 <div class="col-lg-12">
                   <div class="statement_table table-responsive">
-                    <h4 style="text-align: center;text-transform: uppercase;padding: 30px 0;font-family:Sans-serif">Ecommerce Division Wise Report</h4>
-                    <h4 class="text-center">{{$d_info->name}} Division</h4>
+                    <h4 style="text-align: center;text-transform: uppercase;padding: 30px 0;font-family:Sans-serif">Ecommerce Due Report</h4>
                     <h5 class="text-center mb-5">From {{date("d-M-Y", strtotime($request->start) )}} To {{date("d-M-Y", strtotime($request->end) )}}</h5>
 
                 </div>
@@ -132,11 +131,10 @@
                       <tr>
                         <td>Action</td>
                         <td>
-                        <form action="{{route('report.pdfecomdivisionreportresult')}}" method="POST">
+                        <form action="{{route('report.pdfecomduereportresult')}}" method="POST">
                             @csrf
                               <input type="hidden" name="end" value="{{$request->end}}">
                               <input type="hidden" name="start" value="{{$request->start}}">
-                              <input type="hidden" name="division" value="{{$request->division}}">
                               <button type="submit" class="btn btn-success">Download PDF</button>
                           </form>
                          

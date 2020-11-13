@@ -24,6 +24,10 @@ class SaleController extends Controller
 
     public function __construct(){
         $this->middleware('auth:admin');
+        $this->middleware('permission:Sales Invoices')->except('delivery');
+        $this->middleware('permission:Edit Sales Invoice')->only('edit','update');
+        $this->middleware('permission:Approve Sales Invoice')->only('approve');
+        $this->middleware('permission:Cancel Sales Invoice')->only('destroy');
     }
     
     public function index()
@@ -129,7 +133,7 @@ class SaleController extends Controller
 
     public function show($id)
     {
-        $sale = Sale::findOrFail($id);
+        $sale = Sale::withTrashed()->findOrFail($id);
         if(empty($sale->approved_by)){
             $signature = null;
         }else{
@@ -234,10 +238,7 @@ class SaleController extends Controller
 
     public function destroy(Sale $sale)
     {
-        if(Auth::user()->role->id == 2){
-            Toastr::error('You Are Not Authorized', 'error');
-            return redirect()->back();
-        }else{
+
         $sale->deleted_at = now();
         $sale->sales_status = 2;
         $sale->approved_by = Auth::user()->id;
@@ -245,8 +246,7 @@ class SaleController extends Controller
         $sale->save();
         $sale->product()->detach();
         Toastr::success('Sales cancelled Successfully', 'success');
-        return redirect()->route('returnproduct.index');
-        }
+        return redirect()->back();
     }
 
     public function invoice(Request $request,$id){

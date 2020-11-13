@@ -14,6 +14,8 @@ class PurchaseController extends Controller
 {
     public function __construct(){
         $this->middleware('auth:admin');
+        $this->middleware('permission:Purchase');
+        $this->middleware('permission:Purchase Edit')->only('edit','update');
     }
 
     

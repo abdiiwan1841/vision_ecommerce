@@ -23,7 +23,7 @@
 </head>
 <body style="background: #fff;font-size: 12px;">
               <div style="width: 50%;margin: 0 auto">
-                <h5 style="text-align: center;font-family: Tahoma,sans-serif">Ecommerce Divisionwise Report</h5>
+                <h5 style="text-align: center;font-family: Tahoma,sans-serif">Ecommerce Due Report</h5>
                       <h6 class="text-center">{{$CompanyInfo->company_name}}</h6>
                       <p style="text-align: center;font-size: 11px">{{$CompanyInfo->address}} <br> <b>Email :</b>  {{$CompanyInfo->email}} <br> <b>Phone:</b>  {{$CompanyInfo->phone}}</p>
               </div>
@@ -33,7 +33,6 @@
 
 
                   <div class="statement_table table-responsive">
-                    <p class="text-center"><b>{{$d_info->name}} Division</b></p>
                     <p style="text-align: center;margin-bottom: 10px;font-weight: bold">From {{date("d-M-Y", strtotime($request->start) )}} To {{date("d-M-Y", strtotime($request->end) )}}</p>
                     <table class="table table-sm table-bordered">
        

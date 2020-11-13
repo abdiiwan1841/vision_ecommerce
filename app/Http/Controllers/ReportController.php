@@ -6,11 +6,9 @@ use PDF;
 use App\Cash;
 use App\Sale;
 use App\User;
-use App\Order;
 use App\Payment;
 use App\Prevdue;
 use App\Section;
-use App\Division;
 use App\Employee;
 use App\Purchase;
 use App\Supplier;
@@ -21,7 +19,6 @@ use App\Returnproduct;
 use App\MarketingReport;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ReportController extends Controller
@@ -29,6 +26,18 @@ class ReportController extends Controller
 
     public function __construct(){
         $this->middleware('auth:admin');
+
+        $this->middleware('permission:Inventory Customer Statements')->only('posUserStatement','showPosUserstatement','pdfPosUserstatement');
+
+        $this->middleware('permission:Inventory Details Statements')->only('posDeatilStatement','showPosDeatilStatement','pdfPosDeatilStatement');
+
+        $this->middleware('permission:Inventory Due Report')->only('InvDueReport','InvDueReportResult', 'pdfInvDueReportResult');
+
+        
+        $this->middleware('permission:Inventory Cash Report')->only('cashreport','showcashreport','pdfcashreport');
+        $this->middleware('permission:Inventory Sales Report')->only('SalesReport','SalesReportResult','pdfSalesReport');
+        $this->middleware('permission:Inventory Delivery Report')->only('DeliveryReport','ShowDeliveryReport','pdfDeliveryReport');
+        $this->middleware('permission:Supplier Due Report')->only('supplierdue','showsupplierdue','pdfsupplierdue');
     }
 
     public function date_sort($a, $b) {
@@ -36,141 +45,6 @@ class ReportController extends Controller
     }
     public function date_sort_desc($a, $b) {
         return  strtotime($b['date']) - strtotime($a['date']);
-    }
-
-
-
-
-
-    public function ecomUserStatement(){
-        $users = User::where('user_type','ecom')->get();
-        return view('ecom.report.userstatement',compact('users'));
-    }
-
-
-
-
-    public function showEcomUserstatement(Request $request){
-        $this->validate($request,[
-            'user' => 'required|numeric',
-            'start' => 'required|date',
-            'end' => 'required|date',
-        ]);
-
-        $current_user = User::findOrFail($request->user);
-        $users = User::where('user_type','ecom')->get();
-
-
-        $sales = Order::where('user_id',$request->user)->where('order_status',1)->whereBetween('ordered_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('ordered_at', 'ASC')->get();
-       
-
-        $cashes = Order::where('user_id',$request->user)->where('payment_status',1)->whereBetween('paymented_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('paymented_at', 'ASC')->get();
-
-        $returns = Returnproduct::where('user_id',$request->user)->whereBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('returned_at', 'ASC')->get();
-     
-
-        $salesinfo = [];
-        foreach($sales as $sale){
-            $salesinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$sale->ordered_at)->format('d-m-Y'), 'id' => $sale->id, 'particular'=>  'sales', 'debit' => $sale->amount,  'credit' => 0,'reference' => NULL];
-        }
-
-        $returninfo = [];
-        foreach($returns as $return){
-            $returninfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$return->returned_at)->format('d-m-Y'), 'id' => $return->id, 'particular'=>  'return', 'debit' => 0,  'credit' => $return->amount,'reference' => NULL];
-        }
-
-
-
-        $cashinfo = [];
-        foreach($cashes as $cash){
-            $cashinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$cash->paymented_at)->format('d-m-Y'), 'id' => $cash->id, 'particular'=>  'cash', 'debit' => 0,  'credit' => $cash->amount,'reference' => $cash->references];
-        }
-
-
-        $merge_data =  array_merge($salesinfo,$returninfo, $cashinfo);
-        
-        $datewise_sorted_data = [];
-        foreach($merge_data as $merge){
-            $datewise_sorted_data[] = ['date' => $merge['date'],'id' => $merge['id'],'particular' => $merge['particular'], 'debit' => $merge['debit'], 'credit' => $merge['credit'],'reference' => $merge['reference'] ];
-        }
-        usort($datewise_sorted_data,  array($this, "date_sort"));
-
-
-        $previous_sales = Order::where('user_id',$request->user)->where('order_status',1)->whereNotBetween('ordered_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
-
-        $previous_returns = Returnproduct::where('user_id',$request->user)->whereNotBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
-
-        $previous_cashes = Order::where('user_id',$request->user)->where('payment_status',1)->whereNotBetween('paymented_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('cash');
-
-
-        $balance = ($previous_sales) - ($previous_returns + $previous_cashes);
-
-
-        return view('ecom.report.showuserstatement',compact('datewise_sorted_data','request','users','balance','current_user'));
-
-    }
-
-
-    public function pdfEcomUserstatement(Request $request){
-        $this->validate($request,[
-            'user' => 'required|numeric',
-            'start' => 'required|date',
-            'end' => 'required|date',
-        ]);
-
-        $current_user = User::findOrFail($request->user);
-        $users = User::where('user_type','ecom')->get();
-
-
-        $sales = Order::where('user_id',$request->user)->where('order_status',1)->whereBetween('ordered_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('ordered_at', 'ASC')->get();
-       
-
-        $cashes = Order::where('user_id',$request->user)->where('payment_status',1)->whereBetween('paymented_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('paymented_at', 'ASC')->get();
-
-        $returns = Returnproduct::where('user_id',$request->user)->whereBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('returned_at', 'ASC')->get();
-     
-
-        $salesinfo = [];
-        foreach($sales as $sale){
-            $salesinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$sale->ordered_at)->format('d-m-Y'), 'id' => $sale->id, 'particular'=>  'sales', 'debit' => $sale->amount,  'credit' => 0,'reference' => NULL];
-        }
-
-        $returninfo = [];
-        foreach($returns as $return){
-            $returninfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$return->returned_at)->format('d-m-Y'), 'id' => $return->id, 'particular'=>  'return', 'debit' => 0,  'credit' => $return->amount,'reference' => NULL];
-        }
-
-
-
-        $cashinfo = [];
-        foreach($cashes as $cash){
-            $cashinfo[] = ['date' => Carbon::createFromFormat('Y-m-d H:i:s',$cash->paymented_at)->format('d-m-Y'), 'id' => $cash->id, 'particular'=>  'cash', 'debit' => 0,  'credit' => $cash->amount,'reference' => $cash->references];
-        }
-
-
-        $merge_data =  array_merge($salesinfo,$returninfo, $cashinfo);
-        
-        $datewise_sorted_data = [];
-        foreach($merge_data as $merge){
-            $datewise_sorted_data[] = ['date' => $merge['date'],'id' => $merge['id'],'particular' => $merge['particular'], 'debit' => $merge['debit'], 'credit' => $merge['credit'],'reference' => $merge['reference'] ];
-        }
-        usort($datewise_sorted_data,  array($this, "date_sort"));
-
-
-        $previous_sales = Order::where('user_id',$request->user)->where('order_status',1)->whereNotBetween('ordered_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
-
-        $previous_returns = Returnproduct::where('user_id',$request->user)->whereNotBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
-
-        $previous_cashes = Order::where('user_id',$request->user)->where('payment_status',1)->whereNotBetween('paymented_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('cash');
-
-
-        $balance = ($previous_sales) - ($previous_returns + $previous_cashes);
-
-
-        
-        $pdf = PDF::loadView('ecom.report.pdfuserstatement',compact('datewise_sorted_data','request','users','balance','current_user'));
-        return $pdf->download('invoice.pdf');
-
     }
 
 
@@ -607,99 +481,7 @@ class ReportController extends Controller
     }
 
 
-    public function EcomDivisionReport(){
-        return view('ecom.report.divisionresult');
-    }
-
-    
-    public function EcomDivisionReportResult(Request $request){
-        $this->validate($request,[
-            'division' => 'required|numeric',
-            'start' => 'required|date',
-            'end' => 'required|date',
-        ]);
-
-    
-    $ecomcustomer = User::where('user_type','ecom')->get();
-
-    $division_report = [];
-
-    foreach($ecomcustomer as $customer){
-
-
-
-        $sales = Order::where('user_id',$customer->id)->where('order_status',1)->whereBetween('ordered_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
-
-        $returns = Returnproduct::where('user_id',$customer->id)->whereBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
-
-        $cashes = Order::where('user_id',$customer->id)->where('payment_status',1)->whereBetween('paymented_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('cash');
-
-
-        $previous_sales = Order::where('user_id',$customer->id)->where('order_status',1)->whereNotBetween('ordered_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
-
-        $previous_returns = Returnproduct::where('user_id',$customer->id)->whereNotBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
-
-        $previous_cashes = Order::where('user_id',$customer->id)->where('payment_status',1)->whereNotBetween('paymented_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('cash');
-
-        $prev_balance = ($previous_sales)-( $previous_cashes+$previous_returns);
-
-        $division_report [] = ['customer' => $customer->name,'address' => $customer->address,'sales' => $sales, 'returns' => $returns, 'cashes' => $cashes ,'prev_balance' =>  $prev_balance];
-
-
-    }
-
-    return view('ecom.report.showdivisionresult',compact('division_report','request'));
-        
-
-    }
-
-    public function pdfEcomDivisionReportResult(Request $request){
-        $this->validate($request,[
-            'division' => 'required|numeric',
-            'start' => 'required|date',
-            'end' => 'required|date',
-        ]);
-
-
-    
-    $ecomcustomer = User::where('user_type','ecom')->get();
-
-
-    $division_report = [];
-
-    foreach($ecomcustomer as $customer){
-
-
-
-        $sales = Order::where('user_id',$customer->id)->where('order_status',1)->whereBetween('ordered_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
-
-        $returns = Returnproduct::where('user_id',$customer->id)->whereBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
-
-        $cashes = Order::where('user_id',$customer->id)->where('payment_status',1)->whereBetween('paymented_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('cash');
-
-
-        $previous_sales = Order::where('user_id',$customer->id)->where('order_status',1)->whereNotBetween('ordered_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
-
-        $previous_returns = Returnproduct::where('user_id',$customer->id)->whereNotBetween('returned_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('amount');
-
-        $previous_cashes = Order::where('user_id',$customer->id)->where('payment_status',1)->whereNotBetween('paymented_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->sum('cash');
-
-
-        $prev_balance = ($previous_sales)-( $previous_cashes+$previous_returns);
-
-
-
-        $division_report [] = ['customer' => $customer->name,'address' => $customer->address,'sales' => $sales, 'returns' => $returns, 'cashes' => $cashes ,'prev_balance' =>  $prev_balance];
-
-
-    }
-
-    $pdf = PDF::loadView('ecom.report.pdfshowdivisionresult',compact('division_report','request'));
-    return $pdf->download('Ecommerce_Report'.now().'.pdf');
-        
-
-    }
-
+  
     public function cashreport(){
         $sections = Section::where('module','inventory')->get();
         return view('general_report.cashreport',compact('sections'));

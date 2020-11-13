@@ -10,6 +10,8 @@ class EmployeeTypeController extends Controller
 {
     public function __construct(){
         $this->middleware('auth:admin');
+        $this->middleware('permission:Employee Section');
+        $this->middleware('permission:Employee Edit')->only('edit','update');
     }
     
     public function index()

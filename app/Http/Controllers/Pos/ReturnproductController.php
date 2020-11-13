@@ -20,6 +20,10 @@ class ReturnproductController extends Controller
 {
     public function __construct(){
         $this->middleware('auth:admin');
+        $this->middleware('permission:Inventory Returns');
+        $this->middleware('permission:Inventory Edit Returns')->only('edit','update');
+        $this->middleware('permission:Inventory Approve Returns')->only('approve');
+        $this->middleware('permission:Inventory Cancel Returns')->only('destroy');
     }
 
     
@@ -218,15 +222,9 @@ class ReturnproductController extends Controller
 
     public function approve(Request $request,$id){
         $returnproduct = Returnproduct::findOrFail($id);
-        if(Auth::user()->role->id == 2){
-            return ['id'=> $returnproduct->id,'status' => $returnproduct->return_status,'msg' => 'You Are Not Authorized' ];
-        }else{
-        
         $returnproduct->return_status = 1;
         $returnproduct->approved_by = Auth::user()->id;
         $returnproduct->save();
-
        return ['id'=> $returnproduct->id,'status' => $returnproduct->return_status,'msg' => 'Return Invoice Approved Successfully' ];
-        }
     }
 }

@@ -63,6 +63,7 @@
                     @endforeach
                     
                   </select>
+                  <table class="table table-striped table-sm mt-3" id="permissioninfo"></table>
                 </div>
 
                 <div class="form-group">
@@ -95,17 +96,50 @@
 @endpush
 
 @push('js')
+<script src="{{asset('public/assets/js/axios.min.js')}}"></script>
 <script>
+ var url = '{{url('/')}}';
+$("#role").change(function(){
+  let rolename = $("#role").val();
+  if(rolename){
+  let permissionsinfo = "";
+  axios.get(url+'/api/getrolepermissions/'+rolename)
+  .then(function (response) {
+    let permitobjet = response.data.permissions;
+    if(permitobjet.length < 1){
+      permissionsinfo = `<tr><td><p class="alert alert-danger">No Permission Found in <b>${rolename}</b> Role</p></td></tr>`;
+    }else{
+      permissionsinfo += `
+        <tr>
+            <td></td>
+            <td><p class="alert alert-success">Permission Associated via <b>${rolename}</b> Role </p></td>
+        </tr>`;
+    permitobjet.forEach((permit,key) => {
+      permissionsinfo += `
+        <tr>
+            <td>${key+1}</td>
+            <td>${permit.name}</td>
+        </tr>`;
+    });
+    }
+
+    $("#permissioninfo").html(permissionsinfo);
+
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+  })
+  }else{
+    alert('please select a role');
+  }
+
+})
   sessionStorage.clear();
   $('#user').select2({
 width: '100%',
   theme: "bootstrap"
 });
-</script>
-<script src="{{asset('public/assets/js/flatpicker.min.js')}}"></script>
-<script>
-  $("#start").flatpickr({dateFormat: 'Y-m-d'});
-  $("#end").flatpickr({dateFormat: 'Y-m-d'});
 </script>
 
 @endpush

@@ -13,6 +13,7 @@ class CompanyController extends Controller
 {
     public function __construct(){
         $this->middleware('auth:admin');
+        $this->middleware('permission:Company Information Access');
     }
     
     public function index()

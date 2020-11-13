@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,6 +76,10 @@ Route::post('admin/login', 'Auth\AdminLoginController@adminLoginSubmit')->name('
 
 Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
 
+    Route::get('permissioncacheclear', function(){
+        return Artisan::call('permission:cache-reset');
+    });
+
     Route::resource('admininfo','adminController');
     Route::resource('rp/role','RoleController');
     Route::resource('rp/permissions','RoleController');
@@ -139,12 +144,21 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::get('report/stockreport', 'StockController@stockreport')->name('stockreport.report');
     Route::post('report/stockreport', 'StockController@stockreportshow')->name('stockreport.show');
     Route::post('report/stockreport/pdf', 'StockController@stockreportpdf')->name('stockreport.pdf');
-    Route::get('report/ecom/ecomuserstatement', 'ReportController@ecomUserStatement')->name('report.ecomuserstatement');
-    Route::post('report/ecom/ecomuserstatement', 'ReportController@showEcomUserstatement')->name('report.showecomuserstatement');
-    Route::post('report/ecom/ecomuserstatement/pdf', 'ReportController@pdfEcomUserstatement')->name('report.pdfcomuserstatement');
-    Route::get('report/ecom/divisiowisenreport/', 'ReportController@EcomDivisionReport')->name('report.ecomdivisionreport');
-    Route::post('report/ecom/divisiowisenreport/result', 'ReportController@EcomDivisionReportResult')->name('report.ecomdivisionreportresult');
-    Route::post('report/ecom/divisiowisenreport/result/pdf', 'ReportController@pdfEcomDivisionReportResult')->name('report.pdfecomdivisionreportresult');
+    Route::get('report/ecom/ecomuserstatement', 'EcommerceReportController@ecomUserStatement')->name('report.ecomuserstatement');
+    Route::post('report/ecom/ecomuserstatement', 'EcommerceReportController@showEcomUserstatement')->name('report.showecomuserstatement');
+    Route::post('report/ecom/ecomuserstatement/pdf', 'EcommerceReportController@pdfEcomUserstatement')->name('report.pdfcomuserstatement');
+    Route::get('report/ecom/divisiowisenreport', 'EcommerceReportController@EcomDueReport')->name('report.ecomduereport');
+    Route::post('report/ecom/divisiowisenreport/result', 'EcommerceReportController@EcomDueReportResult')->name('report.ecomduereportresult');
+    Route::post('report/ecom/divisiowisenreport/result/pdf', 'EcommerceReportController@pdfEcomDueReportResult')->name('report.pdfecomduereportresult');
+
+    //Ecommerce Order Report
+    Route::get('report/ecom/orderreport', 'EcommerceReportController@OrderReport')->name('report.orderreport');
+
+    Route::post('report/ecom/orderreportshow', 'EcommerceReportController@ShowOrderReport')->name('report.orderreportshow');
+    Route::post('report/ecom/orderreportpdf', 'EcommerceReportController@PdfOrderReport')->name('report.orderreportpdf');
+
+
+
     //Inventory Customer Report
     Route::get('report/pos/posuserstatement', 'ReportController@posUserStatement')->name('report.posuserstatement');
     Route::post('report/pos/posuserstatement', 'ReportController@showPosUserstatement')->name('report.showposuserstatement');

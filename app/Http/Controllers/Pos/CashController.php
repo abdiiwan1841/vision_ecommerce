@@ -18,6 +18,10 @@ class CashController extends Controller
 {
     public function __construct(){
         $this->middleware('auth:admin');
+        $this->middleware('permission:Inventory Cashes');
+        $this->middleware('permission:Inventory Edit Cashes')->only('edit','update');
+        $this->middleware('permission:Inventory Approval Cashes')->only('approve');
+        $this->middleware('permission:Inventory Cancel Cashes')->only('cancel');
     }
     
     public function index()
@@ -107,16 +111,12 @@ class CashController extends Controller
     }
 
     public function approve(Request $request,$id){
-        if(Auth::user()->role->id != 1){
-            Toastr::error('You Are Not Authorized', 'error');
-            return redirect()->back();
-        }else{
+
         $cash = Cash::findOrFail($id);
         $cash->status = 1;
         $cash->approved_by = Auth::user()->id;
         $cash->save();
         return $id;
-        }
     }
 
     public function cancel(Request $request,$id){
