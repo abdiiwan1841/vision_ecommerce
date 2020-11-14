@@ -76,11 +76,9 @@ Route::post('admin/login', 'Auth\AdminLoginController@adminLoginSubmit')->name('
 
 Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
 
-    Route::get('permissioncacheclear', function(){
-        return Artisan::call('permission:cache-reset');
-    });
-
     Route::resource('admininfo','adminController');
+    Route::post('changeloginstatus/{id}','adminController@changeLoginStatus')->name('admin.changeloginstatus');
+
     Route::resource('rp/role','RoleController');
     Route::resource('rp/permissions','RoleController');
 

@@ -16,37 +16,79 @@
                 </div>
                 
             </div>
-            <div class="card-body table-responsive">
-                <table class="table">
-                    <tr>
-                        <td>Sl.</td>
-                        <td>Userid</td>
-                        <td>Name</td>
-                        <td>Email</td>
-                        <td>Phone</td>
-                        <td>Role</td>
-                        <td>signature</td>
-                        <td>Created At</td>
-                        <td>Action</td>
-                    </tr>
-                    @foreach($admins as $key =>  $admin)
-                    <tr>
-                        <td>{{$key+1}}</td>
-                        <td>{{$admin->adminname}}</td>
-                        <td>{{$admin->name}}</td>
-                        <td>{{$admin->email}}</td>
-                        <td>{{$admin->phone}}</td>
-                        <td>
-                        @foreach ($admin->roles as $item)
-                            <span class="badge badge-success">{{$item->name}}</span>
-                        @endforeach
-                        </td>
-                    <td><img style="width: 100px" src="{{asset('public/uploads/admin/signature/'.$admin->signature)}}" alt=""></td>
-                        <td>{{$admin->created_at->format('d-M-Y g:i a')}}</td>
-                    <td><a class="btn btn-sm btn-primary" href="{{route('admininfo.edit',$admin->id)}}"><i class="fas fa-edit"></i></a></td>
-                    </tr>
-                    @endforeach
-                </table>
+            <div class="card-body">
+                <div class="row">
+                @foreach($admins as $key =>  $admin)
+                <div class="col-lg-6">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <strong>{{$admin->name}}</strong>
+                    </div>
+                    <div class="card-body" @if($admin->status == 0) style="background: #ffcccc"  @endif>
+                        <table class="table">
+                            <tr>
+                                <td>Userid</td>
+                                <td>{{$admin->adminname}}</td>
+                            </tr>
+                            <tr>
+                                <td>Name</td>
+                                <td><strong>{{$admin->name}}</strong></td>
+                            </tr>
+                            <tr>   
+                                <td>Email</td>
+                                <td>{{$admin->email}}</td>
+                            </tr> 
+                            <tr>
+                                <td>Phone</td>
+                                <td>{{$admin->phone}}</td>
+                            </tr>
+                            <tr>
+                                <td>Role</td>     
+                                <td>
+                                @foreach ($admin->roles as $item)
+                                    <span class="badge badge-success">{{$item->name}}</span>
+                                @endforeach
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>signature</td>
+                                <td><img style="width: 100px" src="{{asset('public/uploads/admin/signature/'.$admin->signature)}}" alt=""></td>
+                            </tr>
+                            <tr>
+                                <td>Status</td>
+                                <td>{!!AdminLoginStatus($admin->status)!!}</td>
+                            </tr>
+                            <tr>
+                                <td>Created At</td>
+                                <td>{{$admin->created_at->format('d-M-Y g:i a')}}</td>
+                            </tr>
+                           <tr>
+                                <td>Action</td>
+                                <td><a class="btn btn-sm btn-primary" href="{{route('admininfo.edit',$admin->id)}}"><i class="fas fa-edit"></i> Edit</a> |
+                                @if($admin->status == 1)
+                                <form action="{{route('admin.changeloginstatus',$admin->id)}}" style="display: inline" method="POST">
+                                    @csrf
+                                    <button onclick="return confirm('Are you sure you want to disabled this user Login')" type="submit" class="btn btn-warning btn-sm"><i class="fas fa-delete"></i> Disable Login</button>
+                                </form>
+
+                                @else
+                                <form action="{{route('admin.changeloginstatus',$admin->id)}}" style="display: inline" method="POST">
+                                    @csrf
+                                    <button onclick="return confirm('Are you sure you want to Enable this user Login')" type="submit" class="btn btn-success btn-sm"><i class="fas fa-delete"></i> Re-Enable Login</button>
+                                </form>
+
+                                @endif
+                                
+                                </td>
+
+                            </tr>
+         
+                        </table>
+                    </div>
+                </div>
+            </div>
+                @endforeach
+            </div>
 
             </div>
         </div>

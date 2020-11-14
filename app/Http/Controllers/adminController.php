@@ -29,7 +29,7 @@ class adminController extends Controller
         $this->middleware('auth:admin');
         $this->middleware('permission:Inventory Dashboard')->only('inventorydashboard');
         $this->middleware('permission:Ecommerce Dashboard')->only('dashboard');
-        $this->middleware('permission:Admin Permission')->only('index','create','edit','store','update');
+        $this->middleware('permission:Admin Permission')->only('index','create','edit','store','update','changeLoginStatus');
     }
 
 
@@ -301,5 +301,19 @@ class adminController extends Controller
 
 
 
+    }
+
+
+    public function changeLoginStatus($id){
+        $admin = Admin::findOrFail($id);
+        if($admin->status == 0){
+            $admin->status = 1;
+        }else{
+            $admin->remember_token = null;
+            $admin->status = 0;
+        }
+        $admin->save();
+        Toastr::success('Admin Status Changed Successfully','success');
+        return redirect()->back();
     }
 }

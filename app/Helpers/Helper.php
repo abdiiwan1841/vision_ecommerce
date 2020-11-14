@@ -47,6 +47,16 @@ function FashiPaymentStatus($argument){
     }
     return $status;
 }
+
+function AdminLoginStatus($argument){
+    $status = "";
+    if($argument == 0 ){
+        $status = '<span class="badge badge-danger">disabled</span>';
+    }elseif($argument == 1){
+        $status = '<span class="badge badge-success">active</span>';
+    }
+    return $status;
+}
 function FashiShippingStatus($argument){
     $status = "";
     if($argument == 0 ){

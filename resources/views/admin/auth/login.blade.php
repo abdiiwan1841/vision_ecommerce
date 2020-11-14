@@ -1,9 +1,6 @@
 
 @extends('layouts.app')
-@push('css')
-  <link rel="stylesheet" href="{{asset('public/asset/css/login.css')}}">
-  <link rel="stylesheet" href="{{asset('public/css/icheck-bootstrap.min.css')}}">
-@endpush
+@section('title','Admin Login')
 @section('content')
 
 <div class="row justify-content-center">
@@ -35,12 +32,13 @@
                 <i class="fa fa-user"></i>
             </div>
           </div>
-            @error('adminname')
-            <span style="color: red">
-              <strong>{{ $message }}</strong>
-          </span>
-        @enderror
+           
         </div>
+        @error('adminname')
+        <div class="form-group">
+          <small style="color: red">{{ $message }}</small>
+        </div>
+        @enderror
         <label for="password">Password</label>
         <div class="input-group mb-3">
           <input type="password" class="form-control" id="password" placeholder="Password" name="password">
@@ -49,12 +47,14 @@
               <i class="fa fa-lock"></i>
             </div>
           </div>
-          @error('password')
-          <span style="color: red">
-            <strong>{{ $message }}</strong>
-        </span>
-      @enderror
+         
         </div>
+        @error('password')
+        <div class="form-group">
+          <small style="color: red">{{ $message }}</small>
+        </div>
+        
+       @enderror
         <div class="row">
           <div class="col-8">
             <div class="icheck-success">

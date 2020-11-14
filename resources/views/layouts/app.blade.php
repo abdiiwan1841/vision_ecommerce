@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name',$CompanyInfo->company_name  ) }}</title>
+    <title>@yield('title') {{ config('app.name',$CompanyInfo->company_name  ) }}</title>
    
 
 
@@ -22,7 +22,7 @@
     <link href="{{ asset('public/assets/css/bootstrap.css') }}" rel="stylesheet">
     <!-- Styles -->
     <link href="{{ asset('public/assets/css/style.css') }}" rel="stylesheet">
-    <link href="{{ asset('public/assets/css/login.css') }}" rel="stylesheet">
+
 </head>
 <body>
     <div id="app">
@@ -37,35 +37,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">
 
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ml-auto main-menu">
-                        <!-- Authentication Links -->
-                        @guest
-                       
-                            {{-- <li class="nav-item">
-                            <a class="nav-link" href="{{route('admin.login') }}">Admin Login</a>
-                            
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="{{route('employee.login') }}">Employee Login</a></li> --}}
-                            
-                        @else
-        
-                            <li class="nav-item">
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                                @csrf
-                                <a class="nav-link" href="{{ route('logout') }}" 
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();"> <i class="fa fa-sign-out"></i>
-                                        {{ __('Logout') }}
-                                </a>
-                            </form>
-                        </li>
-                        @endguest
-                    </ul>
                 </div>
             </div>
         </nav>
