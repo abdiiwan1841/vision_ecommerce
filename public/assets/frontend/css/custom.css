@@ -147,18 +147,12 @@ del{
 }
 .stock-out{
     background: #ff6b81;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    margin: 10px;
-    line-height: 15px;
-    padding: 15px 7px;
-    font-size: 11px;
-    text-align: center;
     color: #ffffff;
+    font-size: 10px;
     position: absolute;
     left: 0;
     top: 20px;
+    padding: 5px 10px;
     text-transform: uppercase;
 }
 .price_heading table th small{

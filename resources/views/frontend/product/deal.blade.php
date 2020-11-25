@@ -67,7 +67,7 @@
 
         </div>
         <div class="card-body">
-          <p>{{$single_product->description}}</p>
+          <p>{!!$single_product->description!!}</p>
         </div>
         <!-- /.card-body -->
       </div>

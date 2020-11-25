@@ -120,10 +120,7 @@ class CashController extends Controller
     }
 
     public function cancel(Request $request,$id){
-        if(Auth::user()->role->id == 2){
-            Toastr::error('You Are Not Authorized', 'error');
-            return redirect()->back();
-        }else{
+
         $cash = Cash::findOrFail($id);
         $cash->status = 2;
         $cash->amount = 0;
@@ -131,7 +128,6 @@ class CashController extends Controller
         $cash->save();
         Toastr::success('Cash Canceled Successfully', 'success');
         return redirect()->back();
-        }
     }
 
     

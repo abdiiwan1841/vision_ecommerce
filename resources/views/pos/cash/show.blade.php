@@ -50,7 +50,7 @@
                         <td>Posted By:</td>
                       <td>{{$cash->posted_by}} <br>  <small>at {{$cash->created_at->format('d M Y g : i a')}}</small></td>
                       </tr>
-                      @if(Auth::user()->role->id == 1)
+                      @can('Inventory Approval Cashes')
                       @if($cash->status == 0)
                       <tr>
                         <td>Action</td>
@@ -65,7 +65,7 @@
                         </td>
                       </tr>
                       @endif
-                      @endif
+                      @endcan
                       @if($cash->status == 1)
                       <tr>
                         <td>Approved By</td>

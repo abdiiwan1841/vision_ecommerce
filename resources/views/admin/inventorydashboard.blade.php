@@ -332,6 +332,11 @@
 						<td>Amount: </td>
 						<th><h4>{{round($pending_cash_item->amount)}}/-</h4></th>
 					</tr>
+
+					<tr>
+						<td>References: </td>
+						<th>{{$pending_cash_item->reference}}</th>
+					</tr>
 					<tr>
 						<td>Date:</td>
 						<td>{{$pending_cash_item->received_at->format('d-M-Y')}}</td>
@@ -1350,8 +1355,7 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 	</div>
 	
 	<div class="float-right mt-3">
-	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button type="button" id="send_form" onclick="sendDeliveryForm('`+confirmation_url+`')" class="btn btn-success">Mark As Delivered</button>
-	</div>
+	<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button> <button type="button" id="send_form" onclick="sendDeliveryForm('`+confirmation_url+`')" class="btn btn-sm btn-success">Mark As Delivered</button>
 	</form>
 
 	`);

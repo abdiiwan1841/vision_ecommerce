@@ -44,7 +44,7 @@ class HomepageController extends Controller
         $random_product = Product::where('type','ecom')->inRandomOrder()->take($general_opt_value['hot_pd_noi'])->get();
         $new_products = Product::where('type','ecom')->orderBy('id','desc')->take($general_opt_value['new_pd_noi'])->get();
         $sliders = Slider::get();
-        $dynamic_products = Product::with('brand','category','size','subcategory')->where('type','ecom')->orderBy('id','desc')->take(12)->get();
+        $dynamic_products = Product::with('brand','category','size','subcategory')->where('type','ecom')->orderBy('id','desc')->take(24)->get();
         $collections = Category::inRandomOrder()->take($general_opt_value['pd_collection_noi'])->get();
         $category = Category::inRandomOrder()->take(3)->get();
         $subcategories = Subcategory::inRandomOrder()->take($general_opt_value['pd_type_noi'])->get();

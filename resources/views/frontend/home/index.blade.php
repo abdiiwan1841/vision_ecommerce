@@ -129,7 +129,7 @@ if($item->in_stock == false){
               </div>
             <div class="pi-text">
               <div class="catagory-name"><span style="color: purple">{{$item->subcategory->subcategory_name}}</span> - Size:  {{$item->size->name}} </div>
-                <a href="${url}/product/${data.id}">
+                <a href="{{url('/')}}/product/{{$item->id}}">
                     <h5>{{$item->product_name}}</h5>
                 </a>
                 {!!$pd_price!!}
@@ -363,7 +363,7 @@ if($item->in_stock == false){
             <div class="row">
                 @foreach ($collections as $cat)
                 
-                <div class="col-12 col-lg-4 col-md-4">
+                <div class="col-6 col-lg-4 col-md-4">
                 <a href="{{route('collection.view',$cat->id)}}">
                     <div class="single-banner">
                     <img src="{{asset('public/uploads/category/frontend/'.$cat->image)}}" alt="">
@@ -391,7 +391,7 @@ if($item->in_stock == false){
 <script src="{{asset('public/assets/frontend/js/owl-2-filter.js')}}"></script>
 <script>
 var url = "{{url('/')}}";
-var limit = 12;
+var limit = 24;
 
 
 

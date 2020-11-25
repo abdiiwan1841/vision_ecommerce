@@ -494,7 +494,7 @@ class ReportController extends Controller
             'section' => 'required',
         ]);
 
-        $sections = Section::all();
+        $sections = Section::where('module','inventory')->get();
         if($request->section === 'all'){
             $poscashes = Cash::where('status',1)->whereBetween('received_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('received_at', 'ASC')->get();
         }else{
@@ -573,7 +573,7 @@ class ReportController extends Controller
             'end' => 'required|date',
             'section' => 'required',
         ]);
-        $sections = Section::all();
+        $sections = Section::where('module','inventory')->get();
         if($request->section === 'all'){
         $sales = Sale::whereBetween('sales_at', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('sales_at', 'ASC')->get();
         }else{

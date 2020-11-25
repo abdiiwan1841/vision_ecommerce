@@ -112,8 +112,8 @@
                         <td class="align-middle">{{$item['date']}}</td>
                         <td class="align-middle">{{$item['id']}}</td>
                         <td class="align-middle"><small>{{$item['particular']}} @if($item['reference'] != NULL) <br>({{$item['reference']}}) @endif</small></td>
-                        <td class="align-middle">{{$item['debit']}}</td>
-                        <td class="align-middle">{{$item['credit']}}</td>
+                        <td class="align-middle">{{round($item['debit'])}}</td>
+                        <td class="align-middle">{{round($item['credit'])}}</td>
                         <td> 
                           @php
                           $pdsum = 0;

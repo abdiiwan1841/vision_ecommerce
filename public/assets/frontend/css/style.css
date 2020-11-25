@@ -4028,6 +4028,9 @@ ol {
 	.header-top .ht-right .login-panel {
 		padding-left: 10px;
 	}
+	.single-banner .inner-text h4{
+		font-size: 16px;
+	}
 	.header-top .ht-right .top-social {
 		padding-right: 10px;
 	}
@@ -4087,6 +4090,11 @@ ol {
 	.instagram-photo .insta-item {
 		width: 50%;
 		height: 300px;
+	}
+
+	.single-banner .inner-text h4{
+		font-size: 16px;
+		padding: 5px !important;
 	}
 	.copyright-reserved .copyright-text {
 		float: none;
@@ -4255,6 +4263,11 @@ ol {
 /* Small Device: 320px */
 
 @media only screen and (max-width: 479px) {
+
+	.single-banner .inner-text h4{
+		font-size: 16px;
+		padding: 5px !important;
+	}
 	.product-item .pi-pic ul{
 		bottom: 0px;
 	}

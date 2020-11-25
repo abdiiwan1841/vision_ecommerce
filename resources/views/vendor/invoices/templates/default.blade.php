@@ -4,7 +4,7 @@
         <title>{{ $invoice->name }}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-        <link rel="stylesheet" href="{{ asset('public/vendor/invoices/bootstrap.min.css') }}">
+        
 
         <style type="text/css" media="screen">
             * {
@@ -28,23 +28,48 @@
                 font-size: 12px;
                 font-weight: 700;
             }
+            .table {
+                width: 100%;
+                max-width: 100%;
+                margin-bottom: 1rem;
+                background-color: transparent;
+            }
+             .table .thead-light th {
+                    color: #495057;
+                    background-color: #e9ecef;
+                    border-color: #dee2e6;
+                }
+
+                .table .thead-light th {
+	color: #495057;
+	background-color: #e9ecef;
+	border-color: #dee2e6;
+}
+
+.table td, .table th {
+	padding: .75rem;
+	vertical-align: top;
+	border-top: 1px solid #dee2e6;
+}
+                        
         </style>
+       
     </head>
 
     <body>
         {{-- Header --}}
         @if($invoice->logo)
-            <img src="{{ $invoice->getLogo() }}" alt="logo">
+            <img src="{{ $invoice->getLogo() }}" alt="logo" height="100">
         @endif
         <table class="table mt-5">
             <tbody>
                 <tr>
-                    <td class="border-0 pl-0" width="70%">
+                    <td style="border:none;padding-left:0px" width="70%">
                         <h4 class="text-uppercase">
-                            <strong>{{ $invoice->name }}</strong>
+                          <h3 style="font-size: 24px;">  <strong>{{ $invoice->name }}</strong></h3>
                         </h4>
                     </td>
-                    <td class="border-0 pl-0">
+                    <td style="border:none;padding-left:0px">
                         <p>{{ __('invoices::invoice.serial') }} <strong>{{ $invoice->getSerialNumber() }}</strong></p>
                         <p>{{ __('invoices::invoice.date') }}: <strong>{{ $invoice->getDate() }}</strong></p>
                     </td>
@@ -56,11 +81,11 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th class="border-0 pl-0 party-header" width="48.5%">
+                    <th style="border: none;padding-left: 0;" class="party-header" width="48.5%">
                         {{ __('invoices::invoice.seller') }}
                     </th>
                     <th class="border-0" width="3%"></th>
-                    <th class="border-0 pl-0 party-header">
+                    <th style="border: none;padding-left: 0;" class="party-header">
                         {{ __('invoices::invoice.buyer') }}
                     </th>
                 </tr>
@@ -150,7 +175,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col" class="border-0 pl-0">{{ __('invoices::invoice.name') }}</th>
+                    <th scope="col" style="border:none;padding-left:0px">{{ __('invoices::invoice.description') }}</th>
                     @if($invoice->hasItemUnits)
                         <th scope="col" class="text-center border-0">{{ __('invoices::invoice.units') }}</th>
                     @endif

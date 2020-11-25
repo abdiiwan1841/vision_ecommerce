@@ -140,8 +140,8 @@
                         <td>{{$item['date']}}</td>
                         <td>{{$item['id']}}</td>
                         <td>{{$item['particular']}}</td>
-                        <td>{{$item['debit']}}</td>
-                        <td>{{$item['credit']}}</td>
+                        <td>{{round($item['debit'])}}</td>
+                        <td>{{round($item['credit'])}}</td>
                         <td><small>{{$item['reference']}}</small></td>
                       <td>{{ $c_due =  $sum+$balance}}</td>
                       </tr>

@@ -7,11 +7,11 @@ return [
     | Invoice Language Lines
     |--------------------------------------------------------------------------
     */
-    'name'            =>   'Product Name',
+
     'serial'          => 'Serial No.',
     'date'            => 'Invoice date',
     'seller'          => 'Seller',
-    'buyer'           => 'Customers',
+    'buyer'           => 'Buyer',
     'address'         => 'Address',
     'code'            => 'Code',
     'vat'             => 'VAT code',
@@ -24,9 +24,9 @@ return [
     'tax'             => 'Tax',
     'sub_total'       => 'Sub total',
     'total_discount'  => 'Total discount',
-    'taxable_amount'  => 'Amount',
-    'total_taxes'     => 'Total vat & taxes',
-    'tax_rate'        => 'Vat + Tax rate',
+    'taxable_amount'  => 'Taxable amount',
+    'total_taxes'     => 'Total taxes',
+    'tax_rate'        => 'Tax rate',
     'total_amount'    => 'Total amount',
     'pay_until'       => 'Please pay until',
     'amount_in_words' => 'Amount in words',
