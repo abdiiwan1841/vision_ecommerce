@@ -23,11 +23,46 @@
     {{Session::get('err')}}
 @endif
 <!-- Product Shop Section Begin -->
+@if (!Auth::check())
+<div class="container">
+    <div class="row">
+        <div class="mt-5">
+            <a href="{{route('login')}}" class="btn btn-success btn-sm ml-3"><i class="fa fa-sign-in"></i>    Click Here To Login</a>
+        </div>
+    </div>
+</div>
+@endif
+
  <!-- Shopping Cart Section Begin -->
- <section class="shopping-cart spad">
+ <section class="shopping-cart">
     <div class="container">
         <div class="row">
-            <div class="col-lg-7">
+            <div class="col-lg-8" style="padding: 10px;display: block">           
+                <h4 class="mb-5"><strong>CART </strong> DETAILS</h4>
+                    <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Image</th>
+                                <th class="p-name">Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="show-cart">
+                          
+                        </tbody>
+                    </table>
+                </div>
+        
+                <div class="mb-3" id="cart-footer">
+                   
+                </div>
+
+      </div>
+            <div class="col-lg-4">
                 @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -45,13 +80,13 @@
                 <h4 class="mb-5"><strong>  {{Auth::user()->name }} </strong> <br> Please  Review Your Biiling Details</h4>
                 
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-12">
 
                         <input type="hidden" id="cartdata" name="cartdata">
                                     
-                        <div class="form-group @error('division') has-error @enderror">
+                        <div class="form-group">
                             <label for="division">Division<span>*</span></label>
-                            <select name="division" id="division" class="form-control">
+                            <select name="division" id="division" class="form-control @error('division') is-invalid @enderror">
                                 <option value="">Select Division</option>
                                 @foreach ($divisions as $item)
                                     <option value="{{$item->id}}">{{$item->name}}</option>
@@ -73,19 +108,17 @@
                             <small class="form-error">{{ $message }}</small>
                             @enderror
                         </div>
-                    </div>
-                    <div class="col-lg-6">
+             
+
                         <div class="form-group">
                             <label for="address">Address<span>*</span></label>
-                        <textarea name="address" class="form-control @error('address') is-invalid @enderror" id="address"  rows="7" placeholder="Enter Your Addres">@if(old('address')){{old('address')}} @else {{Auth::user()->address}} @endif</textarea>
+                        <textarea name="address" class="form-control @error('address') is-invalid @enderror" id="address"  rows="4" placeholder="Enter Your Addres">@if(old('address')){{old('address')}} @else {{Auth::user()->address}} @endif</textarea>
                             
                             @error('address')
                             <small class="form-error">{{ $message }}</small>
                             @enderror
                         </div>
- 
-                    </div>
-                    <div class="col-lg-6 mt-5">
+
                         <div class="form-group">
                             <label for="payment_method">Payment Method</label>
                             <select name="payment_method" id="payment_method" class="form-control @error('payment_method')is-invalid @enderror">
@@ -120,12 +153,10 @@
 
                 <form action="{{route('checkoutpage.store')}}" method="POST">
                     @csrf
-                    <div class="checkout-content">
-                        <a href="{{route('login')}}" class="site-btn place-btn">Click Here To Login</a>
-                    </div>
-                    <h4>Biiling Details</h4>
+                   
+                    <h4 class="mb-5"><strong>BILLING</strong> DETAILS</h4>
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-12">
                         <input type="hidden" id="cartdata" name="cartdata">
                         <div class="form-group">
                             <label for="name">Name<span>*</span></label>
@@ -158,7 +189,11 @@
                             <select name="division" id="division" class="form-control">
                                 <option value="">Select Division</option>
                                 @foreach ($divisions as $item)
-                                    <option value="{{$item->id}}">{{$item->name}}</option>
+                                @if (old('division') == $item->id)
+                                <option value="{{$item->id}}" selected>{{$item->name}}</option>
+                                @else
+                                <option value="{{$item->id}}">{{$item->name}}</option>
+                                @endif
                                 @endforeach
                                 
                             </select>
@@ -171,11 +206,11 @@
 
                 
      
-                    </div>
-                    <div class="col-lg-6">
+               
+   
                         <div class="form-group">
                             <label for="address">Address<span>*</span></label>
-                        <textarea name="address" class="form-control @error('address') is-invalid @enderror" id="address"  rows="7" placeholder="Enter Your Addres">{{old('address')}}</textarea>
+                        <textarea name="address" class="form-control @error('address') is-invalid @enderror" id="address"  rows="4" placeholder="Enter Your Addres">{{old('address')}}</textarea>
                             
                             @error('address')
                             <small class="form-error">{{ $message }}</small>
@@ -197,16 +232,20 @@
                         @enderror
                        
                     </div>
-                    </div>
+          
 
 
-                    <div class="col-lg-6">
+      
                         <div class="form-group">
                             <label for="payment_method">Payment Method</label>
                             <select name="payment_method" id="payment_method" class="form-control @error('payment_method')is-invalid @enderror">
                                 <option value="">-Select Payment Method-</option>
                                 @foreach ($payment_methods as $pm)
-                                   <option value="{{$pm->id}}">{{$pm->name}}</option>
+                                @if (old('payment_method') == $pm->id)
+                                    <option value="{{$pm->id}}" selected>{{$pm->name}}</option>
+                                @else
+                                    <option value="{{$pm->id}}">{{$pm->name}}</option>
+                                @endif
                                 @endforeach
 
                             </select>
@@ -223,7 +262,7 @@
 
                     
                     <div class="col-lg-12 order-btn mt-5">
-                        <button type="submit" class="site-btn place-btn">Place Order</button>
+                        <button type="submit" class="site-btn place-btn btn-block">Place Order</button>
                     </div>
         
                 </div>
@@ -234,29 +273,7 @@
 
 
             </div>
-            <div class="col-lg-5">           
-                <div class="cart-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th class="p-name">Product Name</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody class="show-cart">
-                          
-                        </tbody>
-                    </table>
-                </div>
-                <div id="cart-footer">
-                   
-                </div>
 
-      </div>
               
               
                 
@@ -266,29 +283,19 @@
     </div>
 </section>
 <!-- Shopping Cart Section End -->
-<!-- Product Shop Section End -->
+
 
 @endsection
-@push('css')
-<!-- Select 2 min  Css -->
-<link href="{{asset('public/assets/css/select2.min.css')}}" rel="stylesheet" />
-<!-- Select 2 Bootstrap  Css -->
-<link href="{{asset('public/assets/css/select2-bootstrap.min.css')}}" rel="stylesheet" />
-@endpush
+
 @push('js')
-<!-- Select 2 js -->
-<script src="{{asset('public/assets/js/select2.min.js')}}"></script>
+
 
 
 <script>
     var HomePageLink = '{{route('homepage.index')}}';
     $("#cartdata").val(JSON.stringify(localStorage.shoppingCart));
 
-    $('#division').select2({
-    width: '100%',
-    theme: "bootstrap",
-    placeholder: "Select a Division",
-});
+
 
 
     var base_url = '{{url('/')}}';
@@ -339,12 +346,12 @@ var shippingCharge = '{{$charges->shipping}}';
           var output = "";
           for(var i in cartArray) {
             output += "<tr>"
-              +"<td class='cart-pic first-row'><img src='"+cartArray[i].image +"' alt=''></td>"
-              +"<td class='cart-title first-row'><h5>"+cartArray[i].o_name +"</h5></td>"
-              + "<td class='p-price first-row'>"+cartArray[i].price+"</td>"
-              + "<td class='qua-col first-row'><div class='quantity'><button id='minus-"+ cartArray[i].name +"' class='minus-item input-group-addon btn btn-dark' data-name=" + cartArray[i].name + ">-</button>"+"<input type='number' class='item-count cart_qty_input' data-name='" + cartArray[i].name + "' value='" + cartArray[i].count + "' readonly><button id='plus-"+ cartArray[i].name +"' class='plus-item btn btn-dark input-group-addon' data-name=" + cartArray[i].name + ">+</button></div></td>"
-              + "<td class='total-price first-row'>"+Math.round(cartArray[i].total)+"</td>"
-              + "<td class='si-close first-row'><button class='delete-item btn' data-name=" + cartArray[i].name + "><i class='ti-close'></i></button></td>"
+              +"<td class='cart-pic'><img style='border-radius: 100%' src='"+cartArray[i].image +"' alt=''></td>"
+              +"<td class='cart-title '><h5>"+cartArray[i].o_name +"</h5></td>"
+              + "<td class='p-price'>"+cartArray[i].price+"</td>"
+              + "<td style='width: 98px;display:block' class='qua-col'><div class='quantity'><button id='minus-"+ cartArray[i].name +"' class='minus-item input-group-addon btn btn-dark btn-sm' data-name=" + cartArray[i].name + ">-</button>"+"<input type='text' style='width: 30px' class='item-count cart_qty_input' data-name='" + cartArray[i].name + "' value='" + cartArray[i].count + "' readonly><button id='plus-"+ cartArray[i].name +"' class='plus-item btn-sm btn btn-dark input-group-addon' data-name=" + cartArray[i].name + ">+</button></div></td>"
+              + "<td class='total-price'>"+Math.round(cartArray[i].total)+"</td>"
+              + "<td class='si-close'><button class='delete-item btn-danger btn-sm  btn' data-name=" + cartArray[i].name + "><i class='fa fa-times'></i></button></td>"
               +  "</tr>";
           }
           $('.show-cart').html(output);
@@ -364,9 +371,9 @@ var shippingCharge = '{{$charges->shipping}}';
 
 
             if(vat_and_taxAmount > 0){
-            $('#cart-footer').html('<div class="row"><div class="col-lg-12"><div class="proceed-checkout"> <ul><li class="subtotal">SUBTOTAL <span>'+Math.round(subTotal)+'</span></li><li class="subtotal">DISCOUNT ('+discountPercentage+'%) <span> - '+Math.round(discountAmount)+'</span></li><li class="subtotal">TAXABLE AMOUNT<span> '+Math.round(netAmount)+'</span></li><li class="subtotal">SHIPPING: <span>+ '+shippingCharge+' Tk</span></li><li class="subtotal">VAT & TAX ('+parseFloat(vatPercentage)+parseFloat(taxPercentage)+'%) <span> + '+Math.round(vat_and_taxAmount)+'</span></li><li class="cart-total">Total<span>Tk.'+Math.round(grandTotal)+'</span></li></ul><a href="javascript:void(0);" class="proceed-btn">CONFIRM & CHECK OUT</a></div></div></div>');
+            $('#cart-footer').html('<div class="row"><div class="col-lg-12"><div class="proceed-checkout"> <ul><li class="subtotal">SUBTOTAL <span>'+Math.round(subTotal)+'</span></li><li class="subtotal">DISCOUNT ('+Math.round(discountPercentage)+'%) <span> - '+Math.round(discountAmount)+'</span></li><li class="subtotal">TAXABLE AMOUNT<span> '+Math.round(netAmount)+'</span></li><li class="subtotal">SHIPPING: <span>+ '+shippingCharge+' Tk</span></li><li class="subtotal">VAT & TAX ('+parseFloat(vatPercentage)+parseFloat(taxPercentage)+'%) <span> + '+Math.round(vat_and_taxAmount)+'</span></li><li class="cart-total">Total<span>Tk.'+Math.round(grandTotal)+'</span></li></ul><a href="javascript:void(0);" class="proceed-btn">CONFIRM & CHECK OUT</a></div></div></div>');
             }else{
-              $('#cart-footer').html('<div class="row"><div class="col-lg-12"><div class="proceed-checkout"> <ul><li class="subtotal">SUBTOTAL <span>'+Math.round(subTotal)+'</span></li><li class="subtotal">DISCOUNT ('+discountPercentage+'%) <span> - '+Math.round(discountAmount)+'</span></li><li class="subtotal">NET AMOUNT<span> '+Math.round(netAmount)+'</span></li><li class="subtotal">SHIPPING: <span>+ '+shippingCharge+' Tk</span></li><li class="cart-total">Total<span>Tk.'+Math.round(grandTotal)+'</span></li></ul></div></div></div>');
+              $('#cart-footer').html('<div class="row"><div class="col-lg-12"><div class="proceed-checkout"> <ul><li class="subtotal">SUBTOTAL <span>'+Math.round(subTotal)+'</span></li><li class="subtotal">DISCOUNT ('+Math.round(discountPercentage)+'%) <span> - '+Math.round(discountAmount)+'</span></li><li class="subtotal">NET AMOUNT<span> '+Math.round(netAmount)+'</span></li><li class="subtotal">SHIPPING: <span>+ '+shippingCharge+' Tk</span></li><li class="cart-total">Total<span>Tk.'+Math.round(grandTotal)+'</span></li></ul></div></div></div>');
             }
 
   

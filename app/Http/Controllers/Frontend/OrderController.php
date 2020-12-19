@@ -35,7 +35,7 @@ class OrderController extends Controller
 
 
     public function confirmation($id){
-        $orderinfo = Order::with('user','product')->findOrFail($id);
+        $orderinfo = Order::where('invoice_id',$id)->with('user','product')->first();
         return view('frontend.confirmation.index',compact('orderinfo'));
     }
 }

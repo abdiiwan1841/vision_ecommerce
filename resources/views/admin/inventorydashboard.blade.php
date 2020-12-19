@@ -41,6 +41,7 @@
 @endphp
 
 <div class="row">
+	@can('Inventory Dashboard')
 	<div class="col-12 col-md-4 col-lg-4" style="overflow: hidden">
 		<div class="card px-3 py-3 mb-3">
 			<div class="text-center">
@@ -60,6 +61,7 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="col-12 col-md-8 col-lg-8">
 
 	<div class="row">
@@ -126,6 +128,7 @@
 		</div>
 	  </div>
 
+
 	  <div class="col-6 col-md-4 col-lg-4">
 		<!-- small box -->
 		<div class="small-box bg-warning">
@@ -153,6 +156,7 @@
 		  
 		</div>
 	  </div>
+	
 
 	  
 	  <div class="col-6 col-md-4 col-lg-4">
@@ -183,7 +187,7 @@
 		  
 		</div>
 	  </div>
-
+	
 
 	  
 
@@ -226,13 +230,15 @@
 
 	</div>
 	</div>
+	@endcan
 </div>
+
 
 <div class="row">
 
 	<div class="col-lg-5 mt-5">
 
-
+		@can('Inventory Dashboard')
 		<!-- Card Start -->
 		<div class="card">
 			<div class="card-header">
@@ -301,11 +307,10 @@
 		<div class="card-body">
 	
 		@if(count($pending_cash) > 0)
-		  
+		<div class="table-responsive">
 		<table class="table table-sm" style="font-size: 14px;">
 		  <thead class="thead-light">
 			<tr>
-			  <th class="align-middle">Sl</th>
 			  <th class="align-middle">Pending Cash</th>
 			  <th class="align-middle">Action</th>
 			</tr>
@@ -317,7 +322,6 @@
 				$sales_amount = round($pending_cash_item->amount);
 			@endphp
 			<tr class="cash-{{$pending_cash_item->id}} bglight">
-			<td  class="align-middle"><strong>{{$key+1}}</strong></td>
 			<td  class="align-middle">
 				<table class="table table-sm">
 					<tr>
@@ -326,7 +330,7 @@
 					</tr>
 					<tr>
 						<td>Addr:</td>
-						<td>{{$pending_cash_item->user->address}}</td>	
+						<td><small >{{$pending_cash_item->user->address}}</small></td>	
 					</tr>
 					<tr>
 						<td>Amount: </td>
@@ -369,7 +373,7 @@
 		  </tbody>
 		  
 		</table>
-	
+		</div>
 		
 	  @else
 	<div class="row">
@@ -432,7 +436,7 @@
 	<!-- End -->
 
 	
-	
+	@endcan
 	
 	
 		
@@ -459,7 +463,7 @@
 				$sales_amount = round($pending_delivery_item->amount);
 			@endphp
 			<tr class="delivery-{{$pending_delivery_item->id}}">
-			<td  class="align-middle"><strong>{{$key+1}}</strong></td>
+			<td  class="align-middle"><strong>{{$pending_delivery->firstItem() + $key}}</strong></td>
 			<td  class="align-middle">
 				<table class="table">
 					<tr>
@@ -488,7 +492,7 @@
 		  </tbody>
 		  
 		</table>
-	
+		<p>Page: </p>	{{$pending_delivery->links()}}
 		
 	  @else
 	<div class="row">
@@ -540,7 +544,7 @@
 	
 	
 	</div>
-
+	@can('Inventory Dashboard')
 
 	<div class="col-lg-7 mt-5">
 
@@ -829,7 +833,7 @@
 
 
 </div>
-
+@endcan
 
 </div>
 
@@ -1226,11 +1230,11 @@ if(ReturnApprovalPermission == true){
 	$("#todays_expense").text(expense_amount);
 
 function getDeliveryStatus(status){
-	if(status === 0){
+	if(status == 0){
 		return '<span class="badge badge-warning">pending</span>';
-	}else if(status === 1){
+	}else if(status == 1){
 		return '<span class="badge badge-success">Delivered</span>';
-	}else if(status === 2){
+	}else if(status == 2){
 		return '<span class="badge badge-danger">Canceled</span>';
 	}
 }
@@ -1252,6 +1256,7 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 			response[1].data.forEach(function(deliveryman){
 				deliverymanData += "<option value="+deliveryman.id+">"+deliveryman.name+"</option>";
 			})
+
 
 	$('#InfoModalLabel').text('Delivery Form');	
 	$("#salesdata").html(`
@@ -1352,7 +1357,19 @@ function DeliveryModalPopup(deliveryinfourl,confirmation_url){
 		<input type="text" class="form-control" id="condition_amount" name="condition_amount" placeholder="Enter Condition Amount">
 		<span class="text-danger condition_amounte_err"></span>
 	</div>
+	
 	</div>
+	
+	<div class="form-group">
+<div class="col-4"><b>Send SMS</b></div>
+<div class="col-8">   <div class="onoffswitch">
+    <input type="checkbox" name="send_sms" class="onoffswitch-checkbox" id="send_sms" value="1" checked>
+    <label class="onoffswitch-label" for="send_sms">
+        <span class="onoffswitch-inner"></span>
+        <span class="onoffswitch-switch"></span>
+    </label>
+</div></div>
+</div>
 	
 	<div class="float-right mt-3">
 	<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button> <button type="button" id="send_form" onclick="sendDeliveryForm('`+confirmation_url+`')" class="btn btn-sm btn-success">Mark As Delivered</button>

@@ -29,4 +29,7 @@ class Order extends Model
     public function area(){
         return $this->belongsTo('App\Area');
     }
+    public function paymentmethod(){
+        return $this->belongsTo('App\Paymentmethod');
+    }
 }

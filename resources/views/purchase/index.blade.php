@@ -59,6 +59,24 @@
                       </div>       
                     </form>
 
+                    <table class="table">
+                        <tr class="thead-light">
+                            <th>Sl</th>
+                            <th>Date</th>
+                            <th>Supplier</th>
+                            <th>Amount</th>
+                        </tr>
+
+                        @foreach ($purchases as $key => $item)
+                          <tr>
+                              <td>{{$key+1}}</td>  
+                              <td>{{$item->purchased_at->format('d-m-Y g:i a')}}</td>  
+                              <td>{{$item->supplier->name}}</td>  
+                              <td>{{round($item->amount)}}</td>  
+                          </tr>    
+                        @endforeach
+                    </table>
+
             </div>
         </div>
 

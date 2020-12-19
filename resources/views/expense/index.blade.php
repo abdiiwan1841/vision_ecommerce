@@ -83,6 +83,7 @@
                     <div class="row">
                       <div class="col-lg-12">
                         <h3 class="mt-3 mb-5 text-uppercase text-center">Last 10 Expense  Activity</h3>
+                        <div class="table-responsive">
                         <table class="table table-bordered">
                           <thead class="thead-light">
                             <tr>
@@ -101,6 +102,7 @@
                             
                           </tbody>
                         </table>
+                      </div>
                       </div>
                     </div>
 

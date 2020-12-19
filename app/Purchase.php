@@ -16,6 +16,6 @@ class Purchase extends Model
     }
 
     public function product(){
-        return $this->belongsToMany('App\Product')->withPivot('price','qty','mfg','exp','supplier_id','purchased_at')->withTimestamps();
+        return $this->belongsToMany('App\Product')->withPivot('price','qty','supplier_id','purchased_at')->withTimestamps();
     }
 }

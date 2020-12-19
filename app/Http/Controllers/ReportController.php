@@ -6,10 +6,12 @@ use PDF;
 use App\Cash;
 use App\Sale;
 use App\User;
+use App\Expense;
 use App\Payment;
 use App\Prevdue;
 use App\Section;
 use App\Employee;
+use App\Expensecategory;
 use App\Purchase;
 use App\Supplier;
 use Carbon\Carbon;
@@ -822,6 +824,33 @@ class ReportController extends Controller
 
         $pdf = PDF::loadView('pos.report.pdfdeliveryreport',compact('datewise_sorted_data','request','general_opt_value'));
         return $pdf->download('DeliveryReport'.$request->start.'to '.$request->end.'.pdf');
+    }
+
+
+    public function expensereport(){
+        $expensetype = Expensecategory::all();
+        return view('general_report.expensereport',compact('expensetype'));
+    }
+
+
+    public function pdfexpensereport(Request $request){
+        $this->validate($request,[
+            'start' => 'required|date',
+            'end' => 'required|date',
+            'filter' => 'required',
+        ]);
+        $general_opt = GeneralOption::first();
+        $general_opt_value = json_decode($general_opt->options, true);
+
+        if($request->filter === 'all'){
+            $expensecollection =   Expense::whereBetween('expense_date', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('expense_date','ASC')->get();
+        }else{
+            $expensecollection =   Expense::where('expensecategory_id',$request->filter)->whereBetween('expense_date', [$request->start." 00:00:00", $request->end." 23:59:59"])->orderBy('expense_date','ASC')->get();
+        }
+
+        $pdf =  PDF::loadView('general_report.pdfexpensereport',compact('general_opt_value','expensecollection','request'));
+        return $pdf->download('Expense Report'.$request->start.'to '.$request->end.'.pdf');
+
     }
 
 

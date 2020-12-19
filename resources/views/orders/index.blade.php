@@ -6,11 +6,11 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <a href="{{route('order.create')}}" class="btn btn-info"><i class="fa fa-plus"></i> Create New  Order</a>
+                <a href="{{route('order.create')}}" class="btn btn-info btn-sm"><i class="fa fa-plus"></i> Create New  Order</a>
             </div>
             <div class="card-body">
                            
-
+              <div class="table-responsive">
               <table class="table" id="jq_datatables">
                 <thead class="thead-light">
                   <tr>
@@ -37,16 +37,11 @@
                   <td>{!! FashiOrderStatus($item->order_status) !!}</td>
                   <td>{!! FashiPaymentStatus($item->payment_status) !!}</td>
                   <td>{!! FashiShippingStatus($item->shipping_status) !!}</td>
-                  <td style="width: 150px" >
+                  <td>
                     @if($item->order_status == 2) <span class="badge badge-danger">No Action Found</span> 
                     
                     @else
-                     <a class="btn btn-primary btn-sm" href="{{route('order.edit',$item->id)}}"><i class="fa fa-edit"></i></a> | <a class="btn btn-info btn-sm" href="{{route('order.show',$item->id)}}"><i class="fa fa-eye"></i></a> | 
-                    <form id="delete-from-{{$item['id']}}" style="display: inline-block" action="{{route('order.destroy',$item->id)}}" method="POST">
-                      @csrf
-                      @method('DELETE')
-                      <button type="button" onclick="deleteItem({{$item['id']}})" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a></button>
-                    </form>
+                     <a class="btn btn-primary btn-sm" href="{{route('order.edit',$item->id)}}"><i class="fa fa-edit"></i></a> | <a class="btn btn-info btn-sm" href="{{route('order.show',$item->id)}}"><i class="fa fa-eye"></i></a>
                     @endif
                   </td>
                   </tr>
@@ -55,6 +50,8 @@
                   
                 </tbody>
               </table>
+
+            </div>
             </div>
         </div>
 

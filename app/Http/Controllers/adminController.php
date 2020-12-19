@@ -27,8 +27,6 @@ class adminController extends Controller
 {
     public function __construct(){
         $this->middleware('auth:admin');
-        $this->middleware('permission:Inventory Dashboard')->only('inventorydashboard');
-        $this->middleware('permission:Ecommerce Dashboard')->only('dashboard');
         $this->middleware('permission:Admin Permission')->only('index','create','edit','store','update','changeLoginStatus');
     }
 
@@ -134,7 +132,7 @@ class adminController extends Controller
             //location for new image 
             $signature_location = public_path('uploads/admin/signature/'.$image_name);
             $original_location = public_path('uploads/admin/original/'.$image_name);
-            //resize image for category and upload temp 
+            //resize image  and upload temp 
             Image::make($image)->resize(339,null,function ($constraint) {$constraint->aspectRatio();})->save($signature_location);
             Image::make($image)->save($original_location);
             $admin->signature =  $image_name;
@@ -163,9 +161,10 @@ class adminController extends Controller
         $todays_ecom_cash = Order::where('payment_status',1)->whereBetween('paymented_at', [$today." 00:00:00", $today." 23:59:59"])->orderBy('paymented_at', 'desc')->get();
 
         $todays_ecom_returns = Returnproduct::where('type','ecom')->whereBetween('returned_at', [$today." 00:00:00", $today." 23:59:59"])->orderBy('returned_at', 'desc')->get();
+        $pending_cash = Order::where('payment_status',0)->where('cash','>',0)->get();
 
-        $pending_orders = Order::with('product')->where('order_status',0)->get();
-        $pending_shipping = Order::where('order_status',1)->where('shipping_status',0)->get();
+        $pending_orders = Order::where('order_status',0)->get();
+        $pending_shipping = Order::where('payment_status',1)->where('shipping_status',0)->get();
 
         $current_month_order = Order::whereBetween('ordered_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->sum('amount');
 
@@ -173,7 +172,11 @@ class adminController extends Controller
 
         $last_ten_orders = Order::where('order_status','!=',0)->take(10)->orderBy('id','desc')->get();
 
-        return view('admin.dashboard',compact('pending_orders','todays_order','todays_ecom_cash','todays_ecom_returns','pending_shipping','current_month_order','current_year_order','last_ten_orders'));
+        return view('admin.dashboard',compact('pending_orders','pending_cash','todays_order','todays_ecom_cash','todays_ecom_returns','pending_shipping','current_month_order','current_year_order','last_ten_orders'));
+    }
+
+    public function orderdetails($id){
+        return Order::with('product','user')->findOrFail($id);
     }
 
     public function inventorydashboard(){
@@ -186,7 +189,7 @@ class adminController extends Controller
         $todays_pos_cash = Cash::whereBetween('received_at', [$today." 00:00:00", $today." 23:59:59"])->orderBy('received_at', 'desc')->get();
         $pending_sales = Sale::where('sales_status',0)->get();
         $pending_cash = Cash::where('status',0)->get();
-        $pending_delivery = Sale::where('sales_status',1)->where('delivery_status',0)->get();
+        $pending_delivery = Sale::where('sales_status',1)->where('delivery_status',0)->orderBy('id','DESC')->paginate(5);
         $pending_returns = Returnproduct::where('return_status',0)->get();
         $last_ten_dlv = Sale::where('delivery_status',1)->take(10)->orderBy('id','desc')->get();
         $current_month_sale = Sale::whereBetween('sales_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->sum('amount');

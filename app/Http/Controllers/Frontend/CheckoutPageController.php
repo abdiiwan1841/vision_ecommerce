@@ -167,9 +167,9 @@ class CheckoutPageController extends Controller
         Session::flash('OrderCompleted',true);
 
         if (Auth::attempt($credentials,'on')) {
-            return redirect(route('order.confirmation',$order->id));
+            return redirect(route('order.confirmation',$order->invoice_id));
         }else{
-            return redirect(route('order.confirmation',$order->id));
+            return redirect(route('order.confirmation',$order->invoice_id));
         }
 
 
@@ -304,7 +304,7 @@ class CheckoutPageController extends Controller
         // $p = explode("|",$smsresult);
         // $sendstatus2 = $p[0];
         Session::flash('OrderCompleted',true);
-        return redirect(route('order.confirmation',$order->id));
+        return redirect(route('order.confirmation',$order->invoice_id));
 
     }
 

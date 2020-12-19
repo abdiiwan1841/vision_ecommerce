@@ -12,7 +12,7 @@
     <table class="table table-bordered" style="text-align: left">
         <tr>
             <th> Order ID </th>
-            <th>{{$orderinfo->id}}</th>
+            <th>{{$orderinfo->invoice_id}}</th>
         </tr>
         <tr>
             <th>Order Status</th>

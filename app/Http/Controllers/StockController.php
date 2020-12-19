@@ -113,7 +113,7 @@ class StockController extends Controller
             return $stock;
         }
         
-        $products = Product::all();
+        $products = Product::orderBy('product_name','ASC')->get();;
         $stock = [];
         foreach($products as $pd){
             $all_qty = stock($pd->id);
@@ -164,7 +164,7 @@ class StockController extends Controller
             return $stock;
         }
         
-        $products = Product::all();
+        $products = Product::orderBy('product_name','ASC')->get();
         $stock = [];
         foreach($products as $pd){
             $all_qty = productStock($pd->id);
@@ -208,7 +208,7 @@ class StockController extends Controller
             return $stock;
         }
         
-        $products = Product::all();
+        $products = Product::orderBy('product_name','ASC')->get();
         $stock = [];
         foreach($products as $pd){
             $all_qty = currentproductStock($pd->id);

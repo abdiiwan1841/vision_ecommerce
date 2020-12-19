@@ -49,7 +49,6 @@
                         <td  class="align-middle">Address</td>
                         <td class="align-middle">Section</td>
                         <td class="align-middle">Prev. Bal</td>
-                        <td class="align-middle">P.Due</td>
                         <td class="align-middle">Sales</td>
                         <td class="align-middle">Receive</td>
                         <td class="align-middle">Return</td>
@@ -83,10 +82,9 @@
                         <td class="align-middle">{{$item['customer']}}</td>
                         <td  class="align-middle">{{$item['address']}}</td>
                         <td class="align-middle">{!!CustomerSection($item['section'])!!}</td>
-                        <td class="align-middle">{{$prev_balance}}</td>
-                        <td class="align-middle">{{$p_due}}</td>
-                        <td class="align-middle">{{$sales}}</td>
-                        <td class="align-middle">{{$cash}}</td>
+                        <td class="align-middle">{{round($prev_balance + $p_due) }}</td>
+                        <td class="align-middle">{{round($sales)}}</td>
+                        <td class="align-middle">{{round($cash)}}</td>
                         <td class="align-middle">{{$sreturn}}</td>
                       <td class="align-middle">{{$c_due}}</td>
                       </tr>
@@ -114,11 +112,7 @@
                       <td>Total Return</td>
                       <td>{{ $total_return}}</td>
                     </tr>
-
-                    <tr>
-                      <td>Total Prev Dues</td>
-                      <td>{{ $total_p_due}}</td>
-                    </tr>
+{{-- <tr> <td>Total Prev Dues</td><td>{{ $total_p_due}}</td> </tr> --}}
   
                 </table>
                 </div>

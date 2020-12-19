@@ -73,23 +73,25 @@
                
                 
                 <div class="col-lg-6">
+                  <div class="form-group">
+                    <label for="qty">Quantity</label>
+                    <input type="number" class="form-control" name="qty" id="qty" placeholder="Enter Qty">
+                    <div class="qty_err"></div>
+                  </div>
+                </div>
+
+
+                <div class="col-lg-6">
                   
                   <div class="form-group">
                     <label for="price">Price</label>
-                    <input type="text" class="form-control" name="price" id="price">
+                    <input type="text" class="form-control" name="price" id="price" placeholder="Enter Price">
                     <div class="price_err"></div>
                   </div>
                   
                  
                 </div>
 
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <label for="qty">Quantity</label>
-                    <input type="number" class="form-control" name="qty" id="qty">
-                    <div class="qty_err"></div>
-                  </div>
-                </div>
               </div>
               <button type="button"  class="btn btn-success btn-block add-to-cart">ADD <i class="fa fa-plus"></i></button>
              
@@ -137,7 +139,7 @@
           </tr>
           
           <tr>
-            <td>Discount <input type="number" class="form-control tiny-input" id="discount_input" value="{{$charge->discount}}"></td>
+            <td>Discount <input type="number" class="form-control tiny-input" id="discount_input" value="{{round($charge->discount)}}"></td>
             <td class="discount"></td>
           </tr>
           <tr>
@@ -538,15 +540,15 @@ $( "#product" ).change(function() {
 
         $.get(baseuel+"/api/productinfo/"+product_id, function(data, status){
           if(status === 'success'){
-              $("#selected-product-info").html('<table class="table table-sm table-hover table-light"><tr><td> <b>'+data[0].product_name+'</b></td></tr><tr><td><img class="img-responsive img-thumbnail" src="'+baseuel+'/public/uploads/products/tiny/'+data[0].image+'" /></td></tr><tr><td> Price: '+data[0].current_price+'</td></tr><tr><td>Current Stock : '+data[1]+'</td></tr></table>');
+              $("#selected-product-info").html('<table class="table table-sm table-hover table-light"><tr><td> <b>'+data[0].product_name+'</b></td></tr><tr><td><img class="img-responsive img-thumbnail" src="'+baseuel+'/public/uploads/products/tiny/'+data[0].image+'" /></td></tr><tr><td> Price: '+Math.round(data[0].current_price)+'</td></tr><tr><td>Current Stock : '+data[1]+'</td></tr></table>');
 
             
             $("#selected-product-info").show();
 
             if(data[0].discount_price == null){
-              $("#price").val(data[0].price).removeClass('is-invalid').addClass('is-valid');
+              $("#price").val(Math.round(data[0].price)).removeClass('is-invalid').addClass('is-valid');
             }else{
-              $("#price").val(data[0].discount_price).removeClass('is-invalid').addClass('is-valid');
+              $("#price").val(Math.round(data[0].discount_price)).removeClass('is-invalid').addClass('is-valid');
             }
             
             $(".price_err").removeClass('invalid-feedback').addClass('valid-feedback').text('Looks Good');

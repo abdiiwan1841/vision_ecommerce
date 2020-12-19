@@ -36,7 +36,7 @@ class ProductController extends Controller
         $tags = Tags::all();
         $brands = Brand::all();
         $sizes = Size::get();
-        $products = Product::with('category','subcategory','brand','tags')->get();
+        $products = Product::with('category','subcategory','brand','tags')->where('type','!=','raw')->get();
         return view('products.index',compact('products','categories','subcategory', 'tags', 'brands','sizes'));
     }
 
@@ -333,7 +333,7 @@ class ProductController extends Controller
     public function export(Request $request){
         $general_opt = GeneralOption::first();
         $general_opt_value = json_decode($general_opt->options, true);
-        $products = Product::all();
+        $products = Product::orderBy('product_name','ASC')->get();
         $pdf = PDF::loadView('products.productexport',compact('products','general_opt_value'));
         return $pdf->download('Product Export.'.now().'.pdf');
     }

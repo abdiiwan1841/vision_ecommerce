@@ -93,7 +93,10 @@
                 <li class="{{Request::is('admin/product_section/products*') ? 'active' : '' }}">
                     <a href="{{route('products.index')}}"> <i class="fas fa-box-open"></i> Products</a>
                 </li>
-                
+
+                <li class="{{Request::is('admin/product_section/raw*') ? 'active' : '' }}">
+                    <a href="{{route('raw.index')}}"> <i class="fas fa-paw"></i>Raw Materials </a>
+                </li>            
                
                 <li class="{{Request::is('admin/product_section/brands') ? 'active' : '' }}">
                     <a href="{{route('brands.index')}}"> <i class="fas fa-band-aid"></i>Product Brands</a>
@@ -190,7 +193,9 @@
                 <li class="{{Request::is('admin/ecom/order*') ? 'active' : '' }}">
                     <a href="{{ route('order.index') }}"><i class="fas fa-clipboard-check"></i> Orders</a>
                 </li>
-        
+
+                 
+    
                 <li class="{{Request::is('admin/ecom/paymentmethod') ? 'active' : '' }}">
                     <a href="{{ route('paymentmethod.index') }}"> <i class="fab fa-cc-amazon-pay"></i> Payment Method</a>
                 </li>
@@ -415,6 +420,12 @@
                 <a href="{{ route('report.ecomuserstatement') }}"> <i class="fa fa-layer-group"></i> Ecommerce Customer Satements</a>
               </li>
             @endcan
+            
+            <li class="{{Request::is('admin/report/expensereport') ? 'active' : '' }}">
+                <a href="{{ route('expensereport.index') }}"> <i class="fa fa-layer-group"></i> Expense Report</a>
+              </li>
+
+            
                 
             </ul>
         

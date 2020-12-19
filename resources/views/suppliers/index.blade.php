@@ -94,7 +94,6 @@
             <th scope="col">#</th>
             <th scope="col">Name</th>
             <th scope="col">Company Name</th>
-            <th scope="col">Email</th>
             <th scope="col">Phone</th>
             <th scope="col">Address Box</th>
             <th scope="col">Action</th>
@@ -107,7 +106,6 @@
                 <th scope="row">{{$suppliers->firstItem() + $key}}</th>
                 <td>{{$supplier['name']}}</td>
                 <td>{{$supplier['company']}}</td>
-                <td>{{$supplier['email']}}</td>
                 <td>{{$supplier['phone']}}</td>
                 <td>{{$supplier['address']}}</td>
                 

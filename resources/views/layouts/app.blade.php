@@ -6,6 +6,8 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+     <!-- Favicon-->
+     <link rel="shortcut icon" href="{{asset('public/uploads/favicon/cropped/'.$CompanyInfo->favicon)}}">
 
     <title>@yield('title') {{ config('app.name',$CompanyInfo->company_name  ) }}</title>
    

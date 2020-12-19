@@ -71,6 +71,14 @@
 
               <div class="row">
                
+
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label for="qty">Quantity</label>
+                    <input type="number" class="form-control" name="qty" id="qty">
+                    <div class="qty_err"></div>
+                  </div>
+                </div>
                 
                 <div class="col-lg-6">
                   
@@ -83,13 +91,7 @@
                  
                 </div>
 
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <label for="qty">Quantity</label>
-                    <input type="number" class="form-control" name="qty" id="qty">
-                    <div class="qty_err"></div>
-                  </div>
-                </div>
+
               </div>
               <button type="button"  class="btn btn-success btn-block add-to-cart">ADD <i class="fa fa-plus"></i></button>
              

@@ -26,13 +26,14 @@
                 </div>
                 <div class="col-lg-4">
                   @if($returnDetails->return_status == 0)
-                  @if(Auth::user()->role->id == 1)
+                  @can('Inventory Approve Returns')
      
                     <button onclick="returnApprove('{{route('returnproduct.approve',$returnDetails->id)}}')" type="submit" class="btn btn-warning btn-sm mb-3 float-right" style="margin-right: 5px;">
                       <i class="fas fa-check"></i> APPROVE THIS  RETURN ?
                     </button>
-             
-  
+                  @endcan
+                  
+                  @can('Inventory Cancel Returns')
                   <form action="{{route('returnproduct.destroy',$returnDetails->id)}}" method="POST" >
                     @csrf
                     @method('DELETE')
@@ -40,10 +41,11 @@
                       <i class="fas fa-trash"></i> Cancel
                     </button>
                   </form>
+                 
                   @endif
                   @else
                 <button  disabled type="button" class="btn btn-success mb-5"><i class="fas fa-check"></i>  Approved by {{$signature->name}} <br><span class="badge badge-warning">{{$returnDetails->updated_at->format('d-F-Y g:i a')}}</span></button>
-                  @endif
+                @endcan
                 </div>
                 
                 <div class="col-12">

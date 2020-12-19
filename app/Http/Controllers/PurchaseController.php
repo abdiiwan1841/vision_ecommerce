@@ -21,7 +21,8 @@ class PurchaseController extends Controller
     
     public function index()
     {
-        return view('purchase.index');
+        $purchases = Purchase::withTrashed('user','prouduct')->take(10)->orderBy('id', 'desc')->get();
+        return view('purchase.index',compact('purchases'));
     }
 
     public function result(Request $request){
@@ -89,7 +90,7 @@ class PurchaseController extends Controller
         $products = json_decode($request->product);
         $product_info = [];
         foreach($products as $product){
-         $product_info[] = ['purchase_id' =>$purchase->id, 'product_id' => $product->id,'qty' => $product->count,'price' => $product->price, 'mfg' => $product->mfg, 'exp' => $product->exp, 'supplier_id' => $request->supplier_id,'purchased_at' => $p_date];   
+         $product_info[] = ['purchase_id' =>$purchase->id, 'product_id' => $product->id,'qty' => $product->count,'price' => $product->price, 'supplier_id' => $request->supplier_id,'purchased_at' => $p_date];   
         }
         $purchase->product()->attach($product_info);
         Toastr::success('Purchased Successfully', 'success');
@@ -155,7 +156,7 @@ class PurchaseController extends Controller
          DB::table('product_purchase')->where('purchase_id', '=', $id)->delete();
 
         foreach($products as $product){
-         $product_info[] = ['purchase_id' =>$purchase->id, 'product_id' => $product->id,'qty' => $product->count,'price' => $product->price,'mfg' => $product->mfg, 'exp' => $product->exp, 'supplier_id' => $request->supplier_id,'purchased_at' => $p_date];   
+         $product_info[] = ['purchase_id' =>$purchase->id, 'product_id' => $product->id,'qty' => $product->count,'price' => $product->price, 'supplier_id' => $request->supplier_id,'purchased_at' => $p_date];   
         }
         
 

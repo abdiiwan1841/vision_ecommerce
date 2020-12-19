@@ -18,7 +18,7 @@
     <div class="col-lg-9">
 
       @foreach ($orders as $key =>  $item)
-      <h4 class="mb-5 mt-5 text-center">ORDER ID: #{{$item->id}}</h4>
+      <h4 class="mb-5 mt-5 text-center">ORDER ID: #{{$item->invoice_id}}</h4>
       <div class="row">
         <div class="col-lg-6">
           <table class="table table-borderless">
@@ -28,7 +28,7 @@
             </tr>
             <tr>
               <th>Order ID:</th>
-              <td>#{{$item->id}}</td>
+              <td>#{{$item->invoice_id}}</td>
             </tr>
             <tr>
               <th>Order Status: </th>

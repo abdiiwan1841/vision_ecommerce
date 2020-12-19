@@ -87,27 +87,6 @@
             </div>
 
 
-            <div class="form-group">
-                <label for="district">District<span>*</span></label>
-                <select name="district" id="district" class="form-control @error('district') is-invalid @enderror">
-                    <option value="">Select District</option>
-                   
-                    
-                </select>
-                @error('district')
-                <small class="form-error">{{ $message }}</small>
-                @enderror
-            </div>
-      
-            <div class="form-group">
-                <label for="area">Area<span>*</span></label>
-                <select name="area" id="area" placeholder="Select a Area" class="form-control @error('area') is-invalid @enderror" id="area">
-                    <option value="">Select Area</option>
-                </select>
-                @error('area')
-                <small class="form-error">{{ $message }}</small>
-                @enderror
-            </div>
             
 
         </div>

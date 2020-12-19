@@ -41,6 +41,9 @@
      <link href="{{ asset('public/assets/css/poppins-font.css') }}" rel="stylesheet"/>
 </head>
 <body>
+    @if(Auth::user()->status == 0)
+      @php Session::flush() @endphp
+    @endif
     @yield('modal')
     <div class="wrapper" id="app">
     @include('component.common.sidebar')

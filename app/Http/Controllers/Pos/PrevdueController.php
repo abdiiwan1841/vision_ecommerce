@@ -37,7 +37,7 @@ class PrevdueController extends Controller
             'due_at' => 'required|date',
             'user' => 'required|numeric',
             'amount' => 'required|numeric',
-            'reference' => 'required|max:10',
+            'reference' => 'required|max:25',
         ]);
 
         $prevdue = new Prevdue;
@@ -72,7 +72,7 @@ class PrevdueController extends Controller
             'due_at' => 'required|date',
             'user' => 'required|numeric',
             'amount' => 'required|numeric',
-            'reference' => 'required|max:10',
+            'reference' => 'required|max:25',
         ]);
         $prevdue->due_at = $request->due_at." ".Carbon::now()->toTimeString();;
         $prevdue->user_id = $request->user;

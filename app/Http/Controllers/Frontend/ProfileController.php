@@ -22,7 +22,7 @@ class ProfileController extends Controller
     }
     
     public function show(){
-        $user = User::with('district','area')->findOrFail(Auth::user()->id);
+        $user = User::findOrFail(Auth::user()->id);
         return view('frontend.profile.show',compact('user'));
     }
 
@@ -38,8 +38,6 @@ class ProfileController extends Controller
             'email' => 'required|email|unique:users,email,'.Auth::user()->id,
             'phone' => 'required|unique:users,phone,'.Auth::user()->id,
             'division' => 'required|numeric',
-            'district' => 'required|numeric',
-            'area' => 'required|numeric',
             'address' => 'required|max:500',
             'image' => 'image',
         ]);
@@ -82,8 +80,6 @@ class ProfileController extends Controller
         $user->email = $request->email;
         $user->phone = $request->phone;
         $user->division_id = $request->division;
-        $user->district_id = $request->district;
-        $user->area_id = $request->area;
         $user->address = $request->address;
         $user->save();
 

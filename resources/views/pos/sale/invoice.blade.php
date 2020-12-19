@@ -38,9 +38,9 @@
       <div style="overflow: auto">
       <div style="width: 39%;display: inline-block;">
       <p style="font-size: 11px; margin-bottom: 25px;">Print Date: {{date("d-M-Y g:i a", strtotime(now()))}}</p>
-      <table class="table table-xs" style="border: none !important">
+      <table>
           <tr>
-          <td><b>Customer Name : </b></td>
+          <td><b>Customer : </b></td>
           <td>{{$current_user->name}}</td>
           </tr>
           @if($current_user->inventory_email)

@@ -27,7 +27,7 @@ class OrderController extends Controller
         $this->middleware('auth:admin');
         $this->middleware('permission:Ecommerce Section');
         $this->middleware('permission:Ecom Order Edit')->only('edit','update');
-        $this->middleware('permission:Ecom Order Approval')->only('approval');
+        $this->middleware('permission:Ecom Order Approval')->only('approval','cashapprove');
         $this->middleware('permission:Ecom Order Cancel')->only('OrderCancel');
     }
 
@@ -208,6 +208,7 @@ class OrderController extends Controller
             'item' => 'required|numeric',
             'product' => 'required',
         ]);
+
         $approval_info = json_encode(array('approved_by' => Auth::user()->name,'approved_at' => now()));
         $order = Order::findOrFail($id);
 
@@ -286,25 +287,19 @@ class OrderController extends Controller
         $order->payment_method = $request->payment_method;
         $order->posted_by = Auth::user()->name;
         $order->references = $request->references;
-        $order->payment_status = 1;
         $order->save();
         Toastr::success('Order Updated Successfully', 'success');
         return redirect()->back();
     }
 
     public function approval(Request $request,$id){
-        $this->validate($request,[
-            'approval' => 'required',
-        ]);
-
         $approval_info = ['approved_by' => Auth::user()->name,'approved_at' => now() ]; 
         $order = Order::findOrFail($id);
-        $order->order_status = $request->approval;
+        $order->order_status = 1;
         $order->approval_info = $approval_info;
         $order->save();
-        Toastr::success('Order Approved Successfully', 'success');
-        Session::flash('orderapproval',$order);
-        return redirect()->back();
+        return $order;
+
     }
 
     public function shipped(Request $request,$id){
@@ -320,20 +315,26 @@ class OrderController extends Controller
         return redirect()->back();
     }
 
-    public function OrderCancel(Request $request,$id){
-        $this->validate($request,[
-            'cancel' => 'required',
-        ]);
+    public function OrderCancel($id){
+
         $cancelation_info = ['canceled_by' => Auth::user()->name,'canceled_at' => now() ]; 
         $order = Order::findOrFail($id);
-        $order->order_status = $request->cancel;
+        $order->order_status = 2;
         $order->cancelation_info =  $cancelation_info;
+        $order->amount =  0;
         $order->product()->detach();
         $order->save();
-        Toastr::success('Order Cancel Successfully', 'success');
-        return redirect()->back();
+        return $order;
+
     }
 
+
+    public function cashapprove($id){
+        $order = Order::findOrFail($id);
+        $order->payment_status = 1;
+        $order->save();
+        return $order;
+    }
 
     public function invoice($id){
        
@@ -377,7 +378,7 @@ class OrderController extends Controller
 
 
         
-        $invoice = Invoice::make('ORDER ID #'.now()->year.$order->id)
+        $invoice = Invoice::make('ORDER ID #'.$order->invoice_id)
             ->series('ECOM')
             ->sequence($order->invoice_id)
             ->buyer($customer)

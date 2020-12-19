@@ -153,7 +153,7 @@
         </thead>
      
         <tbody class="show-cart">
-
+          
         </tbody>
         
       </table>
@@ -588,9 +588,9 @@ $( "#product" ).change(function() {
         $.get(baseuel+"/api/productinfo/"+product_id, function(data, status){
           if(status === 'success'){
             if(data.discount_price == null){
-              $("#selected-product-info").html("<img class='img-responsive img-thumbnail' src='"+baseuel+"/public/uploads/products/tiny/"+data.image+"' /> <br><b> "+data.product_name+"</b><br><span>Current Price : <b> "+data.price+" </b>Tk. </span>");
+              $("#selected-product-info").html("<img class='img-responsive img-thumbnail' src='"+baseuel+"/public/uploads/products/tiny/"+data[0].image+"' /> <br><b> "+data.product_name+"</b><br><span>Current Price : <b> "+data[0].price+" </b>Tk. </span>");
             }else{
-              $("#selected-product-info").html("<img class='img-responsive img-thumbnail' src='"+baseuel+"/public/uploads/products/tiny/"+data.image+"' /> <br><b> "+data.product_name+"</b><br><del>Current Price : <b> "+data.price+" </b>Tk. </del><br><span>Discounted Price : <b> "+data.discount_price+" </b></span> Tk.<br>");
+              $("#selected-product-info").html("<img class='img-responsive img-thumbnail' src='"+baseuel+"/public/uploads/products/tiny/"+data[0].image+"' /> <br><b> "+data.product_name+"</b><br><del>Current Price : <b> "+data.price+" </b>Tk. </del><br><span>Discounted Price : <b> "+data.discount_price+" </b></span> Tk.<br>");
             }
             
             $("#selected-product-info").show();

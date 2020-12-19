@@ -83,6 +83,7 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::resource('rp/permissions','RoleController');
 
     Route::get('dashboard', 'adminController@dashboard')->name('admin.dashboard');
+    Route::get('getorderdetails/{id}', 'adminController@orderdetails')->name('admin.orderdetails');
     Route::get('inventory/dashboard', 'adminController@inventorydashboard')->name('admin.inventorydashboard');
     Route::get('logout', 'Auth\AdminLoginController@adminLogout')->name('admin.logout');
     Route::get('action/changepassword','adminController@changepassword')->name('admin.changepassword');
@@ -142,6 +143,10 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::get('report/stockreport', 'StockController@stockreport')->name('stockreport.report');
     Route::post('report/stockreport', 'StockController@stockreportshow')->name('stockreport.show');
     Route::post('report/stockreport/pdf', 'StockController@stockreportpdf')->name('stockreport.pdf');
+
+    Route::get('report/expensereport', 'ReportController@expensereport')->name('expensereport.index');
+    Route::post('report/expensereport/pdf', 'ReportController@pdfexpensereport')->name('expensereport.pdf');
+
     Route::get('report/ecom/ecomuserstatement', 'EcommerceReportController@ecomUserStatement')->name('report.ecomuserstatement');
     Route::post('report/ecom/ecomuserstatement', 'EcommerceReportController@showEcomUserstatement')->name('report.showecomuserstatement');
     Route::post('report/ecom/ecomuserstatement/pdf', 'EcommerceReportController@pdfEcomUserstatement')->name('report.pdfcomuserstatement');
@@ -185,6 +190,8 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::post('pos/customers/export', 'Pos\UserController@export')->name('user.export');
     Route::resource('ecom/ecomcustomer', 'Ecom\UserController');
     Route::resource('product_section/products', 'ProductController');
+    Route::resource('product_section/raw', 'RawmaterialsController');
+
     Route::post('product_section/products/export', 'ProductController@export')->name('product.export');
     Route::post('removegalleryimage/{id}', 'ProductController@removegalleryimage')->name('products.removegalleryimage');
     Route::resource('product_section/sizes', 'SizeController');
@@ -193,6 +200,7 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::resource('product_section/brands', 'BrandController');
     Route::resource('product_section/subcategories', 'SubcategoryController');
     Route::resource('ecom/order', 'OrderController');
+
     Route::get('ecom/order/{id}/view', 'OrderController@show')->name('order.view');
     Route::get('pos/cashresult','Pos\CashController@index');
     Route::post('pos/cashresult','Pos\CashController@result')->name('poscash.result');
@@ -213,6 +221,7 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::get('ecom/charge/{id}/edit', 'ChargeController@edit')->name('charge.edit');
     Route::put('ecom/charge/{id}', 'ChargeController@update')->name('charge.update');
     Route::post('order/cash/{id}', 'OrderController@cashSubmit')->name('order.cashsubmit');
+    Route::post('order/cashapproval/{id}', 'OrderController@cashApprove')->name('order.cashapprove');
     Route::put('order/approval/{id}', 'OrderController@approval')->name('order.approval');
     Route::put('order/shipping/{id}', 'OrderController@shipped')->name('order.shipped');
     Route::put('order/cance/{id}', 'OrderController@OrderCancel')->name('order.cancel');

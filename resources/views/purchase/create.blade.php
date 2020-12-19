@@ -1,5 +1,5 @@
 @extends('layouts.adminlayout')
-@section('title','Create Purchase')
+@section('title','Edit Purchase')
 @section('content')
 
   <div class="row">
@@ -9,18 +9,18 @@
           <div class="row">
             <div class="col-lg-4"><a href="{{route('purchase.index')}}" class="btn btn-sm btn-primary"><i class="fa fa-angle-left"></i> back</a></div>
             <div class="col-lg-8">
-               <strong class="float-right">CREATE PURCHASE INVOICE</strong> 
+            <strong class="float-right">PURCHASE INVOICE</strong> 
             </div>
           </div>
           <hr>
            <div class="row">
-            @php
-            $mytime = Carbon\Carbon::now();
-        @endphp
+
             <div class="col-lg-4">
               <div class="form-group">
-                <label for="purchase_date">Date</label>
-               
+                <label for="sales_date">Date <button onclick="changeDate()" class="btn btn-link">(change)</button></label>
+                @php
+                    $mytime = Carbon\Carbon::now();
+                @endphp
                 <input type="text" class="form-control" name="purchase_date" id="purchase_date" value="{{$mytime->toDateString()}}" readonly>
                 <div class="date_err"></div>
               </div>
@@ -44,7 +44,7 @@
           </div>
 
 
-          <div class="col-lg-5">
+          <div class="col-lg-6">
             <div class="form-group">
               <div id="customer-details"></div>
             </div>
@@ -52,12 +52,12 @@
 
 
 
-           <div class="col-lg-3">
+           <div class="col-lg-2">
           <div class="card">
             
             <div class="card-header">
               
-                <span class="float-left"><b>RESET FIELD</b></span> <button type="button" onclick="reset()" id="reset" class="btn btn-success float-right"><i class="fa fa-sync-alt"></i> </button>
+                <span class="float-left"><b>RESET</b></span> <button type="button" onclick="reset()" id="reset" class="btn btn-success float-right"><i class="fa fa-sync-alt"></i> </button>
               </div>
               
             </div>
@@ -69,7 +69,7 @@
           </div>
        
             <div class="row">
-            <div class="col-lg-6 col-md-6">
+            <div class="col-lg-4 col-md-3">
               <div class="form-group">
                 <label for="product">Product</label>
                 <select data-placeholder="-select product-" class="js-example-responsive" name="product" id="product" class="form-control">
@@ -83,13 +83,10 @@
                 <div class="product_err err_form"></div>
                
               </div>
-             
-
-            </div>
-            <div class="col-lg-6">
               <div class="form-group">
                 <span class="text-center" id="selected-product-info"></span>
               </div>
+
             </div>
 
 
@@ -99,7 +96,7 @@
                   
                   <div class="form-group">
                     <label for="price">Price</label>
-                    <input type="number" class="form-control" name="price" placeholder="Enter Price" id="price">
+                    <input type="number" class="form-control" name="price" id="price">
                     <div class="price_err"></div>
                   </div>
                   
@@ -109,37 +106,11 @@
                 <div class="col-lg-2 col-md-2">
                   <div class="form-group">
                     <label for="qty">Quantity</label>
-                    <input type="number" class="form-control" placeholder="Enter Qty" name="qty" id="qty">
+                    <input type="number" class="form-control" name="qty" id="qty">
                     <div class="qty_err"></div>
                   </div>
                 </div>
-                <div class="col-lg-2 col-md-2">
-                <div class="form-group">
-                  <label for="mfg">MFG</label>
-                 
-                  <input type="text" class="form-control" name="mfg" id="mfg" placeholder="Select MFG Date" readonly>
-                  <div class="mfg_err"></div>
-                </div>
-              </div>
-
-              <div class="col-lg-2 col-md-2">
-                <div class="form-group">
-                  <label for="exp">EXP</label>
-                 
-                  <input type="text" class="form-control" name="exp" id="exp" placeholder="Select EXP Date" readonly>
-                  <div class="exp_err"></div>
-                </div>
-              </div>
-
-              <div class="col-lg-2 col-md-2">
-                <div class="form-group">
-                  <label for="batch">Batch No.</label>
-                 
-                  <input type="text" class="form-control" name="batch" id="batch" placeholder="Enter batch Number">
-                  <div class="batch_err"></div>
-                </div>
-              </div>
-                <div class="col-lg-2 col-md-2">
+                <div class="col-lg-2">
                   <div style="margin-top: 31px">
                     <button type="button"  class="btn btn-primary  add-to-cart">ADD <i class="fa fa-plus"></i></button>
                   </div>
@@ -158,9 +129,15 @@
     <div class="col-lg-12">
       <hr>
       <div class="p_detail_wrapper table-responsive">
-        <h3 class="text-center">PURCHASE INVOICE</h3>
+      <h3 class="text-center">PURCHASE INVOICE</h3>
         <h5 class="date"></h5> <br>
-   <br><br>
+        <div class="row">
+            <div class="col-lg-6">
+                <div id="customer-info">
+
+            </div>
+         </div>
+    </div> <br><br>
     <div class="table-responsive">
       <table class="table table-bordered table-striped">
         <thead class="table-dark">
@@ -169,10 +146,7 @@
             <td>Name</td>
             <td>Image</td>
             <td>Price</td>
-            <td>Size</td>
             <td>Qty</td>
-            <td>Mfg</td>
-            <td>Exp</td>
             <td>Total</td>
             <td>Action</td>
           </tr>
@@ -232,7 +206,17 @@
 @endpush
 
 @push('js')
+<script src="{{asset('public/assets/js/flatpicker.min.js')}}"></script>
 <script>
+
+$("#purchase_date").flatpickr({dateFormat: 'Y-m-d', allowInput: true});
+function changeDate(){
+  $("#purchase_date").attr('disabled',false);
+}
+
+
+
+
 
 function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
 
@@ -241,7 +225,7 @@ var baseuel = '{{url('/')}}';
   function reset(){
     sessionStorage.clear();
     $("#reset").html('<div class="fa-1x"><i class="fas fa-spinner fa-spin"></i></div>');
-    location.reload(true);
+    location.reload();
   }
 
   $('#product').select2({
@@ -267,10 +251,8 @@ if(sessionStorage.purchaseCart != undefined){
 
 if(sessionStorage.supplier_id!= undefined || sessionStorage.supplier_id!= undefined){
   $("#supplier").val(sessionStorage.supplier_id).trigger('change');
-  $("#purchase_date").val(sessionStorage.purchase_date);
+  $("#purchase_date").val(sessionStorage.purchase_date).prop("readonly", false).prop("disabled", true);
   $("#supplier").prop("disabled", true);
-  $("#purchase_date").prop("readonly", false);
-  $("#purchase_date").prop("disabled", true);
 }
 
 
@@ -318,16 +300,13 @@ var purchaseCart = (function() {
   cart = [];
   
   // Constructor
-  function Item(name, price, count, id,o_name,image,product_size,mfg,exp) {
+  function Item(name, price, count, id,o_name,image) {
     this.name = name;
     this.price = price;
     this.count = count;
     this.id    = id;
     this.o_name    = o_name;
     this.image    = image;
-    this.product_size = product_size;
-    this.mfg = mfg;
-    this.exp = exp;
     
   }
   
@@ -351,7 +330,7 @@ var purchaseCart = (function() {
   var obj = {};
   
   // Add to cart
-  obj.addItemToCart = function(name, price, count, id,o_name,image,product_size,mfg,exp) {
+  obj.addItemToCart = function(name, price, count, id,o_name,image) {
     for(var item in cart) {
       if(cart[item].name === name) {
        Swal.fire({
@@ -362,12 +341,12 @@ var purchaseCart = (function() {
         return;
       }
     }
-    var item = new Item(name, price, count, id,o_name,image,product_size,mfg,exp);
+    var item = new Item(name, price, count, id,o_name,image);
     cart.push(item);
     saveCart();
   }
 
-  obj.IncrementCart = function(name, price, count, id,image,product_size) {
+  obj.IncrementCart = function(name, price, count, id,image) {
     for(var item in cart) {
       if(cart[item].name === name) {
         cart[item].count ++;
@@ -375,7 +354,7 @@ var purchaseCart = (function() {
         return;
       }
     }
-    var item = new Item(name, price, count, id,image,product_size);
+    var item = new Item(name, price, count, id,image);
     cart.push(item);
     saveCart();
   }
@@ -481,8 +460,6 @@ $('.add-to-cart').click(function(event) {
   
   var id = $("#product option:selected").val();
   var purchase_date = $("#purchase_date").val();
-  var mfg = $("#mfg").val();
-  var exp = $("#exp").val();
   var supplier_id = $("#supplier option:selected").val();
   var qnty = $("#qty").val();
   var o_name = $("#product option:selected").text();
@@ -516,24 +493,6 @@ $('.add-to-cart').click(function(event) {
   }else{
     $("#purchase_date").removeClass('is-invalid');
   }
-  if(mfg.length === 0){
-    $("#mfg").addClass('is-invalid');
-    $(".mfg_err").addClass('invalid-feedback').text('MFG  Date Field is Required');
-    err.push('mfg_date');
-  }else{
-    $("#mfg").removeClass('is-invalid');
-  }
-
-
-  if(exp.length === 0){
-    $("#exp").addClass('is-invalid');
-    $(".exp_err").addClass('invalid-feedback').text('EXP  Date Field is Required');
-    err.push('exp_date');
-  }else{
-    $("#exp").removeClass('is-invalid');
-  }
-
-
   if(price.length === 0){
     $("#price").addClass('is-invalid');
     $(".price_err").addClass('invalid-feedback').text('Price Field is Required');
@@ -569,10 +528,8 @@ $('.add-to-cart').click(function(event) {
   $.get(baseuel+"/api/productinfo/"+id, function(data, status){
     if(status === 'success'){
       var image = data[0].image;
-      var product_size = data[0].size.name;
-      
     if(err.length<1){
-    purchaseCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,product_size,mfg,exp);
+    purchaseCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image);
     $(".is-valid").removeClass('is-valid');
     
     //Cart session has data
@@ -595,8 +552,6 @@ $('.add-to-cart').click(function(event) {
     $(".product_err").text('');
     $("#price").val("");
     $("#qty").val("");
-    $("#mfg").val("");
-    $("#exp").val("");
     $("#selected-product-info").hide();
   }
 
@@ -617,21 +572,29 @@ $( "#supplier" ).change(function() {
 });
 $( "#product" ).change(function() {
     var product_id = $("#product option:selected").val();
-
     if(product_id.length > 0){
-
         $.get(baseuel+"/api/productinfo/"+product_id, function(data, status){
           if(status === 'success'){
-              $("#selected-product-info").html('<table class="table table-sm table-hover"><tr><td> <b>'+data[0].product_name+'</b></td></tr><tr><td><img class="img-responsive img-thumbnail" src="'+baseuel+'/public/uploads/products/tiny/'+data[0].image+'" /></td></tr><tr><td> Price: '+data[0].current_price+'</td></tr><tr><td>Current Stock : '+data[1]+'</td></tr></table>');
-
+            if(data.discount_price == null){
+              $("#selected-product-info").html("<img class='img-responsive img-thumbnail' src='"+baseuel+"/public/uploads/products/tiny/"+data[0].image+"' /> <br><b> "+data[0].product_name+"</b><br><span>Current Price : <b> "+data[0].price+" </b>Tk. </span>");
+            }else{
+              $("#selected-product-info").html("<img class='img-responsive img-thumbnail' src='"+baseuel+"/public/uploads/products/tiny/"+data[0].image+"' /> <br><b> "+data[0].product_name+"</b><br><del>Current Price : <b> "+data[0].price+" </b>Tk. </del><br><span>Discounted Price : <b> "+data[0].discount_price+" </b></span> Tk.<br>");
+            }
+            
             $("#selected-product-info").show();
 
+            if(data.discount_price == null){
+              $("#price").val(Math.round(data[0].price)).removeClass('is-invalid').addClass('is-valid');
+            }else{
+              $("#price").val(Math.round(data[0].discount_price)).removeClass('is-invalid').addClass('is-valid');
+            }
+            
+            $(".price_err").removeClass('invalid-feedback').addClass('valid-feedback').text('Looks Good');
+            $("#qty").val(1).removeClass('is-invalid').addClass('is-valid');
+            $(".qty_err").removeClass('invalid-feedback').addClass('valid-feedback').text('Looks Good');
           }
        
       });
-
-      $("#product + span").removeClass('is-invalid').addClass('is-valid');
-      $(".product_err").removeClass('err_form').addClass('success_form').text('Looks Good');
       
     }
    
@@ -682,8 +645,8 @@ $("#price").change(function(){
 
 
 $("#purchase_date").change(function(){
-  var od = $("#purchase_date").val();
-  if(od.length === 0){
+  var pd = $("#purchase_date").val();
+  if(pd.length === 0){
     $("#purchase_date").removeClass('is-valid').addClass('is-invalid');
     $(".date_err").removeClass('valid-feedback').addClass('invalid-feedback');;
     $(".date_err").text('Qty Field is Required');
@@ -691,6 +654,9 @@ $("#purchase_date").change(function(){
     $("#purchase_date").removeClass('is-invalid').addClass('is-valid');
     $(".date_err").removeClass('invalid-feedback').addClass('valid-feedback');
     $(".date_err").text('Looks Good');
+    sessionStorage.setItem("purchase_date",pd);
+    $("#purchase_date").attr('disabled',true);
+    displayCart()
 }
 });
 
@@ -702,7 +668,13 @@ $("#supplier").change(function(){
 }
 });
 
-
+$("#product").change(function(){
+  var product = $("#product").val();
+  if(supplier.length > 0){
+    $("#product + span").removeClass('is-invalid').addClass('is-valid');
+    $(".product_err").removeClass('err_form').addClass('success_form').text('Looks Good');
+}
+});
 
 
 // Clear items
@@ -713,6 +685,7 @@ $('.clear-cart').click(function() {
 
 var sales_discount = $('#discount_input').val()/100;
 var carrying_and_loading = $('#carrying_and_loading').val();
+
 
 $("#discount_input").on("input",function(){
     var net_discount =  $('#discount_input').val();
@@ -761,6 +734,8 @@ $("#discount_input").on("input",function(){
 
 
 
+
+
 function displayCart() {
   var discount_amount = $(".discount").val();
   var cartArray = purchaseCart.listCart();
@@ -776,12 +751,11 @@ function displayCart() {
       + "<td>" + j++ + "</td>"
       + "<td>" + cartArray[i].o_name + "</td>"
       + "<td><img style='width: 50px;' src='"+baseuel+"/public/uploads/products/tiny/"+cartArray[i].image+"' class='img-thumbnail' /></td>"
-      + "<td>" + cartArray[i].price + "</td>"
-      + "<td>" + cartArray[i].product_size + "</td>"
-      + "<td>"+ cartArray[i].count +"</td>"
-      + "<td>"+ cartArray[i].mfg +"</td>"
-      + "<td>"+ cartArray[i].exp +"</td>"
-      + "<td>" + Math.round(cartArray[i].total) + "</td>" 
+      + "<td>" + Math.round(cartArray[i].price) + " Tk.</td>"
+      + "<td style='width: 150px;text-align: center;margin: 0 auto'><div class='input-group'><button class='minus-item input-group-addon btn btn-sm btn-primary' data-name=" + cartArray[i].name + ">-</button>"
+      + "<input style='width: 65px' type='number' class='item-count' data-name='" + cartArray[i].name + "' value='" + cartArray[i].count + "'>"
+      + "<button class='plus-item btn  btn-sm btn-primary  input-group-addon' data-name=" + cartArray[i].name + ">+</button></div></td>"
+      + "<td>" + Math.round(cartArray[i].total) + " Tk</td>" 
       + "<td><button class='delete-item btn btn-sm badge-danger' data-name=" + cartArray[i].name + ">X</button></td>"
       +  "</tr>";
   }
@@ -789,6 +763,13 @@ function displayCart() {
   $('.total-cart').html(purchaseCart.totalCart());
 
   $('.date').html('Purchase  Date: '+sessionStorage.purchase_date);
+  $.get("{{url('/')}}/api/supplierinfo/"+sessionStorage.supplier_id, function(data, status){
+      if(status === 'success'){
+        $("#customer-info").html("<b>Name :</b>"+data.name+"</br><b>Address :</b>  "+data.address+"<br><b>Phone :</b> "+data.phone+"<br><b>Email :</b> "+data.email);
+        
+      }
+  });
+  //$('#customer-info').html('<h5>Customer Name: Md Shajib Azher</h5><h5>Email : mdshajibazher@gmail.com</h5><h5>Phone :01700554455</h5><h5>Address :Dhaka</h5>');
   $('.net-amount').text(Math.round(netamount));
   
   $('.discount').text( Math.round(disc));
@@ -895,12 +876,6 @@ function confirm_sales(){
 
 </script>
 
-<script src="{{asset('public/assets/js/flatpicker.min.js')}}"></script>
-<script>
-  $("#purchase_date").flatpickr({dateFormat: 'Y-m-d', allowInput: true});
-  $("#mfg").flatpickr({dateFormat: 'Y-m-d', allowInput: true});
-  $("#exp").flatpickr({dateFormat: 'Y-m-d', allowInput: true});
-</script>
 
 @endpush
 

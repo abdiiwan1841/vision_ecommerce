@@ -137,4 +137,6 @@ class ExpenseController extends Controller
     public function catlist(){
         return Expensecategory::all();
     }
+
+
 }

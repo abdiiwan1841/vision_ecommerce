@@ -130,7 +130,7 @@ function VisionSmsResponse($response){
     }elseif($response == 1010 ){
         return "Max number limit exceeded";
     }else{
-        return "";
+        return "No Sms Sent";
     }
 }
 

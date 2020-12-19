@@ -51,7 +51,7 @@ class OrderInvoiceController extends Controller
 
 
         
-        $invoice = Invoice::make('ORDER ID #'.now()->year.$order->id)
+        $invoice = Invoice::make('ORDER ID #'.$order->invoice_id)
             ->series('ECOM')
             ->sequence($order->invoice_id)
             ->buyer($customer)

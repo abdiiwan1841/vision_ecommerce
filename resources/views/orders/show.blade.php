@@ -22,7 +22,7 @@
     @endslot
 
     @slot('modal_form') 
-       <form action="{{route('order.cashsubmit',$order->id )}}" method="POST" id="cashForm" enctype="multipart/form-data">
+       <form action="{{route('order.cashsubmit',$order->id )}}" method="POST" id="cashForm">
         @csrf
     @endslot
 
@@ -97,7 +97,7 @@
                 @endif
 
                 <div class="col-12">
-                  <h3 class="text-center">Order ID # {{$order->id}} </h3> <br>
+                  <h3 class="text-center">Order ID # {{$order->invoice_id}} </h3> <br>
                   <h4>
                     <i class="fas fa-money-bill-alt"></i> Order Details
                   <small class="float-right">Date:  {{\Carbon\Carbon::parse($order->ordered_at)->format('d-m-Y')}}</small>
@@ -190,33 +190,17 @@
 
                     @else
                     @if($order->order_status == 0)
-  
-                    <form  action="{{route('order.cancel',$order->id)}}" method="POST" style="margin: 20px 0">
-                      @csrf
-                      @method('PUT')
-                      <input type="hidden" name="cancel" value="2">
                       
-                      <button type="submit" onclick="return confirm('Are You Sure You Want To Cancel The Order? You Cant revert this in future')" class="btn btn-sm btn-danger"><i class="fas fa-times"></i> Cancel Order</button>
-                      </form>
-  
-                    <form action="{{route('order.approval', $order->id)}}" method="POST" style="margin: 20px 0" >
-                      @csrf
-                      @method('PUT')
-                      <input type="hidden" value="1" name="approval">
-                      <button type="submit" class="btn btn-sm btn-warning">Approve Order ?</button>
-                    </form>
+                    @can('Ecom Order Approval')
+                    <button style="margin: 10px 0" onclick="ApproveOrder('{{route('order.approval',$order->id)}}')" type="submit" class="btn btn-sm btn-warning">Approve Order ?</button>
+                    @endcan
+
                     @else
                     @if($order->payment_status == 0)
                     <button style="margin: 20px 0" type="button" onclick="cashSubmit('{{route('order.cashsubmit',$order->id)}}')" class="btn btn-sm btn-success"><i class="far fa-credit-card"></i> Submit
                       Payment
                     </button>
-                    <form  action="{{route('order.cancel',$order->id)}}" method="POST" style="margin-bottom: 20px">
-                      @csrf
-                      @method('PUT')
-                      <input type="hidden" name="cancel" value="2">
-                      
-                      <button type="submit" onclick="return confirm('Are You Sure You Want To Cancel The Order? You Cant revert this in future')" class="btn btn-danger btn-sm"><i class="fas fa-times"></i> Cancel Order</button>
-                      </form>
+                   
                     @else
                     <button style="margin: 20px 0" type="button" class="btn btn-success"  disabled><i class="far fa-check-circle"></i> PAID
                     </button>
@@ -224,10 +208,11 @@
                     @endif
 
                    
-                    
+                  @if($order->order_status == 1)  
                   <a target="_blank" href="{{route('order.invoice',$order->id)}}" class="btn btn-sm btn-primary">
                       <i class="fas fa-download"></i> Generate PDF
                   </a>
+                  @endif
                   @endif
 
 
@@ -286,7 +271,7 @@
 
               <div class="row">
                 <!-- accepted payments column -->
-                <div class="col-3">
+                <div class="col-lg-3">
 
                   @if($order->payment_status == 1)
                  
@@ -312,10 +297,15 @@
            
                   @endif
 
+                  @can('Ecom Order Cancel')
+                  <button type="submit" style="margin: 10px 0" onclick="CancelOrder('{{route('order.cancel',$order->id)}}')" class="btn btn-sm btn-danger"><i class="fas fa-times"></i> Cancel Order</button>
+
+                @endcan
+
                 </div>
                 <div class="col-lg-3"></div>
                 <!-- /.col -->
-                <div class="col-6">
+                <div class="col-lg-6">
                   <div class="table-responsive">
                     <table class="table">
                       <tr>
@@ -397,9 +387,11 @@
 @endpush
 
 @push('js')
+<script src="{{asset('public/assets/js/axios.min.js')}}"></script>
+<script src="{{asset('public/assets/js/flatpicker.min.js')}}"></script>
 @if($order->order_status != 2)
 
-<script src="{{asset('public/assets/js/flatpicker.min.js')}}"></script>
+
 
 @if ($errors->any())
 {{-- prevent The Modal Close If Any Error In the Form --}}
@@ -413,9 +405,67 @@
 
 <script>
   $("#cash_date").flatpickr({dateFormat: 'Y-m-d'});
+  const swalWithBootstrapButtons = Swal.mixin({
+  customClass: {
+    confirmButton: 'btn btn-success',
+    cancelButton: 'btn btn-warning  mr-3'
+  },
+  buttonsStyling: false
+});
+
+
+	function ApproveOrder(approveurl){
+		axios.put(approveurl)
+	    .then(function (response) {
+			var orderinfo = response.data;
+
+      swalWithBootstrapButtons.fire(
+			'Order Approved Successfully!',
+			'Order Id: '+orderinfo.invoice_id+' Amount: '+orderinfo.amount,
+			'success'
+			)
+      location.reload();
+		})
+
+		.catch(function (error) {
+			toastr.error(error.response.data.message,error.response.status)
+			console.log(error.response);			
+		});
+	}
+
+
+	function CancelOrder(cancelurl){
+
+		let conf = confirm('Are you sure you want to cancel the order');
+
+		if(conf){
+
+		axios.put(cancelurl)
+	    .then(function (response) {
+			var orderinfo = response.data;
+      
+      swalWithBootstrapButtons.fire(
+			'Order Canceled Successfully!',
+			'Order Id: '+orderinfo.invoice_id+' Amount: '+orderinfo.amount,
+			'success'
+			)
+
+      location.reload();
+		})
+
+		.catch(function (error) {
+			toastr.error(error.response.data.message,error.response.status)
+			console.log(error.response);			
+		})
+
+		}
+	}
+
+
+
+
 
 function cashSubmit(store_url){
- 
   $('.modal-title').text('Submit Cash');
   $('#cashForm').attr('action', store_url);
   $('#cashForm').trigger("reset");
@@ -423,7 +473,6 @@ function cashSubmit(store_url){
   $(".form-error").remove();
   $("#cash").val({{$grandToatl}});
   $('#addDataModal').modal('show');
-
 
 }
     </script>

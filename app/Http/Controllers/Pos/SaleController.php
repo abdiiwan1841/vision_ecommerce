@@ -7,7 +7,6 @@ use App\Sale;
 use App\User;
 use App\Admin;
 use App\Charge;
-use App\Company;
 use App\Product;
 use Carbon\Carbon;
 use App\GeneralOption;
@@ -260,7 +259,6 @@ class SaleController extends Controller
             $signature = Admin::where('id',$sale->approved_by)->select('name','signature')->first();
         }
         
-
 
         $pdf = PDF::loadView('pos.sale.invoice',compact('sale','current_user','general_opt_value','signature'));
         Storage::put('public/invoices/'.Str::slug($current_user->name).'-date-'.$sale->sales_at->format('d-m-Y').'.pdf', $pdf->output());

@@ -33,15 +33,7 @@
             <th>Phone : </th>
             <td>{{$user->phone}}</td>
           </tr>
-          <tr>
-            <th>District : </th>
-            <td>{{$user->district->name}}</td>
-          </tr>
-          <tr>
-            <th>Area : </th>
-            <td>{{$user->area->name}}</td>
-          </tr>
-          <tr>
+
             <th>Address : </th>
             <td>{{$user->address}}</td>
           </tr>
