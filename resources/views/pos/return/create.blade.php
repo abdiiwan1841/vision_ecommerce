@@ -567,7 +567,7 @@ $( "#product" ).change(function() {
 
             
             $("#selected-product-info").show();
-            $("#price").val(data[0].tp).removeClass('is-invalid');
+            $("#price").val(Math.round(data[0].tp)).removeClass('is-invalid');
             $("#qty").val('').removeClass('is-invalid');
             
 

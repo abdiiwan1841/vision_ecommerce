@@ -7,7 +7,8 @@
   <div class="row spad">
     <div class="col-lg-3">
         <ul class="list-group proflie-sidemenu  mb-5">
-        <li class="list-group-item current">My Order</li>
+        <li class="list-group-item">My Sales</li>
+        <li class="list-group-item">My Order</li>
         <li class="list-group-item"><a href="{{route('profile.show')}}">My Profile</a></li>
         <li class="list-group-item"> <a href="{{route('profile.editprofile')}}">Edit Profile</a> </li>
         <li class="list-group-item"> <a href="{{route('profile.changepassword')}}">Change Password</a> </li>

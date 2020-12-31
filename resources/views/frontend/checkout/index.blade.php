@@ -289,7 +289,7 @@
 
 @push('js')
 
-
+<script src="{{asset('public/assets/js/axios.min.js')}}"></script>
 
 <script>
     var HomePageLink = '{{route('homepage.index')}}';
@@ -297,18 +297,8 @@
 
 
 
-
     var base_url = '{{url('/')}}';
     var output = '';
-
-
-
-
-
-
-
-       
-
 
 
         $("#payment_method").change(function(){
@@ -329,7 +319,6 @@
 
 
 
-    
 
 var ShopPageLink = '{{route('shoppage.index')}}';
 var checkoutPageLink = '{{route('checkoutpage.index')}}';

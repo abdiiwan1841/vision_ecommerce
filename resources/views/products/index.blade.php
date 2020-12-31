@@ -55,12 +55,7 @@
             <a href="{{route('products.edit',$product->id)}}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a> 
          
               <a class="btn btn-info btn-sm"  href="{{route('products.show',$product['id'])}}"><i class="fas fa-eye"></i></a>
-              <form id="delete-from-{{$product['id']}}" style="display: inline-block" action="{{route('products.destroy',$product['id'])}}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="button" onclick="deleteProduct({{$product['id']}})"  class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
-        
-                </form> 
+
               </td>
             </tr>
         @endforeach

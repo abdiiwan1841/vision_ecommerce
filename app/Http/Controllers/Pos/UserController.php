@@ -71,7 +71,7 @@ class UserController extends Controller
         $user->division_id = $request->division;
         $user->address = $request->address;
         $user->section_id = $request->section;
-        $user->password = Hash::make(123456);
+        $user->password = NULL;
         $user->user_type = 'pos';
         if($request->has('company')){
          $user->company = $request->company;

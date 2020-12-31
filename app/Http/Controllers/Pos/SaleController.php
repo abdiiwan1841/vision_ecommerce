@@ -67,16 +67,23 @@ class SaleController extends Controller
             'product' => 'required',
         ]);
 
-
-        $sendstatus = 1101;
-        
         //Amount calculation
         $products = json_decode($request->product);
 
+
+        $pdinfo = "";
         $amount = [];
         foreach($products as  $item){
-            $amount[] = ($item->count)*($item->price);
+
+           if($item->free > 0){
+            $pdinfo .= $item->o_name." = ".$item->count."+ free=".$item->free.",";
+           } else{
+            $pdinfo .= $item->o_name." = ".$item->count.",";
+           }
+           
+           $amount[] = ($item->count)*($item->price);
         }
+
         $netamount = array_sum($amount);
         $amount_total = ($netamount+$request->carrying_and_loading)-($request->discount);
 
@@ -86,9 +93,9 @@ class SaleController extends Controller
         $sales->carrying_and_loading = $request->carrying_and_loading;
         $sales->sales_at = $request->sales_date." ".Carbon::now()->toTimeString();
         $sales->amount = $amount_total;
-        $sales->sales_status = 0;
         $sales->is_condition = $request->is_condition;
         $sales->condition_amount = $request->condition_amount;
+        $sales->sales_status = 0;
         $sales->provided_by = Auth::user()->name;
         $sales->save();
 
@@ -101,8 +108,13 @@ class SaleController extends Controller
 
         
         // $url = "http://66.45.237.70/api.php";
-        // $number="01736402322";
-        $text="New Invoice, Date: ".$sales->sales_at->format('d-m-Y')." Sales ID:# ".$sales->id." Customer: ".$sales->user->name.",  ".$sales->user->address.", Amount: ".$sales->amount." Prepared By:".Auth::user()->name." .Please Review the Invoice,Thanks";
+        // $number="01700817934";
+        // $text="New Invoice, Date: ".$sales->sales_at->format('d-m-Y')." Invoice ID:# ".$sales->id." Customer: ".$sales->user->name.",  ".$sales->user->address.", Amount: ".$sales->amount." Prepared By:".Auth::user()->name." .Please Review the Invoice,Thanks";
+
+        // $text2= $sales->user->name.", your invoice is created, Date: ".$sales->sales_at->format('d-m-Y g:i a')." Invoice ID:# ".$sales->id." Product: ".$pdinfo.", Amount: ".$sales->amount." Prepared By:".Auth::user()->name.". (Vision Cosmetics)";
+
+
+
         // $data= array(
         // 'username'=>"shajibazher",
         // 'password'=>"UtUs6B8WVqjmm72",
@@ -110,19 +122,50 @@ class SaleController extends Controller
         // 'message'=>"$text"
         // );
 
+        //  $data2= array(
+        // 'username'=>"shajibazher",
+        // 'password'=>"UtUs6B8WVqjmm72",
+        // 'number'=>"$sales->user->phone",
+        // 'message'=>"$text2"
+        // );
+
         // $ch = curl_init(); // Initialize cURL
+
+        // //Sms For Admin
         // curl_setopt($ch, CURLOPT_URL,$url);
         // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // $smsresult = curl_exec($ch);
         // $p = explode("|",$smsresult);
         // $sendstatus = $p[0];
-        if($sendstatus == 1101){
-            Toastr::success($text, 'success');
-        }else{
-            Toastr::success('Sales Created Successfully', 'success');
-            Toastr::error(VisionSmsResponse($sendstatus), 'error');
-        }
+
+
+        //  //Sms For Customer
+        // curl_setopt($ch, CURLOPT_URL,$url);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data2));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $smsresult = curl_exec($ch);
+        // $p = explode("|",$smsresult);
+        // $sendstatus2 = $p[0];
+
+
+
+
+
+        // if($sendstatus == 1101){
+        //     Toastr::success('Invoice Created Successfully');
+        // }else{
+        //     Toastr::success('Invoice Created Successfully', 'success');
+        //     Toastr::error(VisionSmsResponse($sendstatus), 'error');
+        // }
+
+        // if($sendstatus2 == 1101){
+        //     Toastr::success('An Sms has been send to '.$sales->user->name .'Phone: '.$sales->user->phone);
+        // }else{
+        //     Toastr::success('Invoice Created Successfully', 'success');
+        //     Toastr::error(VisionSmsResponse($sendstatus), 'error');
+        // }
+
 
         return $sales->id;
     }
@@ -267,34 +310,37 @@ class SaleController extends Controller
 
     public function approve(Request $request,$id){
         $sendstatus = 1101;
-        $sale = Sale::with('product')->findOrFail($id);       
+        $text = "";
+        $number = "0";
+
+        $sale = Sale::with('product')->findOrFail($id);
         $sale->sales_status = 1;
         $sale->approved_by = Auth::user()->id;
         $sale->save();
-
         
-
         //For Sent Product To Sms Product 
-        $pdinfo = "";
-        foreach($sale->product as $pd){
-            if($pd->pivot->free > 0){
-            $pdinfo .= $pd->product_name." = ".$pd->pivot->qty."+ free=".$pd->pivot->free.",";
-           } else{
-            $pdinfo .= $pd->product_name." = ".$pd->pivot->qty.",";
-           }
-        }
+        // $pdinfo = "";
+        // foreach($sale->product as $pd){
+        //     if($pd->pivot->free > 0){
+        //     $pdinfo .= $pd->product_name." = ".$pd->pivot->qty."+ free=".$pd->pivot->free.",";
+        //    } else{
+        //     $pdinfo .= $pd->product_name." = ".$pd->pivot->qty.",";
+        //    }
+        // }
         
         
         // $url = "http://66.45.237.70/api.php";
-        $number="01700817934";
+        // $number="01700817934";
 
-        //check if the invoice is not edited then send sms
-        if($sale->edited == 1){
-            $text="A Approved Invoice is Edited  Date: ".$sale->sales_at->format('d-m-Y')." Customer: ".$sale->user->name.",  ".$sale->user->address." Product:  ".$pdinfo.". Please disregard previous invoice and deliver This Product ASAP, Thanks";
-         }else{
-            $text="New Invoice,Approved By ".Auth::user()->name.", Date: ".$sale->sales_at->format('d-m-Y')." Customer: ".$sale->user->name.",  ".$sale->user->address." Product:  ".$pdinfo.". Please Deliver This Product ASAP, Thanks";
-         }
-        //endcheck if invoice is edited
+        // //check if the invoice is not edited then send sms
+        // if($sale->edited == 1){
+        //     $text="A Approved Invoice is Edited  Date: ".$sale->sales_at->format('d-m-Y')." Customer: ".$sale->user->name.",  ".$sale->user->address." Product:  ".$pdinfo.". Please disregard previous invoice and deliver This Product ASAP, Thanks";
+        //  }else{
+        //     $text="New Invoice,Approved By ".Auth::user()->name.", Date: ".$sale->sales_at->format('d-m-Y')." Customer: ".$sale->user->name.",  ".$sale->user->address." Product:  ".$pdinfo.". Please Deliver This Product ASAP, Thanks";
+        //  }
+        // //endcheck if invoice is edited
+
+        //  $text2 = $sale->user->name.", your invoice is approved by ".Auth::user()->name." And product is now ready for delivery.your total payable amount: ".$sale->amount;
 
         // $data= array(
         // 'username'=>"shajibazher",
@@ -303,14 +349,33 @@ class SaleController extends Controller
         // 'message'=>"$text"
         // );
 
-        // $ch = curl_init(); // Initialize cURL
+        //  $data2 = array(
+        // 'username'=>"shajibazher",
+        // 'password'=>"UtUs6B8WVqjmm72",
+        // 'number'=>"$sale->user->phone",
+        // 'message'=>"$text2"
+        // );
+
+        // $ch = curl_init();
+
+        // //sms for delivery agent
         // curl_setopt($ch, CURLOPT_URL,$url);
         // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // $smsresult = curl_exec($ch);
         // $p = explode("|",$smsresult);
         // $sendstatus = $p[0];
-        
+
+        // //sms for Customer
+        // curl_setopt($ch, CURLOPT_URL,$url);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data2));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $smsresult = curl_exec($ch);
+        // $p = explode("|",$smsresult);
+        // $sendstatus2 = $p[0];
+
+
+
         
         if($sendstatus == 1101){
             return ['id'=> $sale->id,'status' => $sendstatus,'msg' => 'Sales Invoice Approved Successfully An sms has been sent to '.$number,'customer' => $sale->user->name,'amount' => $sale->amount,'message' => $text,'number' => $number ];

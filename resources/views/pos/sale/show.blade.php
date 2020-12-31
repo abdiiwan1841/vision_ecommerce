@@ -24,7 +24,7 @@
               </div>
               <div class="col-lg-4">
                 @if($sale->sales_status == 0)
-                @can('Ecom Order Approval')
+                @can('Approve Sales Invoice')
                
                   <button onclick="SalesApproval('{{route('sale.approve',$sale->id)}}')" type="submit" class="btn btn-warning btn-sm mb-3 float-right" style="margin-right: 5px;">
                     <i class="fas fa-check"></i> APPROVE THIS ORDER ?
@@ -237,7 +237,7 @@
 
                   @if($sale->sales_status == 1)
 
-                  @can('Ecom Order Cancel')
+                  @can('Approve Sales Invoice')
                   <form id="delete-from-{{$sale->id}}" style="display: inline-block;" action="{{route('sale.destroy',$sale->id)}}" method="POST">
                     @csrf
                     @method('DELETE')

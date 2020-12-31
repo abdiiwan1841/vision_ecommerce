@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Size;
 use Illuminate\Http\Request;
-use Brian2694\Toastr\Facades\Toastr;
-use Session;
+
 
 class SizeController extends Controller
 {
@@ -18,7 +17,7 @@ class SizeController extends Controller
     
     public function index()
     {
-        $sizes = Size::get();
+        $sizes = Size::orderBy('id','DESC')->get();
         return view('sizes.index',compact('sizes'));
     }
 
@@ -41,15 +40,15 @@ class SizeController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-            'name' => 'required|max:30'
+            'size_name' => 'required|max:30'
         ]);
 
         $size = new Size;
-        $size->name = $request->name;
+        $size->name = $request->size_name;
         $size->type = 'ecom';
         $size->save();
-        Toastr::success('Size Saved Successfully', 'success');
-        return redirect()->back();
+        
+        return 'Size Saved Successfully';
 
     }
 
@@ -82,17 +81,16 @@ class SizeController extends Controller
      * @param  \App\Size  $size
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Size $size)
+    public function update(Request $request,$id)
     {
         $this->validate($request,[
-            'edit_name' => 'required|max:30'
+            'size_name' => 'required|max:30'
         ]);
-        
-        $size->name = $request->edit_name;
+        $size = Size::findOrFail($id);
+        $size->name = $request->size_name;
         $size->type = 'ecom';
         $size->save();
-        Toastr::success('Size Saved Successfully', 'success');
-        return redirect()->back();
+        return 'Size Saved Successfully';
     }
 
     /**
@@ -103,10 +101,7 @@ class SizeController extends Controller
      */
     public function destroy(Size $size)
     {
-        $size->deleted_at = now();
-        $size->save();
-        Session::flash('delete_success','Size Deleted Succesfully');
-        return redirect()->back();
+
 
     }
 }

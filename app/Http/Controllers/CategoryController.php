@@ -22,9 +22,8 @@ class CategoryController extends Controller
     
     public function index()
     {
-        $categories = Category::paginate(10);
-        $subcategories = Subcategory::all();
-        return view('categories.index',compact('categories','subcategories'));
+        $categories = Category::orderBy('id','DESC')->paginate(10);
+        return view('categories.index',compact('categories'));
     }
 
     /**
@@ -45,10 +44,11 @@ class CategoryController extends Controller
      */
     public function store(CategoryStoreRequest $request)
     {
+
     $category = new Category;
-    if($request->hasFile('image')){
+    if($request->hasFile('category_image')){
         //get form image
-        $image = $request->file('image');
+        $image = $request->file('category_image');
         $slug = Str::slug($request->category_name);
         $current_date = Carbon::now()->toDateString();
         //get unique name for image
@@ -65,8 +65,7 @@ class CategoryController extends Controller
      }
      $category->category_name = $request->category_name;
      $category->save();
-     Toastr::success('Category Added Successfully', 'success');
-     return redirect()->back();
+     return "Category Added Successfully";
     }
 
     /**
@@ -102,15 +101,16 @@ class CategoryController extends Controller
     public function update(Request $request,$id)
     {
         $this->validate($request,[
-            'edit_category_name' => 'required|unique:categories,category_name,'.$id,
-            'edit_image' => 'image',
+            'category_name' => 'required|unique:categories,category_name,'.$id,
+            'category_image' => 'image',
         ]);
         
+
         $category = Category::findOrFail ($id);
 
-        if($request->hasFile('edit_image')){
+        if($request->hasFile('category_image')){
             //get form image
-            $image = $request->file('edit_image');
+            $image = $request->file('category_image');
             $slug = Str::slug($request->edit_category_name);
             $current_date = Carbon::now()->toDateString();
             //get unique name for image
@@ -141,10 +141,9 @@ class CategoryController extends Controller
             $category->image =  $image_name;
          }
 
-        $category->category_name = $request->edit_category_name;
+        $category->category_name = $request->category_name;
         $category->save();
-        Toastr::success('Category Updated Successfully', 'success');
-        return redirect()->back();
+        return 'Category Updated Successfully';
     }
 
     /**
@@ -155,6 +154,6 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        return false;
+       
     }
 }

@@ -13,14 +13,14 @@
 
 
     @slot('submit_button')
-    add_modal_submit
+    cash_modal_submit
     @endslot
     @slot('modal_title')
       Cash
     @endslot
 
     @slot('modal_form') 
-       <form action="{{route('cash.store')}}" method="POST" id="addForm" enctype="multipart/form-data">
+       <form action="{{route('cash.store')}}" method="POST" id="cashForm">
         @csrf
         @method('PUT')
     @endslot
@@ -227,11 +227,11 @@
 
 if(sessionStorage.getItem("editMode") === 'true'){
     $('#addDataModal').modal('show');
-    $('#addForm').attr('action', sessionStorage.getItem("update_url"));
+    $('#cashForm').attr('action', sessionStorage.getItem("update_url"));
 
   }else{
     $('#addDataModal').modal('show');
-    $('#addForm').attr('action', sessionStorage.getItem("store_url"));
+    $('#cashForm').attr('action', sessionStorage.getItem("store_url"));
     putremove = $('input[value="PUT"]').detach();
    
   }
@@ -242,6 +242,11 @@ if(sessionStorage.getItem("editMode") === 'true'){
 
 
 <script>
+
+
+$('#cashForm').submit(function(){
+    $("#cash_modal_submit").html('<i class="fas fa-spinner fa-spin"></i> Please Wait........').addClass("disabled");
+});
 
 var baseurl = '{{url('/')}}';
 $( "#user" ).change(function() {
@@ -300,8 +305,8 @@ function addMode(store_url){
     sessionStorage.setItem("editMode",false);
     sessionStorage.setItem("store_url",store_url);
   }
-  $('#addForm').attr('action', store_url);
-  $('#addForm').trigger("reset");
+  $('#cashForm').attr('action', store_url);
+  $('#cashForm').trigger("reset");
   $(".is-invalid").removeClass("is-invalid");
   $(".form-error").remove();
   //$('#user').val('').trigger('change');
@@ -343,7 +348,7 @@ function EditProcess(edit_url, update_url){
 $(document).ready(function(){
   $('#user-details').show();
 //reset form
-$('#addForm').trigger("reset");
+$('#cashForm').trigger("reset");
   $(".is-invalid").removeClass("is-invalid");
   $(".form-error").remove();
 // Go to Edit Mode If Click Edit Button
@@ -353,7 +358,7 @@ if (typeof(Storage) !== "undefined") {
 }
 $.get(edit_url, function (data) {
     //Change Form Action
-    $('#addForm').attr('action', update_url);
+    $('#cashForm').attr('action', update_url);
     $('.modal-title').text('Edit Previously  Posted Cash');
     //assign data
     $('#received_at').val(data.received_at.substring(0, 10)).trigger('change');
@@ -362,7 +367,7 @@ $.get(edit_url, function (data) {
     $('#payment_method').val(data.paymentmethod_id).trigger('change');
     $('#reference').val(data.reference);
     if(putremove != undefined){
-      $("#addForm").prepend(putremove);
+      $("#cashForm").prepend(putremove);
       putremove = undefined;
     }
     $('#addDataModal').modal('show');

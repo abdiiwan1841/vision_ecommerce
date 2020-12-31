@@ -22,7 +22,7 @@ class SubcategoryController extends Controller
     
     public function index()
     {
-        $subcategories = Subcategory::paginate(10);
+        $subcategories = Subcategory::orderBy('id','DESC')->paginate(10);
         return view('subcategory.index',compact('subcategories'));
     }
 
@@ -47,9 +47,9 @@ class SubcategoryController extends Controller
         $subcategory = new Subcategory;
 
 
-        if($request->hasFile('image')){
+        if($request->hasFile('subcategory_image')){
             //get form image
-            $image = $request->file('image');
+            $image = $request->file('subcategory_image');
             $slug = Str::slug($request->subcategory_name);
             $current_date = Carbon::now()->toDateString();
             //get unique name for image
@@ -66,8 +66,7 @@ class SubcategoryController extends Controller
 
         $subcategory->subcategory_name = $request->subcategory_name;
         $subcategory->save();
-        Toastr::success('Product Type Stored Successfully', 'success');
-        return redirect()->back();
+        return 'Product Type Stored Successfully';
     }
 
     /**
@@ -102,16 +101,16 @@ class SubcategoryController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request,[
-            'edit_subcategory_name' => 'required|unique:subcategories,subcategory_name,'.$id,
-            'edit_image' => 'image',
+            'subcategory_name' => 'required|unique:subcategories,subcategory_name,'.$id,
+            'subcategory_image' => 'image',
         ]);
         $subcategory = Subcategory::find($id);
 
 
-        if($request->hasFile('edit_image')){
+        if($request->hasFile('subcategory_image')){
             //get form image
-            $image = $request->file('edit_image');
-            $slug = Str::slug($request->edit_subcategory_name);
+            $image = $request->file('subcategory_image');
+            $slug = Str::slug($request->subcategory_name);
             $current_date = Carbon::now()->toDateString();
             //get unique name for image
             $image_name = $slug."-".$current_date.".".$image->getClientOriginalExtension();
@@ -142,10 +141,9 @@ class SubcategoryController extends Controller
          }
 
 
-        $subcategory->subcategory_name = $request->edit_subcategory_name;
+        $subcategory->subcategory_name = $request->subcategory_name;
         $subcategory->save();
-        Toastr::success('Subcategory Updated Successfully', 'success');
-        return redirect()->back();
+        return 'Product Types Updated Successfully';
     }
 
     /**
@@ -156,9 +154,6 @@ class SubcategoryController extends Controller
      */
     public function destroy($id)
     {
-        $subcategory = Subcategory::findOrFail($id);
-        $subcategory->delete();
-        Session::flash('delete_success', 'Your Tags Has been Deleted Successfully'); 
-        return redirect()->back();
+        
     }
 }

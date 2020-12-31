@@ -52,12 +52,14 @@
                       <th>Qty</th>
                       <th>Price</th>
                       <th>Total</th>
+                      <th>Extra Cost</th>
                     </tr>
                     </thead>
                     <tbody>
                       @php
                       $i=1;
                       $sum =0;
+                      $totalcosting = 0;
                       @endphp
                       @foreach ($purchaseDetails->product as $purchase_info)
       
@@ -65,12 +67,14 @@
                         <td>{{$i++}}</td>
                         <td>{{$purchase_info->product_name}}</td>
                         <td>{{$purchase_info->pivot->qty}}</td>
-                        <td>{{$purchase_info->pivot->price}}</td>
+                        <td>{{round($purchase_info->pivot->price)}}</td>
                         <td>{{($purchase_info->pivot->price)*($purchase_info->pivot->qty)}}</td>
+                        <td>{{round($purchase_info->pivot->cost)}}</td>
                       </tr>
 
                       @php
                       $sum = ($sum) +($purchase_info->pivot->price)*($purchase_info->pivot->qty);
+                      $totalcosting = $totalcosting+$purchase_info->pivot->cost;
                       @endphp
                       @endforeach
                     
@@ -93,20 +97,28 @@
                   <div class="table-responsive">
                     <table class="table">
                       <tr>
-                        <th style="width:50%">Subtotal:</th>
+                        <td style="width:50%">Supplier Subtotal:</td>
                       <td>{{$sum}}</td>
                       </tr>
                       <tr>
-                        <th>Discount</th>
-                      <td>{{$purchaseDetails->discount}}</td>
+                        <td>Discount</td>
+                      <td>{{round($purchaseDetails->discount)}}</td>
                       </tr>
                       <tr>
-                        <th>Carrying & Loading:</th>
-                      <td>{{$purchaseDetails->carrying_and_loading}}</td>
+                        <td>Carrying & Loading:</td>
+                      <td>{{round($purchaseDetails->carrying_and_loading)}}</td>
                       </tr>
                       <tr>
-                        <th>Total:</th>
-                        <td>{{round(($sum+$purchaseDetails->carrying_and_loading)-($purchaseDetails->discount))}}</td>
+                        <td>Sublier Payable Amount:</td>
+                        <td>{{$s_amount =  round(($sum+$purchaseDetails->carrying_and_loading)-($purchaseDetails->discount))}}</td>
+                      </tr>
+                      <tr>
+                        <td>Extra Costing</td>
+                        <td>{{ $totalcosting}}</td>
+                      </tr>
+                      <tr>
+                        <td>Grand Total</td>
+                        <td>{{ $s_amount+$totalcosting}}</td>
                       </tr>
                     </table>
                     

@@ -96,7 +96,7 @@
                   
                   <div class="form-group">
                     <label for="price">Price</label>
-                    <input type="number" class="form-control" name="price" id="price">
+                    <input type="text" class="form-control" name="price" id="price">
                     <div class="price_err"></div>
                   </div>
                   
@@ -106,8 +106,15 @@
                 <div class="col-lg-2 col-md-2">
                   <div class="form-group">
                     <label for="qty">Quantity</label>
-                    <input type="number" class="form-control" name="qty" id="qty">
+                    <input type="text" class="form-control" name="qty" id="qty">
                     <div class="qty_err"></div>
+                  </div>
+                </div>
+                <div class="col-lg-2 col-md-2">
+                  <div class="form-group">
+                    <label for="cost">Extra Cost</label>
+                    <input type="text" class="form-control" name="cost" id="cost" value="0">
+                    <div class="cost_err"></div>
                   </div>
                 </div>
                 <div class="col-lg-2">
@@ -131,13 +138,7 @@
       <div class="p_detail_wrapper table-responsive">
       <h3 class="text-center">PURCHASE INVOICE</h3>
         <h5 class="date"></h5> <br>
-        <div class="row">
-            <div class="col-lg-6">
-                <div id="customer-info">
 
-            </div>
-         </div>
-    </div> <br><br>
     <div class="table-responsive">
       <table class="table table-bordered table-striped">
         <thead class="table-dark">
@@ -148,6 +149,7 @@
             <td>Price</td>
             <td>Qty</td>
             <td>Total</td>
+            <td>Extra Cost</td>
             <td>Action</td>
           </tr>
         </thead>
@@ -159,17 +161,17 @@
       </table>
       </div>
       <div class="row">
-      <div class="col-lg-7"></div>
-      <div class="col-lg-5" id="amount-info">
+      <div class="col-lg-5"></div>
+      <div class="col-lg-7" id="amount-info">
         
         <table class="table table-bordered">
           <tr>
-            <td>Subtotal</td>
+            <td>Suppliers Subtotal</td>
             <td class="total-cart"></td>
           </tr>
           
           <tr>
-            <td>Discount (%) <input type="number" class="form-control tiny-input" id="discount_input" value="0"></td>
+            <td>Discount (%) <input type="text" class="form-control tiny-input" id="discount_input" value="0"></td>
             <td>Discount Amount <input type="text" class="discount form-control" value="0"></td>
           </tr>
           <tr>
@@ -177,15 +179,24 @@
             <td class="net-amount"></td>
           </tr>
           <tr>
-          <td>Carrying & Loading <input type="number" class="form-control tiny-input" id="carrying_and_loading" value="0"></td>
+          <td>Carrying & Loading <input type="text" class="form-control tiny-input" id="carrying_and_loading" value="0"></td>
             <td class="carrying_and_loading">0</td>
           </tr>
 
 
           <tr>
+            <td>Suppliers Payable Amount (without costing)</td>
+            <td class="suppliers-amount"></td>
+          </tr>
+          <tr>
+            <td>Extra Costing</td>
+            <td class="extra-costing"></td>
+          </tr>
+          <tr>
             <td>Grand Total</td>
             <td class="grand-total"></td>
           </tr>
+
 
         </table>
   
@@ -277,21 +288,7 @@ function precise(x) {
 
 //Sum Any Arrray
 
-function sum(input){
 
-    if (toString.call(input) !== "[object Array]")
-    return false;
-
-    var total =  0;
-    for(var i=0;i<input.length;i++)
-    {                  
-    if(isNaN(input[i])){
-    continue;
-    }
-    total += Number(input[i]);
-    }
-    return total;
-}
 
 var purchaseCart = (function() {
   // =============================
@@ -300,13 +297,14 @@ var purchaseCart = (function() {
   cart = [];
   
   // Constructor
-  function Item(name, price, count, id,o_name,image) {
+  function Item(name, price, count, id,o_name,image,cost) {
     this.name = name;
     this.price = price;
     this.count = count;
     this.id    = id;
     this.o_name    = o_name;
     this.image    = image;
+    this.cost    = cost;
     
   }
   
@@ -330,7 +328,7 @@ var purchaseCart = (function() {
   var obj = {};
   
   // Add to cart
-  obj.addItemToCart = function(name, price, count, id,o_name,image) {
+  obj.addItemToCart = function(name, price, count, id,o_name,image,cost) {
     for(var item in cart) {
       if(cart[item].name === name) {
        Swal.fire({
@@ -341,12 +339,12 @@ var purchaseCart = (function() {
         return;
       }
     }
-    var item = new Item(name, price, count, id,o_name,image);
+    var item = new Item(name, price, count, id,o_name,image,cost);
     cart.push(item);
     saveCart();
   }
 
-  obj.IncrementCart = function(name, price, count, id,image) {
+  obj.IncrementCart = function(name, price, count, id,image,cost) {
     for(var item in cart) {
       if(cart[item].name === name) {
         cart[item].count ++;
@@ -354,7 +352,7 @@ var purchaseCart = (function() {
         return;
       }
     }
-    var item = new Item(name, price, count, id,image);
+    var item = new Item(name, price, count, id,image,cost);
     cart.push(item);
     saveCart();
   }
@@ -421,6 +419,14 @@ var purchaseCart = (function() {
     return Number(totalCart.toFixed(2));
   }
 
+  obj.ExtraCosting = function() {
+    var totalCart = 0;
+    for(var item in cart) {
+      totalCart += parseFloat(cart[item].cost);
+    }
+    return Number(totalCart);
+  }
+
   // List cart
   obj.listCart = function() {
     var cartCopy = [];
@@ -462,6 +468,7 @@ $('.add-to-cart').click(function(event) {
   var purchase_date = $("#purchase_date").val();
   var supplier_id = $("#supplier option:selected").val();
   var qnty = $("#qty").val();
+  var cost = $("#cost").val();
   var o_name = $("#product option:selected").text();
   var nameSlulg =  o_name.replace(/\s/g, '');
   var price = $("#price").val();
@@ -486,6 +493,22 @@ $('.add-to-cart').click(function(event) {
   }else{
     $("#qty").removeClass('is-invalid');
   }
+
+  if(cost < 0){
+    $("#cost").addClass('is-invalid');
+    $(".cost_err").addClass('invalid-feedback').text('Negative Number Not Allowed');
+    err.push('qty');
+  }else if(isNumber(cost) == false){
+    $("#cost").addClass('is-invalid');
+    $(".cost_err").addClass('invalid-feedback').text('Field Must Be Numeric');
+    err.push('cost');
+  }else{
+    $("#cost").removeClass('is-invalid');
+  }
+
+
+
+
   if(purchase_date.length === 0){
     $("#purchase_date").addClass('is-invalid');
     $(".date_err").addClass('invalid-feedback').text('Purchase  Date Field is Required');
@@ -529,7 +552,7 @@ $('.add-to-cart').click(function(event) {
     if(status === 'success'){
       var image = data[0].image;
     if(err.length<1){
-    purchaseCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image);
+    purchaseCart.addItemToCart(nameSlulg, price, qnty,id,o_name,image,cost);
     $(".is-valid").removeClass('is-valid');
     
     //Cart session has data
@@ -552,6 +575,7 @@ $('.add-to-cart').click(function(event) {
     $(".product_err").text('');
     $("#price").val("");
     $("#qty").val("");
+    $("#cost").val(0);
     $("#selected-product-info").hide();
   }
 
@@ -618,6 +642,21 @@ $("#qty").change(function(){
     $("#qty").removeClass('is-invalid').addClass('is-valid');
     $(".qty_err").removeClass('invalid-feedback').addClass('valid-feedback');
     $(".qty_err").text('Looks Good');
+    $(".add-to-cart").prop('disabled', false);
+}
+});
+
+$("#cost").change(function(){
+  let cost = $("#cost").val();
+ if(isNumber(cost) == false){
+    $("#cost").removeClass('is-valid').addClass('is-invalid');
+    $(".cost_err").removeClass('valid-feedback').addClass('invalid-feedback');
+    $(".cost_err").text('Filed Must Be Numeric');
+    $(".add-to-cart").prop('disabled', true);
+  }else{
+    $("#cost").removeClass('is-invalid').addClass('is-valid');
+    $(".cost_err").removeClass('invalid-feedback').addClass('valid-feedback');
+    $(".cost_err").text('Looks Good');
     $(".add-to-cart").prop('disabled', false);
 }
 });
@@ -742,20 +781,22 @@ function displayCart() {
   var baseuel = '{{url('/')}}';
   var output = "";
   var subtotal = purchaseCart.totalCart();
+  var extracost = purchaseCart.ExtraCosting();
   var disc = subtotal*sales_discount;
   var netamount = subtotal-discount_amount;
-  var g_total = parseFloat(netamount)+parseFloat(carrying_and_loading);
+  var suppliers_amount = parseFloat(netamount)+parseFloat(carrying_and_loading);
   var j =1;
   for(var i in cartArray) {
     output += "<tr>"
       + "<td>" + j++ + "</td>"
       + "<td>" + cartArray[i].o_name + "</td>"
       + "<td><img style='width: 50px;' src='"+baseuel+"/public/uploads/products/tiny/"+cartArray[i].image+"' class='img-thumbnail' /></td>"
-      + "<td>" + Math.round(cartArray[i].price) + " Tk.</td>"
+      + "<td>" + Math.round(cartArray[i].price) + "</td>"
       + "<td style='width: 150px;text-align: center;margin: 0 auto'><div class='input-group'><button class='minus-item input-group-addon btn btn-sm btn-primary' data-name=" + cartArray[i].name + ">-</button>"
       + "<input style='width: 65px' type='number' class='item-count' data-name='" + cartArray[i].name + "' value='" + cartArray[i].count + "'>"
       + "<button class='plus-item btn  btn-sm btn-primary  input-group-addon' data-name=" + cartArray[i].name + ">+</button></div></td>"
-      + "<td>" + Math.round(cartArray[i].total) + " Tk</td>" 
+      + "<td>" + Math.round(cartArray[i].total) + "</td>"
+      + "<td>" + cartArray[i].cost + "</td>" 
       + "<td><button class='delete-item btn btn-sm badge-danger' data-name=" + cartArray[i].name + ">X</button></td>"
       +  "</tr>";
   }
@@ -763,18 +804,12 @@ function displayCart() {
   $('.total-cart').html(purchaseCart.totalCart());
 
   $('.date').html('Purchase  Date: '+sessionStorage.purchase_date);
-  $.get("{{url('/')}}/api/supplierinfo/"+sessionStorage.supplier_id, function(data, status){
-      if(status === 'success'){
-        $("#customer-info").html("<b>Name :</b>"+data.name+"</br><b>Address :</b>  "+data.address+"<br><b>Phone :</b> "+data.phone+"<br><b>Email :</b> "+data.email);
-        
-      }
-  });
-  //$('#customer-info').html('<h5>Customer Name: Md Shajib Azher</h5><h5>Email : mdshajibazher@gmail.com</h5><h5>Phone :01700554455</h5><h5>Address :Dhaka</h5>');
   $('.net-amount').text(Math.round(netamount));
-  
   $('.discount').text( Math.round(disc));
   $('.carrying_and_loading').text(carrying_and_loading);
-  $('.grand-total').html(Math.round(g_total));
+  $('.suppliers-amount').html(Math.round(suppliers_amount));
+  $('.extra-costing').text(extracost);
+  $('.grand-total').text(Math.round(suppliers_amount+extracost));
 }
 
 // Delete item button

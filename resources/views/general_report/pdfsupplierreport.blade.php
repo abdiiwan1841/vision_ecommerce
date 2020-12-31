@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="ASOjne3KXoYfj3Bf24x8FUsRK920YOgbS7CcIRxa">
 
-    <title>ecommerce</title>
+    <title>Supplier Due Report</title>
 
     <!-- Bootstrap css -->
     <link href="{{asset('public/assets/css/bootstrap.css')}}" rel="stylesheet"/>
@@ -23,7 +23,7 @@
     </head>
     <body style="background: #fff;font-size: 12px;">
                 <div style="width: 50%;margin: 0 auto">
-                <h5 style="text-align: center;font-family: Tahoma,sans-serif">Supplier Due According Date</h5>
+                <h5 style="text-align: center;font-family: Tahoma,sans-serif">Supplier Due Report/h5>
                 @if($general_opt_value['inv_diff_invoice_heading'] == 1)
                 <p style="font-weight: bold;text-align: center">{{$general_opt_value['inv_invoice_heading']}}</p>
                 <p  style="text-align: center;font-size: 11px">{{$general_opt_value['inv_invoice_address']}} <br> <b>Email :</b>  {{$general_opt_value['inv_invoice_email']}} <br> <b>Phone :</b>  {{$general_opt_value['inv_invoice_phone']}}</p>

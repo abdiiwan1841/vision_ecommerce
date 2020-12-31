@@ -977,7 +977,7 @@ $("#InfoModal").modal('show');
 
 		})
 		.catch(function (error) {
-			console.log(error);
+			toastr.error(error.response.data.message,error.response.status)
 		});
 	
 	}
@@ -1081,7 +1081,7 @@ if(ReturnApprovalPermission == true){
 			
 		})
 		.catch(function (error) {
-			console.log(error);
+			toastr.error(error.response.data.message,error.response.status)
 		});
 	
 	}
@@ -1119,11 +1119,12 @@ if(ReturnApprovalPermission == true){
 
 
 	function SalesApprove(sales_approve_url){
+		$('#sales_approval').html('<i class="fas fa-spinner fa-spin"></i> Please Wait...').attr('disabled',true);
 		axios.post(sales_approve_url)
 		.then(function (response) {
 			let feedback = JSON.parse(response.request.response);
 			if(feedback.status == 1101){
-				
+				$('#sales_approval').html('Approve').attr('disabled',false);
 				$(".sale-"+feedback.id).html(`<td>#</td> 
 			<td>
 				<table class="table table-sm">
@@ -1188,6 +1189,7 @@ if(ReturnApprovalPermission == true){
 			
 		})
 		.catch(function (error) {
+			$('#sales_approval').html('Approve').attr('disabled',false);
 			toastr.error(error.response.data.message,error.response.status)
 			console.log(error.response);			
 		});

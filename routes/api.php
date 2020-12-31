@@ -36,3 +36,8 @@ Route::get('pendingdeliveryinfo/{id}', 'Api\ApiInformationController@pendingDeli
 Route::get('deliveryman', 'Api\ApiInformationController@deliveryman')->name('deliveryman.api');
 Route::get('dynamicproduct/{limit}', 'Api\ApiInformationController@dynamicProduct');
 Route::get('getrolepermissions/{rolename}', 'Api\ApiInformationController@getrolepermissions');
+Route::get('getbrandlist', 'Api\ApiInformationController@getBrandList')->name('brandlist');
+Route::get('getcategorylist', 'Api\ApiInformationController@getCategoryList')->name('categorylist');
+Route::get('gettaglist', 'Api\ApiInformationController@getTagList')->name('taglist');
+Route::get('getsubcategorylist', 'Api\ApiInformationController@getSubCategoryList')->name('subcategorylist');
+Route::get('getsizelist', 'Api\ApiInformationController@getSizeList')->name('sizelist');

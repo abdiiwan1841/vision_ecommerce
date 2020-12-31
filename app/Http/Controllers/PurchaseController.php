@@ -68,10 +68,13 @@ class PurchaseController extends Controller
         $products = json_decode($request->product);
 
         $amount = [];
+        $cost = [];
         foreach($products as  $item){
             $amount[] = ($item->count)*($item->price);
+            $cost[] = ($item->cost);
         }
         $netamount = array_sum($amount);
+        $netcost = array_sum($cost);
         $amount_total = ($netamount+$request->carrying_and_loading)-($request->discount);
 
 
@@ -81,6 +84,7 @@ class PurchaseController extends Controller
         $purchase = new Purchase;
         $purchase->supplier_id = $request->supplier_id;
         $purchase->amount = $amount_total;
+        $purchase->cost = $netcost;
         $purchase->purchased_at = $p_date;
         $purchase->discount = $request->discount;
         $purchase->carrying_and_loading = $request->carrying_and_loading;
@@ -90,7 +94,7 @@ class PurchaseController extends Controller
         $products = json_decode($request->product);
         $product_info = [];
         foreach($products as $product){
-         $product_info[] = ['purchase_id' =>$purchase->id, 'product_id' => $product->id,'qty' => $product->count,'price' => $product->price, 'supplier_id' => $request->supplier_id,'purchased_at' => $p_date];   
+         $product_info[] = ['purchase_id' =>$purchase->id, 'product_id' => $product->id,'qty' => $product->count,'price' => $product->price,'cost' => $product->cost, 'supplier_id' => $request->supplier_id,'purchased_at' => $p_date];   
         }
         $purchase->product()->attach($product_info);
         Toastr::success('Purchased Successfully', 'success');
@@ -130,11 +134,15 @@ class PurchaseController extends Controller
         //Amount calculation
         $products = json_decode($request->product);
 
+
         $amount = [];
+        $cost = [];
         foreach($products as  $item){
             $amount[] = ($item->count)*($item->price);
+            $cost[] = ($item->cost);
         }
         $netamount = array_sum($amount);
+        $netcost = array_sum($cost);
         $amount_total = ($netamount+$request->carrying_and_loading)-($request->discount);
 
 
@@ -144,6 +152,7 @@ class PurchaseController extends Controller
         $purchase = Purchase::findOrFail($id);
         $purchase->supplier_id = $request->supplier_id;
         $purchase->amount = $amount_total;
+        $purchase->cost = $netcost;
         $purchase->purchased_at = $p_date;
         $purchase->discount = $request->discount;
         $purchase->carrying_and_loading = $request->carrying_and_loading;
@@ -156,7 +165,7 @@ class PurchaseController extends Controller
          DB::table('product_purchase')->where('purchase_id', '=', $id)->delete();
 
         foreach($products as $product){
-         $product_info[] = ['purchase_id' =>$purchase->id, 'product_id' => $product->id,'qty' => $product->count,'price' => $product->price, 'supplier_id' => $request->supplier_id,'purchased_at' => $p_date];   
+         $product_info[] = ['purchase_id' =>$purchase->id, 'product_id' => $product->id,'qty' => $product->count,'price' => $product->price,'cost' => $product->cost, 'supplier_id' => $request->supplier_id,'purchased_at' => $p_date];   
         }
         
 

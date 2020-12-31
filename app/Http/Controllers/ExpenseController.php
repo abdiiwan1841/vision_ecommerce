@@ -45,7 +45,7 @@ class ExpenseController extends Controller
             'expense_date' => 'required|date',
             'amount' => 'required|integer',
             'expensecategory_id' => 'required|integer',
-            'reason' => 'required|max:30',
+            'reason' => 'required|max:45',
         ]);
         $expense = new Expense;
         $expense->expense_date = $request->expense_date;
@@ -92,7 +92,7 @@ class ExpenseController extends Controller
             'expense_date' => 'required|date',
             'amount' => 'required|integer',
             'expensecategory_id' => 'required|integer',
-            'reason' => 'required|max:30',
+            'reason' => 'required|max:45',
         ]);
         $expense = Expense::findOrFail($id);
         $expense->expense_date = $request->expense_date;

@@ -1,4 +1,4 @@
-<div class="modal" id="{{$modal_id}}"  tabindex="-1" role="dialog">
+<div class="modal fade" id="{{$modal_id}}"  tabindex="-1" role="dialog">
 <div class="modal-dialog @if(isset($modal_size)) {{$modal_size}}@endif" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -15,7 +15,7 @@
         </div>
         <div class="modal-footer">
           
-        <button type="submit" class="btn btn-primary @if(isset($modal_button_class)) {{$modal_button_class}}@endif"  id="@if(isset($submit_button)) {{$submit_button}}@endif">
+        <button type="submit" class="btn btn-primary @if(isset($modal_button_class)) {{$modal_button_class}}@endif"  id="@if(isset($submit_button)){{$submit_button}}@endif">
           Submit</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>

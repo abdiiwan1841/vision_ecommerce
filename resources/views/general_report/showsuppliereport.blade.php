@@ -6,7 +6,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                Customer  Statement
+                Supplier  Due
             </div>
             <div class="card-body">
               <div class="row">
@@ -16,7 +16,7 @@
                       <div class="row">
                         <div class="col-lg-4">
                             <div class="form-group">
-                              <span>Customer : </span>
+                              <span>Supplier : </span>
                             </div>
                             <div class="form-group">
                               <select data-placeholder="Select a supplier" name="supplier" id="supplier" class="form-control @error('supplier') is-invalid @enderror">

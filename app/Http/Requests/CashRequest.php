@@ -25,7 +25,7 @@ class CashRequest extends FormRequest
     {
         return [
             'user' => 'required',
-            'amount' => 'required|integer',
+            'amount' => 'required|numeric',
             'reference' => 'max:25',
             'payment_method' => 'required',
             'received_at' => 'required',

@@ -33,7 +33,7 @@
                   $stock = ($info['purchase']+$info['return']) -  ($info['order']+$info['sale']+$info['free']+$info['damage']);    
                   @endphp
                       <tr>
-                        <td class="align-middle">{{$product_name}}</td>
+                        <td class="align-middle"> <p style="font-weight: bold;color:#ff4757">{{$product_name}} </p> @if($info['mfg'] != null) <small>Mfg: {{$info['mfg']->format('d-m-Y')}}</small> @endif <br>  @if($info['exp'] != null) <small>Exp: {{$info['exp']->format('d-m-Y')}}</small> @endif</td>
                         <td class="align-middle"><h4 style="border-radius: 10px;background-color: #f9ca24 !important;padding: 19px 6px;text-align:center"><b>{{$stock}}</b> </h4> </td>
                       <td class="align-middle">
                         <table class="table">

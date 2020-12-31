@@ -19,10 +19,9 @@ class CreatePurchaseProductTable extends Migration
             $table->foreignId('product_id');
             $table->foreignId('supplier_id');
             $table->integer('qty');
-            $table->string('price');
+            $table->float('price',16,2);
+            $table->float('cost',16,2)->default(0);
             $table->dateTime('purchased_at');
-            $table->dateTime('mfg')->nullable();
-            $table->dateTime('exp')->nullable();
             $table->timestamps();
             $table->foreign('purchase_id')->references('id')->on('purchases')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');

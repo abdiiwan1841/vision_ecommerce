@@ -87,7 +87,7 @@
                       <td>#{{$item->id}}</td>
                       <td>{{$item->purchased_at->format('d-m-Y g:i a')}}</td>
                       <td>{{$item->supplier->name}}</td>
-                    <td>{{round($item->amount)}}</td>
+                    <td>{{round($item->amount+$item->cost)}}</td>
                      
                     @if($item->deleted_at == NULL) 
                       <td ><a class="btn btn-info btn-sm" href="{{route('purchase.show',$item->id)}}"><i class="fa fa-eye"></i></a> | <a class="btn btn-primary btn-sm" href="{{route('purchase.edit',$item->id)}}"><i class="fa fa-edit"></i></a> |

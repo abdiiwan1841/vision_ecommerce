@@ -631,7 +631,7 @@ class ReportController extends Controller
             'end' => 'required|date',
         ]);
 
-        $current_supplier = User::findOrFail($request->supplier);
+        $current_supplier = Supplier::findOrFail($request->supplier);
         $suppliers = Supplier::all();
 
 
@@ -695,7 +695,7 @@ class ReportController extends Controller
         $general_opt = GeneralOption::first();
         $general_opt_value = json_decode($general_opt->options, true);
 
-        $current_supplier = User::findOrFail($request->supplier);
+        $current_supplier = Supplier::findOrFail($request->supplier);
         $suppliers = Supplier::all();
 
 

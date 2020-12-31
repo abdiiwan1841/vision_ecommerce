@@ -32,7 +32,7 @@ class StockController extends Controller
             $return = DB::table('product_returnproduct')->where('product_id', '=', $product->id)->sum('qty');
             $damage = DB::table('damage_product')->where('product_id', '=', $product->id)->sum('qty');
           
-            $stockinfo[$product->product_name] = ['id' => $product->id,'sale' =>  $sale,'free' => $free, 'purchase'=> $purchase, 'order' => $order,'return' =>  $return,'damage'=> $damage  ];
+            $stockinfo[$product->product_name] = ['id' => $product->id,'sale' =>  $sale,'free' => $free, 'purchase'=> $purchase, 'order' => $order,'return' =>  $return,'damage'=> $damage,'mfg'=> $product->mfg, 'exp' => $product->exp  ];
             
         }
         return view('admin.stock.index',compact('stockinfo'));

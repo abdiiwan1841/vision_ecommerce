@@ -72,7 +72,7 @@
                               <td>{{$key+1}}</td>  
                               <td>{{$item->purchased_at->format('d-m-Y g:i a')}}</td>  
                               <td>{{$item->supplier->name}}</td>  
-                              <td>{{round($item->amount)}}</td>  
+                              <td>{{round($item->amount+$item->cost)}}</td>  
                           </tr>    
                         @endforeach
                     </table>

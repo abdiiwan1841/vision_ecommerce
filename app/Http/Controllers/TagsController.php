@@ -18,7 +18,7 @@ class TagsController extends Controller
     
     public function index()
     {
-        $tags = Tags::paginate(10);
+        $tags = Tags::orderBy('id','DESC')->paginate(10);
         return view('tags.index',compact('tags'));
     }
 
@@ -40,11 +40,10 @@ class TagsController extends Controller
      */
     public function store(TagStoreRequest $request)
     {
-        $tags = new Tags;
-        $tags->tag_name = $request['tag_name'];
-        $tags->save();
-        Toastr::success('Tag Stored Successfully', 'success');
-        return redirect()->back();
+        $tag = new Tags;
+        $tag->tag_name = $request['tag_name'];
+        $tag->save();
+        return $tag->tag_name.' Stored Successfully';
     }
 
     /**
@@ -80,13 +79,12 @@ class TagsController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request,[
-            'edit_tag_name' => 'required|unique:tags,tag_name,'.$id,
+            'tag_name' => 'required|unique:tags,tag_name,'.$id,
         ]);
-        $tags = Tags::find($id);
-        $tags->tag_name = $request['edit_tag_name'];
-        $tags->save();
-        Toastr::success('Tag Updated Successfully', 'success');
-        return redirect()->back();
+        $tag = Tags::find($id);
+        $tag->tag_name = $request->tag_name;
+        $tag->save();
+        return $tag->tag_name ." Updated Successfully";
     }
 
     /**

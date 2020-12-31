@@ -19,7 +19,7 @@ class CreateOrderProductTable extends Migration
             $table->foreignId('user_id');
             $table->foreignId('product_id');
             $table->integer('qty');
-            $table->float('price',8,2);
+            $table->float('price',16,2);
             $table->dateTime('ordered_at');
             $table->timestamps();
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');

@@ -55,18 +55,13 @@ class ProductController extends Controller
         return view('products.create',compact('categories','subcategory', 'tags', 'brands','sizes'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(ProductStoreRequest $request)
     {
+
     $product = new Product;
 
     //Product Image Upload
-
     if($request->hasFile('image')){
         //get form image
         $image = $request->file('image');
@@ -101,17 +96,19 @@ class ProductController extends Controller
      if($request->has('onoffswitch')){
          $product->in_stock = $request->onoffswitch;
      }
-     $product->product_name = $request['product_name'];
+     $product->product_name = $request->product_name;
      $product->price = 0;
      $product->current_price = 0;
-     $product->category_id = $request['category'];
-     $product->subcategory_id = $request['subcategory'];
-     $product->brand_id = $request['brand'];
-     $product->description = $request['description'];
-     $product->size_id = $request['size'];
+     $product->category_id = $request->category;
+     $product->subcategory_id = $request->subcategory;
+     $product->brand_id = $request->brand;
+     $product->description = $request->description;
+     $product->size_id = $request->size;
+     $product->mfg = $request->mfg;
+     $product->exp = $request->exp;
      $product->type = $request->show_in;
      $product->save();
-     $product->tags()->attach($request['tags']);
+     $product->tags()->attach($request->tags);
 
      $productinfo = Product::where('type','ecom')->get();
      $suggestions = [];
@@ -120,8 +117,8 @@ class ProductController extends Controller
      }
 
      Storage::disk('public')->put('product.json', "var productJSON=".json_encode($suggestions));
-     Toastr::success('Product Added Successfully', 'success');
-     return redirect()->route('products.index');
+     return 'Product Added Successfully';
+
 
 
     }
@@ -169,6 +166,7 @@ class ProductController extends Controller
             'image' => 'image',
         ]);
 
+ 
         $product = Product::findOrFail($id);
 
         if($request->hasFile('image')){
@@ -243,7 +241,10 @@ class ProductController extends Controller
         $product->category_id = $request['category'];
         $product->subcategory_id = $request['subcategory'];
         $product->brand_id = $request['brand'];
+        $product->mfg = $request->mfg;
+        $product->exp = $request->exp;
         $product->size_id = $request['size'];
+        $product->type = $request->show_in;
         $product->save();
 
         $product->tags()->sync($request['tags']);
@@ -304,31 +305,7 @@ class ProductController extends Controller
 
     }
 
-    public function transfertoinventory(Request $request,$id){
-        $this->validate($request,[
-            'type' => 'required',
-        ]);
-
-        $product = Product::findOrFail($id);
-        $product->type = $request->type;
-        $product->save();
-        Toastr::success('Successfully ! Product Transfer To Inventory Module', 'success');
-        return redirect()->back();
-
-    }
-
-    public function transfertoecom(Request $request,$id){
-        $this->validate($request,[
-            'type' => 'required',
-        ]);
-
-        $product = Product::findOrFail($id);
-        $product->type = $request->type;
-        $product->save();
-        Toastr::success('Successfully ! Product Transfer To Ecommerce Module', 'success');
-        return redirect()->back();
-
-    }
+    
 
     public function export(Request $request){
         $general_opt = GeneralOption::first();

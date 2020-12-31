@@ -22,7 +22,8 @@ class CreatePurchasesTable extends Migration
             $table->dateTime('mfg')->nullable();
             $table->dateTime('exp')->nullable();
             $table->string('bacthno')->nullable();
-            $table->float('amount',14,2)->nullable();
+            $table->float('amount',16,2)->default(0);
+            $table->float('cost',16,2)->default(0);
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');

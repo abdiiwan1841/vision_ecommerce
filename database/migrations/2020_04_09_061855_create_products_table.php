@@ -23,16 +23,20 @@ class CreateProductsTable extends Migration
             $table->float('tp', 14, 2)->default(0);
             $table->foreignId('category_id');
             $table->foreignId('subcategory_id');
+            $table->foreignId('unit_id');
             $table->foreignId('brand_id');
             $table->text('description')->nullable();
             $table->integer('size_id');
             $table->string('type');
             $table->string('gallery_image')->nullable();
             $table->boolean('in_stock')->default(0);
+            $table->dateTime('mfg')->nullable();
+            $table->dateTime('exp')->nullable();
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('subcategory_id')->references('id')->on('subcategories')->onDelete('cascade');
             $table->foreign('brand_id')->references('id')->on('brands')->onDelete('cascade');
+            $table->foreign('unit_id')->references('id')->on('units')->onDelete('cascade');
         });
     }
 

@@ -74,17 +74,18 @@ class ReturnproductController extends Controller
 
          //Amount calculation
          $products = json_decode($request->product);
+        
+        
+        $pdinfo = "";
+        $amount = [];
+        foreach($products as  $item){
+            $pdinfo .= $item->o_name." = ".$item->count.",";
+            $amount[] = ($item->count)*($item->price);
+        }
+        $netamount = array_sum($amount);
+        $amount_total = ($netamount+$request->carrying_and_loading)-($request->discount);
 
-         $amount = [];
-         foreach($products as  $item){
-             $amount[] = ($item->count)*($item->price);
-         }
-         $netamount = array_sum($amount);
-         $amount_total = ($netamount+$request->carrying_and_loading)-($request->discount);
 
-
-
-       
         $return = new Returnproduct;
         $return->user_id = $request->user_id;
         $return->discount = $request->discount;
@@ -102,7 +103,67 @@ class ReturnproductController extends Controller
          $product_info[] = ['returnproduct_id' =>$return->id, 'product_id' => $product->id,'qty' => $product->count,'price' => $product->price, 'user_id' => $request->user_id,'returned_at' => $request->return_date." ".Carbon::now()->toTimeString()];   
         }
         $return->product()->attach($product_info);
-        Toastr::success('Returned Successfully', 'success');
+
+        // $url = "http://66.45.237.70/api.php";
+        // $number="01700817934";
+        // $text="New Return Invoice, Date: ".$return->returned_at->format('d-m-Y')." Return Invoice ID:# ".$return->id." Customer: ".$return->user->name.",  ".$return->user->address.", Amount: ".$return->amount." Prepared By:".Auth::user()->name." .Please Review the Return Invoice,Thanks";
+
+        // $text2= $return->user->name.", your Return invoice is created, Date: ".$return->returned_at->format('d-m-Y')." Return Invoice ID:# ".$return->id." Product: ".$pdinfo.", Amount: ".$return->amount." Prepared By:".Auth::user()->name.". (Vision Cosmetics)";
+
+
+
+        // $data= array(
+        // 'username'=>"shajibazher",
+        // 'password'=>"UtUs6B8WVqjmm72",
+        // 'number'=>"$number",
+        // 'message'=>"$text"
+        // );
+
+        //  $data2= array(
+        // 'username'=>"shajibazher",
+        // 'password'=>"UtUs6B8WVqjmm72",
+        // 'number'=>"$return->user->phone",
+        // 'message'=>"$text2"
+        // );
+
+        // $ch = curl_init(); // Initialize cURL
+
+        // //Sms For Admin
+        // curl_setopt($ch, CURLOPT_URL,$url);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $smsresult = curl_exec($ch);
+        // $p = explode("|",$smsresult);
+        // $sendstatus = $p[0];
+
+
+        //  //Sms For Customer
+        // curl_setopt($ch, CURLOPT_URL,$url);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data2));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $smsresult = curl_exec($ch);
+        // $p = explode("|",$smsresult);
+        // $sendstatus2 = $p[0];
+
+
+
+
+
+        // if($sendstatus == 1101){
+        //     Toastr::success('Return Invoice Created Successfully');
+        // }else{
+        //     Toastr::success('Return Invoice Created Successfully', 'success');
+        //     Toastr::error(VisionSmsResponse($sendstatus), 'error');
+        // }
+
+        // if($sendstatus2 == 1101){
+        //     Toastr::success('An Sms has been send to '.$return->user->name .' Phone: '.$return->user->phone);
+        // }else{
+        //     Toastr::success('Return Invoice Created Successfully', 'success');
+        //     Toastr::error(VisionSmsResponse($sendstatus), 'error');
+        // }
+
+
         return $return->id;
         
     }

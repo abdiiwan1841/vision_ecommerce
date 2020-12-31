@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Route;
 use Intervention\Image\Facades\Image;
 use App\Http\Requests\BrandStoreRequest;
 
@@ -22,7 +23,7 @@ class BrandController extends Controller
     
     public function index()
     {
-        $brands = Brand::paginate(10);
+        $brands = Brand::orderBy('id','DESC')->paginate(10);
         return view('brands.index',compact('brands'));
     }
 
@@ -62,8 +63,9 @@ class BrandController extends Controller
      }
      $brand->brand_name = $request['brand_name'];
      $brand->save();
-     Toastr::success('Brand Added Successfully', 'success');
-     return redirect()->back();
+
+     return $brand->brand_name ." created Successfully";
+
     }
 
     /**
@@ -99,8 +101,7 @@ class BrandController extends Controller
     public function update(Request $request,$id)
     {
         $this->validate($request,[
-            'edit_brand_name' => 'required|unique:brands,brand_name,'.$id,
-            'edit_image' => 'image',
+            'brand_name' => 'required|unique:brands,brand_name,'.$id,
         ]);
         
         $brand = Brand::findOrFail ($id);
@@ -132,10 +133,9 @@ class BrandController extends Controller
             $brand->image =  $image_name;
          }
 
-        $brand->brand_name = $request['edit_brand_name'];
+        $brand->brand_name = $request['brand_name'];
         $brand->save();
-        Toastr::success('Brand Updated Successfully', 'success');
-        return redirect()->back();
+        return $brand->brand_name. " brand updated successfully";
     }
 
     /**

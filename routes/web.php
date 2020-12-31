@@ -195,18 +195,20 @@ Route::group(['prefix'=> 'admin','middleware' => ['auth:admin']], function(){
     Route::post('product_section/products/export', 'ProductController@export')->name('product.export');
     Route::post('removegalleryimage/{id}', 'ProductController@removegalleryimage')->name('products.removegalleryimage');
     Route::resource('product_section/sizes', 'SizeController');
-    Route::resource('product_section/categories', 'CategoryController');
+    Route::resource('product_section/categories', 'CategoryController')->except('update');
+    Route::post('product_section/categories/{id}', 'CategoryController@update')->name('categories.update');
+    
+    
     Route::resource('product_section/tags', 'TagsController');
     Route::resource('product_section/brands', 'BrandController');
-    Route::resource('product_section/subcategories', 'SubcategoryController');
+    Route::resource('product_section/subcategories', 'SubcategoryController')->except('update');
+    Route::post('product_section/subcategories/{id}', 'SubcategoryController@update')->name('subcategories.update');
     Route::resource('ecom/order', 'OrderController');
 
     Route::get('ecom/order/{id}/view', 'OrderController@show')->name('order.view');
     Route::get('pos/cashresult','Pos\CashController@index');
     Route::post('pos/cashresult','Pos\CashController@result')->name('poscash.result');
     Route::resource('pos/prevdue', 'Pos\PrevdueController');
-    Route::post('transfertoecom/{id}','ProductController@transfertoecom')->name('product.transfertoecom');
-    Route::post('transfertoinventory/{id}','ProductController@transfertoinventory')->name('product.transfertoinventory');
     Route::resource('purchase', 'PurchaseController');
     Route::get('inventory/dashboard/cashdetails/{id}', 'adminController@inv_pendingcash')->name('invdashboard.cashdetails');
 

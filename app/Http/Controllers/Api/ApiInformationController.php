@@ -5,20 +5,25 @@ use Session;
 use App\Cash;
 use App\Sale;
 use App\User;
+use App\Tags;
 use App\Admin;
+use App\Brand;
 use App\Order;
 use App\Company;
 use App\Prevdue;
 use App\Product;
+use App\Category;
 use App\Purchase;
 use App\Supplier;
 use Carbon\Carbon;
+use App\Subcategory;
 use App\Paymentmethod;
 use App\Returnproduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
+use App\Size;
 
 class ApiInformationController extends Controller
 {
@@ -28,6 +33,25 @@ class ApiInformationController extends Controller
     }
     public function supplierinfo($id){
         return Supplier::findOrFail($id);
+    }
+
+    public function getBrandList(){
+        return Brand::all();
+    }
+
+    public function getCategoryList(){
+        return Category::all();
+    }
+    public function getTagList(){
+        return Tags::all();
+    }
+
+    public function getSubCategoryList(){
+        return Subcategory::all();
+    }
+
+    public function getSizeList(){
+        return Size::all();
     }
 
     public function productinfo($id){
@@ -98,7 +122,7 @@ class ApiInformationController extends Controller
         
         foreach($purchase->product as $pd){
             $name = preg_replace('/\s+/', '', $pd->product_name);
-            $pdarray[] = [ "name" => $name, "price" => $pd->pivot->price,"count" => $pd->pivot->qty, "id" => $pd->pivot->product_id, "o_name" => $pd->product_name,"image" => $pd->image ];
+            $pdarray[] = [ "name" => $name, "price" => round($pd->pivot->price),"count" => $pd->pivot->qty,"cost" => round($pd->pivot->cost), "id" => $pd->pivot->product_id, "o_name" => $pd->product_name,"image" => $pd->image ];
         }
 
         $pdJSON = ["purchaseCart" =>  $pdarray,"purchase_date" => Carbon::createFromFormat('Y-m-d H:i:s', $purchase->purchased_at)->format('Y-m-d'),"supplier_id" => $purchase->supplier_id, "purchase_id" => $purchase->id];
